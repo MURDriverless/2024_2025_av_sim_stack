@@ -1,2 +1,2 @@
-# 2024_2025_av_sim_stack
+# 2024-2025 Autonomous Vehicle Simulation Stack Capstone
 Capstone repository for the 2024-2025 Autonomous Vehicle Simulation Stack
