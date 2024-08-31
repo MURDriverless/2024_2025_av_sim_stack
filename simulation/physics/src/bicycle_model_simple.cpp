@@ -5,10 +5,10 @@
 const double PI = 3.14;
 const double DT = 0.1; // Time step in seconds
 const double VELOCITY = 1.0; // Constant velocity in meters per second
-const double STEERING_ANGLE = 30 * (PI / 180); // Steering angle in radians (10 degrees)
+const double STEERING_ANGLE = 30 * (PI / 180); // Steering angle in radians 
 const double WHEELBASE = 2.0; // Distance between the front and rear wheels in meters
 
-// Function to update the position and orientation of the circle
+// Function to update the position and orientation of the bicycle
 void updatePosition(double &x, double &y, double &theta, double velocity, double steering_angle, double dt) {
     // Bicycle model equations
     x += velocity * cos(theta) * dt;
