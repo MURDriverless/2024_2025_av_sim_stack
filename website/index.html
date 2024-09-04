@@ -2,24 +2,40 @@
 <html>
 
 <head>
-<link rel="stylesheet" href="app.css"
-
+    <link rel="stylesheet" href="css/main.css" </head>
+    <script src="js/main.js"></script>
 </head>
 
 <body>
 
-<h1>MUR Autonomous Vehicle Sim v0.0.0.0.0.0.1</h1>
+    <title>MUR AV Sim</title>
+    <h1>MUR Autonomous Vehicle Sim v0.0.0.0.0.0.1-pre-pre-pre-alpha</h1>
+    <img src="images/image.png" width="15%">
+    <hr>
 
-What is the velocity?
-
-<input type="number" id="numberInput" placeholder="Enter a number">
-<button onClick="getNumber()">Submit</button>
-
-<button onClick="alertButton()">Run simulation</button>
+    <h2>Model Parameters</h2>
+    <p>What are the end X coordinates?</p>
+    <input type="number" id="xCoInput" placeholder="Enter x coordinate:">
+    <button onClick="getX()">Submit</button>
+    <br>
+    <p>What are the end Y coordinates?</p>
+    <input type="number" id="yCoInput" placeholder="Enter y coordinate:">
+    <button onClick="getY()">Submit</button>
+    <br>
+    <p>What is the velocity?</p>
+    <input type="number" id="numberInput" placeholder="Enter a number:">
+    <button onClick="getNumber()">Submit</button>
+    <br>
+    <p>What is the max allowable steering rate?</p>
+    <input type="number" id="steeringRateInput" placeholder="Enter a number:">
+    <button onClick="getSteeringRate()">Submit</button>
+    <br>
+    <br>
+    <br>
+    <button onClick="alertButton()">Run simulation</button>
 
 
 </body>
 
-<script src="app.js"></script>
 
 </html>
