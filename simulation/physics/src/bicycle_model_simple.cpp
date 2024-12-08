@@ -44,7 +44,8 @@ class Bike {
     void reportState() {
         std::cout << "Distance: " << distance << " m\n";
         std::cout << "Pos: (" << state[0] << ", " << state[1] << "), O: " << state[2] * (180 / PI) << " degrees\n";
-        std::cout << "Vel: (" << state[3] << ", " << state[4] << ") d\n";
+        std::cout << "Vel: (" << state[3] << ", " << state[4] << ") d\n\n";
+
     }
 
         // Setter function to change a value at a specific index
