@@ -9,7 +9,8 @@ const double DT = 0.1; // Time step in seconds
 class Bike {
 
     /*
-    parameters: F, Ddelta, m, Lf, Lr
+    state: [0] x, [1] y, [2] theta, [3] vx, [4] vy, [5] omega, [6] delta
+    parameters: [0] F, [1] Ddelta, [2] m, [3] Lf, [4] Lr
     */
 
     private:
@@ -58,7 +59,7 @@ class Bike {
                 parameters[1] = 0;
             }
         }
-        distance += (fabs(state[0]) + fabs(state[1]))*DT;
+        distance += (fabs(state_dot[0]) + fabs(state_dot[1]))*DT;
     }
 
     void setInput(double F, double Ddelta) {
@@ -81,7 +82,7 @@ int main() {
     car.resetDistance();
 
     // Curve left for the specified distance
-    car.setInput(1,0.2);
+    car.setInput(0,0.5);
     while (car.getDistance() < 10) {
         car.updateState();
         car.reportState();
