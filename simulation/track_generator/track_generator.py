@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
+# will add more comments later to describe functionality
+
 def generate_formula_student_track(num_waypoints, track_width, cone_spacing, total_length):
     # Generate random waypoints on a perturbed circle
     angles = np.linspace(0, 2*np.pi, num_waypoints, endpoint=False)
@@ -14,8 +16,8 @@ def generate_formula_student_track(num_waypoints, track_width, cone_spacing, tot
     y = radii * np.sin(angles)
 
     # Close the loop
-    x = np.append(x, x[0])
-    y = np.append(y, y[0])
+    # x = np.append(x, x[0])
+    # y = np.append(y, y[0])
 
     # Fit a periodic B-spline to get a smooth centerline
     tck, u = splprep([x, y], s=0.5, per=True)
@@ -23,6 +25,15 @@ def generate_formula_student_track(num_waypoints, track_width, cone_spacing, tot
     u_fine = np.linspace(0, 1, num_samples)
     x_smooth, y_smooth = splev(u_fine, tck)
     centerline = np.vstack((x_smooth, y_smooth)).T
+
+    # Find closest point to origin
+    closest_index = np. argmin(np.linalg.norm(centerline, axis=1))
+    closest_point = centerline[closest_index]
+
+    # Rotate and translate so taht the closest point is at (0,0)
+    centerline = np.roll(centerline, -closest_index, axis=0)
+    offset = centerline[0]
+    centerline -= offset
 
     # Generate cones along left and right boundaries
     left_cones = []
@@ -41,20 +52,46 @@ def generate_formula_student_track(num_waypoints, track_width, cone_spacing, tot
         # left_cones.append(left.tolist())
         # right_cones.append(right.tolist())
 
-        # add color to the cones as well as which side of the track these cones are placed
-        left_cones.append({ 
-            "x": left[0],
-            "y": left[1],
-            "side": "left",
-            "color": "yellow"
-        })
+        # Check if it's the origin / start
+        # if np.allclose(p, [0.0, 0.0], atol=1e-3):
+        #     left_cones.append({
+        #         "x": left[0],
+        #         "y": left[1],
+        #         "side": "left",
+        #         "color": "orange"
+        #     })
 
-        right_cones.append({
-            "x": right[0],
-            "y": right[1],
-            "side": "right",
-            "color": "blue"
-        })
+        #     right_cones.append({
+        #         "x": right[0],
+        #         "y": right[1],
+        #         "side": "left",
+        #         "color": "orange"
+        #     })
+
+        # else:
+        #     # add color to the cones as well as which side of the track these cones are placed
+        #     left_cones.append({ 
+        #         "x": left[0],
+        #         "y": left[1],
+        #         "side": "left",
+        #         "color": "yellow"
+        #     })
+
+        #     right_cones.append({
+        #         "x": right[0],
+        #         "y": right[1],
+        #         "side": "right",
+        #         "color": "blue"
+        #     })
+
+        if i == 0:
+            # Place orange cones at start/finish line
+            left_cones.append({"x": left[0], "y": left[1], "side": "left", "color": "orange"})
+            right_cones.append({"x": right[0], "y": right[1], "side": "right", "color": "orange"})
+        else:
+            # add color to the cones as well as which side of the track these cones are placed
+            left_cones.append({"x": left[0], "y": left[1], "side": "left", "color": "yellow"})
+            right_cones.append({"x": right[0], "y": right[1], "side": "right", "color": "blue"})
 
     return {
         "centerline": centerline.tolist(),
@@ -76,8 +113,21 @@ def visualize_track(track_data, show_centerline):
     if show_centerline == 1:
         plt.plot(center[:, 0], center[:, 1], 'k--', label='Centerline')
 
-    plt.scatter([c['x'] for c in left], [c['y'] for c in left], color='yellow', s=10, label='Left Cones (Yellow)')
-    plt.scatter([c['x'] for c in right], [c['y'] for c in right], color='blue', s=10, label='Right Cones (Blue)')
+    plt.scatter([c['x'] for c in left if c['color'] == 'orange'], [c['y'] for c in left if c['color'] == 'orange'], color='orange', s=10,)
+    plt.scatter([c['x'] for c in left if c['color'] == 'yellow'], [c['y'] for c in left if c['color'] == 'yellow'], color='yellow', s=10, label='Left Cones (Yellow)')
+    plt.scatter([c['x'] for c in right if c['color'] == 'orange'], [c['y'] for c in right if c['color'] == 'orange'], color='orange', s=10)
+    plt.scatter([c['x'] for c in right if c['color'] == 'blue'], [c['y'] for c in right if c['color'] == 'blue'], color='blue', s=10, label='Right Cones (Blue)')
+
+    # Add solid black start/finish line using orange cones
+    left_start = next((c for c in left if c['color'] == 'orange'), None)
+    right_start = next((c for c in right if c['color'] == 'orange'), None)
+
+    if left_start and right_start:
+        plt.plot(
+            [left_start['x'], right_start['x']],
+            [left_start['y'], right_start['y']],
+            'k-', linewidth=2, label='Start/Finish'
+        )
 
     plt.axis('equal')
     plt.title("Formula Student Style Track")
