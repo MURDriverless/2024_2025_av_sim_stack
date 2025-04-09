@@ -13,8 +13,8 @@ class Track:
 
     def generate_track(self):
         # Generate random waypoints on a perturbed circle
-        angles = np.linspace(0, 2*np.pi, num_waypoints, endpoint=False)
-        radii = np.random.uniform(20, 30, size=num_waypoints)  # Controls how "round" the track is
+        angles = np.linspace(0, 2*np.pi, self.num_waypoints, endpoint=False)
+        radii = np.random.uniform(20, 30, size=self.num_waypoints)  # Controls how "round" the track is
         x = radii * np.cos(angles)
         y = radii * np.sin(angles)
 
@@ -24,32 +24,32 @@ class Track:
 
         # Fit a periodic B-spline to get a smooth centerline
         tck, u = splprep([x, y], s=0.5, per=True)
-        num_samples = int(total_length / cone_spacing)
+        num_samples = int(self.total_length / self.cone_spacing)
         u_fine = np.linspace(0, 1, num_samples)
         x_smooth, y_smooth = splev(u_fine, tck)
-        centerline = np.vstack((x_smooth, y_smooth)).T
+        self.centerline = np.vstack((x_smooth, y_smooth)).T
 
         # Find closest point to origin
-        closest_index = np. argmin(np.linalg.norm(centerline, axis=1))
-        closest_point = centerline[closest_index]
+        closest_index = np. argmin(np.linalg.norm(self.centerline, axis=1))
+        closest_point = self.centerline[closest_index]
 
         # Rotate and translate so taht the closest point is at (0,0)
-        centerline = np.roll(centerline, -closest_index, axis=0)
-        offset = centerline[0]
-        centerline -= offset
+        self.centerline = np.roll(self.centerline, -closest_index, axis=0)
+        offset = self.centerline[0]
+        self.centerline -= offset
 
         self._generate_cones()
 
     def _generate_cones(self):
-        for i in range(len(centerline)):
-            p = centerline[i]
-            p_next = centerline[(i + 1) % len(centerline)]
+        for i in range(len(self.centerline)):
+            p = self.centerline[i]
+            p_next = self.centerline[(i + 1) % len(self.centerline)]
             direction = p_next - p
             direction /= np.linalg.norm(direction)
             normal = np.array([-direction[1], direction[0]])
 
-            left = p + (track_width / 2) * normal
-            right = p - (track_width / 2) * normal
+            left = p + (self.track_width / 2) * normal
+            right = p - (self.track_width / 2) * normal
 
             # left_cones.append(left.tolist())
             # right_cones.append(right.tolist())
@@ -88,18 +88,18 @@ class Track:
 
             if i == 0:
                 # Place orange cones at start/finish line
-                left_cones.append({"x": left[0], "y": left[1], "side": "left", "color": "orange"})
-                right_cones.append({"x": right[0], "y": right[1], "side": "right", "color": "orange"})
+                self.left_cones.append({"x": left[0], "y": left[1], "side": "left", "color": "orange"})
+                self.right_cones.append({"x": right[0], "y": right[1], "side": "right", "color": "orange"})
             else:
                 # add color to the cones as well as which side of the track these cones are placed
-                left_cones.append({"x": left[0], "y": left[1], "side": "left", "color": "yellow"})
-                right_cones.append({"x": right[0], "y": right[1], "side": "right", "color": "blue"})
+                self.left_cones.append({"x": left[0], "y": left[1], "side": "left", "color": "yellow"})
+                self.right_cones.append({"x": right[0], "y": right[1], "side": "right", "color": "blue"})
 
     def get_track_data(self):
         return {
-            "centerline": centerline.tolist(),
-            "left_cones": left_cones,
-            "right_cones": right_cones
+            "centerline": self.centerline.tolist(),
+            "left_cones": self.left_cones,
+            "right_cones": self.right_cones
         }
 
     def get_start_finish_line(self):

@@ -4,7 +4,7 @@ from track import Track
 from visualizer import TrackVisualizer
 from exporter import TrackExporter
 
-def main():
+def main(num_waypoints, track_width, cone_spacing, total_length, show_centerline):
     parser = argparse.ArgumentParser(description="Formula Student Track Generator")
     parser.add_argument('--force', action='store_true', help="Force re-generate the track even if it exists")
     parser.add_argument('--file', type=str, default='fs_track.json', help="Filename to save/load the track")
@@ -21,7 +21,7 @@ def main():
     else:
         print(f"{'--force used:' if args.force else 'Track file not found.'} Generating new track...")
         track = Track(num_waypoints, track_width, cone_spacing, total_length)
-        track.generate()
+        track.generate_track()
         track_data = track.get_track_data()
         print(track.get_start_finish_line)
 
@@ -32,7 +32,7 @@ def main():
         print(f"Saving track to csv...")
         TrackExporter.to_csv(track_data, args.csv_file)
 
-    # TrackVisualizer.plot(track_data, show_centerline)
+    TrackVisualizer.plot(track_data, show_centerline)
 
 ############################################  END OF FUNCTION DEFINITIONS ##################################
 
@@ -46,4 +46,4 @@ total_length = 500
 show_centerline = 1
 
 if __name__ == "__main__":
-    main()
+    main(num_waypoints, track_width, cone_spacing, total_length, show_centerline)
