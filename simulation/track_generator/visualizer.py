@@ -10,6 +10,7 @@ class TrackVisualizer:
 
         plt.figure(figsize=(8, 8))
         
+        # Plot centerline depending on boolean
         if show_centerline == 1:
             plt.plot(center[:, 0], center[:, 1], 'k--', label='Centerline')
 
