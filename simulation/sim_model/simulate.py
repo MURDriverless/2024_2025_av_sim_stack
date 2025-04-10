@@ -14,7 +14,7 @@ from PurePursuit import PurePursuitController
 
 # Simulation config
 DT = 0.1  # time step (s)
-SIM_TIME = 20  # total sim time (s)
+SIM_TIME = 30  # total sim time (s)
 
 # Create track and controller
 track = Track(num_waypoints=15)
@@ -28,7 +28,7 @@ next_pt = path[1]
 dx, dy = next_pt[0] - start[0], next_pt[1] - start[1]
 yaw = np.arctan2(dy, dx)
 vehicle = Vehicle(wheelbase=1.7, x=start[0], y=start[1], yaw=yaw, velocity=0.0)
-controller = PurePursuitController(lookahead_distance=1.0)
+controller = PurePursuitController(lookahead_distance=7.0)
 
 # Log for plotting
 trajectory = []
@@ -38,7 +38,7 @@ for _ in range(int(SIM_TIME / DT)):
     state = vehicle.state()
     target = controller.find_target_point(path, state)
     steer = controller.compute_control(state, target, vehicle.wheelbase)
-    throttle = 0.7  # constant throttle for now
+    throttle = 1.0  # constant throttle for now
 
     vehicle.update(throttle, steer, DT)
     trajectory.append((vehicle.x, vehicle.y))
@@ -61,6 +61,25 @@ for cone in right:
 
 # Start/finish line
 plt.plot([left[0]['x'], right[0]['x']], [left[0]['y'], right[0]['y']], 'k-', linewidth=2, label='Start/Finish')
+
+# Final vehicle state
+last_state = vehicle.state()
+
+# Heading arrow (from vehicle position)
+arrow_length = 2.0
+arrow_dx = arrow_length * np.cos(last_state['yaw'])
+arrow_dy = arrow_length * np.sin(last_state['yaw'])
+
+plt.arrow(
+    last_state['x'], last_state['y'],
+    arrow_dx, arrow_dy,
+    head_width=0.5, head_length=0.7, fc='black', ec='black', label='Heading'
+)
+
+# Show lookahead point
+final_target = controller.find_target_point(path, last_state)
+plt.scatter(final_target[0], final_target[1], c='red', s=40, label='Lookahead Point', edgecolors='black')
+
 
 plt.axis('equal')
 plt.title("Vehicle Simulation with Pure Pursuit Controller")
