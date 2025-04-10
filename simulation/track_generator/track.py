@@ -2,7 +2,7 @@ from scipy.interpolate import splprep, splev
 import numpy as np
 
 class Track:
-    def __init__(self, num_waypoints=15, track_width=5, cone_spacing=5, total_length=250):
+    def __init__(self, num_waypoints=12, track_width=5, cone_spacing=5, total_length=250):
         self.num_waypoints = num_waypoints
         self.track_width = track_width
         self.cone_spacing = cone_spacing
@@ -18,16 +18,27 @@ class Track:
         x = radii * np.cos(angles)
         y = radii * np.sin(angles)
 
-        # Close the loop
-        # x = np.append(x, x[0])
-        # y = np.append(y, y[0])
-
         # Fit a periodic B-spline to get a smooth centerline
         tck, u = splprep([x, y], s=0.5, per=True)
         num_samples = int(self.total_length / self.cone_spacing)
-        u_fine = np.linspace(0, 1, num_samples)
-        x_smooth, y_smooth = splev(u_fine, tck)
-        self.centerline = np.vstack((x_smooth, y_smooth)).T
+        # u_fine = np.linspace(0, 1, num_samples)
+        # x_smooth, y_smooth = splev(u_fine, tck)
+        # self.centerline = np.vstack((x_smooth, y_smooth)).T
+
+        # Changed: Changes smoothness of centerline
+        u_dense = np.linspace(0, 1, 10 * num_samples)
+        x_dense, y_dense = splev(u_dense, tck)
+        dense_path = np.vstack((x_dense, y_dense)).T
+
+        # Compute arc-length spacing for centerline
+        dists = np.cumsum(np.linalg.norm(np.diff(dense_path, axis=0), axis=1))
+        dists = np.insert(dists, 0, 0)
+        arc_samples = np.linspace(0, dists[-1], num_samples)
+        x_resampled = np.interp(arc_samples, dists, x_dense)
+        y_resampled = np.interp(arc_samples, dists, y_dense)
+
+        self.centerline = np.vstack((x_resampled, y_resampled)).T
+        # End of change
 
         # Find closest point to origin
         closest_index = np. argmin(np.linalg.norm(self.centerline, axis=1))
@@ -37,6 +48,10 @@ class Track:
         self.centerline = np.roll(self.centerline, -closest_index, axis=0)
         offset = self.centerline[0]
         self.centerline -= offset
+
+        # Ensure the loop closes by appending the start point
+        if not np.allclose(self.centerline[0], self.centerline[-1], atol=1e-3):
+            self.centerline = np.vstack([self.centerline, self.centerline[0]])
 
         self._generate_cones()
 
