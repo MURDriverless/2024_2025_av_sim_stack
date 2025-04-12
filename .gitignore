@@ -2,3 +2,6 @@
 ./*/.venv/
 .vscode/
 ./*/.vscode/
+**/data/
+runs/
+**/runs/
