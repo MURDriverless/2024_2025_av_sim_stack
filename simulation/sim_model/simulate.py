@@ -7,7 +7,9 @@ import wheel
 
 # TO-DO: Need to fix directory structure for modules
 sys.path.append(os.path.abspath("/home/ab/git/2024_2025_av_sim_stack/simulation/track_generator"))
+sys.path.append(os.path.abspath("/home/ab/git/2024_2025_av_sim_stack/simulation/sensors"))
 
+from CameraSensor import CameraSensor
 from track import Track
 from vehicle import Vehicle
 from PurePursuit import PurePursuitController
@@ -29,6 +31,7 @@ dx, dy = next_pt[0] - start[0], next_pt[1] - start[1]
 yaw = np.arctan2(dy, dx)
 vehicle = Vehicle(wheelbase=1.7, x=start[0], y=start[1], yaw=yaw, velocity=0.0)
 controller = PurePursuitController(lookahead_distance=7.0)
+sensor = CameraSensor()
 
 # Log for plotting
 trajectory = []
@@ -38,7 +41,7 @@ for _ in range(int(SIM_TIME / DT)):
     state = vehicle.state()
     target = controller.find_target_point(path, state)
     steer = controller.compute_control(state, target, vehicle.wheelbase)
-    throttle = 1.0  # constant throttle for now
+    throttle = 0.7  # constant throttle for now
 
     vehicle.update(throttle, steer, DT)
     trajectory.append((vehicle.x, vehicle.y))
@@ -52,7 +55,7 @@ traj = np.array(trajectory)
 
 plt.figure(figsize=(8, 8))
 plt.plot(center[:, 0], center[:, 1], 'k--', label='Centerline')
-plt.plot(traj[:, 0], traj[:, 1], 'g-', linewidth=2, label='Vehicle Path')
+plt.plot(traj[:, 0], traj[:, 1], 'g-', linewidth=1, label='Vehicle Path')
 
 for cone in left:
     plt.scatter(cone['x'], cone['y'], color=cone['color'], s=10)
@@ -64,6 +67,8 @@ plt.plot([left[0]['x'], right[0]['x']], [left[0]['y'], right[0]['y']], 'k-', lin
 
 # Final vehicle state
 last_state = vehicle.state()
+
+plt.scatter(last_state['x'], last_state['y'], s=150)
 
 # Heading arrow (from vehicle position)
 arrow_length = 2.0
@@ -80,9 +85,13 @@ plt.arrow(
 final_target = controller.find_target_point(path, last_state)
 plt.scatter(final_target[0], final_target[1], c='red', s=40, label='Lookahead Point', edgecolors='black')
 
+# Cone detections
+all_cones = left + right
+detections = sensor.get_visible_cones(last_state, all_cones)
+sensor.visualize_detections(detections)
 
 plt.axis('equal')
-plt.title("Vehicle Simulation with Pure Pursuit Controller")
+plt.title("Vehicle Simulation with Pure Pursuit Controller and Basic Image-based Perception")
 plt.legend()
 plt.grid(True)
 plt.show()
