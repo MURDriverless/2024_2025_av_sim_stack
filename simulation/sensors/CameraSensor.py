@@ -44,6 +44,7 @@ class CameraSensor:
                 'detection_type': cone_type
             })
 
+        # Return detected cones at that time instance
         return visible
 
     def visualize_detections(self, detections):

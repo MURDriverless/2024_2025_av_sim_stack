@@ -8,11 +8,15 @@ import wheel
 # TO-DO: Need to fix directory structure for modules
 sys.path.append(os.path.abspath("/home/ab/git/2024_2025_av_sim_stack/simulation/track_generator"))
 sys.path.append(os.path.abspath("/home/ab/git/2024_2025_av_sim_stack/simulation/sensors"))
+sys.path.append(os.path.abspath("/home/ab/git/2024_2025_av_sim_stack/simulation/physics"))
+sys.path.append(os.path.abspath("/home/ab/git/2024_2025_av_sim_stack/simulation/pathing"))
+sys.path.append(os.path.abspath("/home/ab/git/2024_2025_av_sim_stack/simulation/slam"))
 
 from CameraSensor import CameraSensor
 from track import Track
 from vehicle import Vehicle
 from PurePursuit import PurePursuitController
+from Slam import SLAM as slam
 
 # Simulation config
 DT = 0.1  # time step (s)
@@ -32,6 +36,7 @@ yaw = np.arctan2(dy, dx)
 vehicle = Vehicle(wheelbase=1.7, x=start[0], y=start[1], yaw=yaw, velocity=0.0)
 controller = PurePursuitController(lookahead_distance=7.0)
 sensor = CameraSensor()
+slam = slam()
 
 # Log for plotting
 trajectory = []
@@ -46,6 +51,9 @@ for _ in range(int(SIM_TIME / DT)):
     vehicle.update(throttle, steer, DT)
     trajectory.append((vehicle.x, vehicle.y))
 
+    detections = sensor.get_visible_cones(state, track.left_cones + track.right_cones)
+    slam.update(state, detections)
+
 # Visualization
 track_data = track.get_track_data()
 center = np.array(track_data['centerline'])
@@ -53,7 +61,7 @@ left = track_data['left_cones']
 right = track_data['right_cones']
 traj = np.array(trajectory)
 
-plt.figure(figsize=(8, 8))
+plt.figure(figsize=(10, 10))
 plt.plot(center[:, 0], center[:, 1], 'k--', label='Centerline')
 plt.plot(traj[:, 0], traj[:, 1], 'g-', linewidth=1, label='Vehicle Path')
 
@@ -68,6 +76,7 @@ plt.plot([left[0]['x'], right[0]['x']], [left[0]['y'], right[0]['y']], 'k-', lin
 # Final vehicle state
 last_state = vehicle.state()
 
+# Plot current vehicle position
 plt.scatter(last_state['x'], last_state['y'], s=150)
 
 # Heading arrow (from vehicle position)
@@ -85,13 +94,20 @@ plt.arrow(
 final_target = controller.find_target_point(path, last_state)
 plt.scatter(final_target[0], final_target[1], c='red', s=40, label='Lookahead Point', edgecolors='black')
 
-# Cone detections
-all_cones = left + right
-detections = sensor.get_visible_cones(last_state, all_cones)
-sensor.visualize_detections(detections)
+# Cone detections (without SLAM)
+# all_cones = left + right
+# detections = sensor.get_visible_cones(last_state, all_cones)
+# sensor.visualize_detections(detections)
+
+# SLAM map
+slam_map = slam.get_map()
+for observation in slam_map:
+    plt.scatter(observation['x'], observation['y'], s=20, color='cyan', alpha=0.6, label='SLAM Map' if 'SLAM Map' not in plt.gca().get_legend_handles_labels()[1] else "")
+
+print(slam.get_trajectory())
 
 plt.axis('equal')
-plt.title("Vehicle Simulation with Pure Pursuit Controller and Basic Image-based Perception")
+plt.title("Vehicle Simulation with Perception, Pure Pursuit and SLAM")
 plt.legend()
 plt.grid(True)
 plt.show()
