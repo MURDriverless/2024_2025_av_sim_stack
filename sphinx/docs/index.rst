@@ -3,17 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-MUR Autonomous documentation
+MUR Autonomous Home
 ============================
 
-Welcome to the MUR Autonomous page. This wiki consists of everything an autonomous member needs to familiarize themselves with the MUR Autonomous Architecture.
+Welcome to the MUR Autonomous page. This site provides all the documentation an autonomous member needs to understand the MUR Autonomous Architecture.
 
 .. note::
 
    This documentation is a work in progress — contributions welcome! :doc:`Click here to get in touch. <contact>`
 
-- For Aidan and Jae, see this 'guide' to see how to edit our Sphinx doucmentation.
-- Check out the quick start guide to get a quick overview for MUR Autonomous.
+- For Aidan and Jae, see this :doc:`guide <sphinx_doc_guide>` to see how to edit our Sphinx doucmentation.
+- Check out the :doc:`Quick Start Guide <quick_start_guide>` to get a quick overview for MUR Autonomous.
 - Visit the 'software pre-requisites' section to see system requirements.
 - Etc
 
