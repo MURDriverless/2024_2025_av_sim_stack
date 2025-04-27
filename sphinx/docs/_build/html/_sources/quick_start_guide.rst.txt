@@ -17,12 +17,12 @@ Beyond the typical components of a driver-operated FSAE car (which we won’t ge
 
 When it comes to the software, the autonomous architecture consists of many different **pipelines** that ensures modularity and isolation of each sub-system:
 
-- Perception
-- Pathing
+- :doc:`Perception <perception/index>`
+- :doc:`Pathing <pathing/index>`
 - SLAM
-- Controls
+- :doc:`Controls <controls/index>`
 
-We will go over these pipelines in detail in subsequent sections.
+A pipeline is basically a series of steps (or stages) where each step processess data and passes it along to the next step. You can think of it as an assembly line in a factory where raw material goes in (input), each station adds something or modifies it (data processing), and returns a finished product (output of the pipeline). These inputs and outputs may be interdependent with other pipelines as we will see in their integration with one another. We will go over these pipelines in detail in subsequent sections.
 
 System requirements
 -------------------

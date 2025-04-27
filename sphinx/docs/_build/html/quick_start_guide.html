@@ -47,12 +47,12 @@
 <p>Beyond the typical components of a driver-operated FSAE car (which we won’t get into here), an autonomous vehicle requires a suite of sensors, processors, and computing hardware to bring the system to life. The biggest friction point between the autonomous team and the conventional EV subteams in MUR usually comes down to one word: packaging. Fitting all that extra tech into an already cramped vehicle demands excellent communication and collaboration across subteams—because nobody wants to play Tetris with lidar mounts at 2 a.m in the MUR garage.</p>
 <p>When it comes to the software, the autonomous architecture consists of many different <strong>pipelines</strong> that ensures modularity and isolation of each sub-system:</p>
 <ul class="simple">
-<li><p>Perception</p></li>
-<li><p>Pathing</p></li>
+<li><p><a class="reference internal" href="perception/index.html"><span class="doc">Perception</span></a></p></li>
+<li><p><a class="reference internal" href="pathing/index.html"><span class="doc">Pathing</span></a></p></li>
 <li><p>SLAM</p></li>
-<li><p>Controls</p></li>
+<li><p><a class="reference internal" href="controls/index.html"><span class="doc">Controls</span></a></p></li>
 </ul>
-<p>We will go over these pipelines in detail in subsequent sections.</p>
+<p>A pipeline is basically a series of steps (or stages) where each step processess data and passes it along to the next step. You can think of it as an assembly line in a factory where raw material goes in (input), each station adds something or modifies it (data processing), and returns a finished product (output of the pipeline). These inputs and outputs may be interdependent with other pipelines as we will see in their integration with one another. We will go over these pipelines in detail in subsequent sections.</p>
 </section>
 <section id="system-requirements">
 <h2>System requirements<a class="headerlink" href="#system-requirements" title="Link to this heading">¶</a></h2>
@@ -94,6 +94,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sphinx_doc_guide.html">Editing MUR Autonomous Documentation using Sphinx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="perception/index.html">Perception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pathing/index.html">Pathing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="controls/index.html">Controls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
 </ul>
 

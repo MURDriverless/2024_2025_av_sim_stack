@@ -1,0 +1,4 @@
+Controls
+========
+
+What is controls? The controls pipeline tells the vehicle how it should move its suite of actuators, e.g. steering actuator, pedal actuators. Now how do we know but how much and when the vehicle should move it's actuators? Well, if you've been following the order of the quick start guide, the pathing pipeline outputs the trajectory the vehicle should take. This output is then fed as an input to the controls pipeline. Within the controls pipeline, the **path following** algorithm will attempt to generate the needed actuation commands to follow the generated path. The word *attempt* is used because in reality, the vehicle may not perfectly follow the generated path. The actuation commands the algorithm generates will attempt to get the closest *actual* path to the generated path.

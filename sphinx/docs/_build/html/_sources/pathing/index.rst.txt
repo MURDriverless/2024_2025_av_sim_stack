@@ -1,0 +1,4 @@
+Pathing
+=======
+
+What is pathing? In this pipeline, pathing, or path generation, is the generation of the trajectory the vehicle **should** follow. It's important to know that because we generated a path, it doesn't mean that the vehicle knows *how* to *follow* that generated path. This **path following** algorithm which gives us our vehicle's actuation commands, will be included within the controls pipeline and out of scope of this pipeline. In other words, for the pathing pipeline, we've merely told the vehicle, "hey, this is the planned path we intend to take, but I haven't told you how to steer the car and at what input throttle".

@@ -28,4 +28,7 @@ documentation for details.
 
    quick_start_guide
    sphinx_doc_guide
+   perception/index
+   pathing/index
+   controls/index
    contact
