@@ -24,12 +24,24 @@ documentation for details.
 
 .. toctree::
    :hidden:
+   :caption: Getting Started
    :maxdepth: 2
 
    quick_start_guide
    sphinx_doc_guide
+   contact
+
+.. toctree::
+   :hidden:
+   :caption: Pipelines
+   :maxdepth: 2
+
    perception/index
    slam/index
    pathing/index
    controls/index
-   contact
+
+.. toctree::
+   :hidden:
+   :caption: Tutorials
+   :maxdepth: 2

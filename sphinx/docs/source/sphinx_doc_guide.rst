@@ -56,7 +56,7 @@ If the source and build directories were separated during quickstart, then the d
    ├── Makefile                # For Unix-based make builds
    └── make.bat                # For Windows builds
 
-For our Sphinx setup, it is the former where the the directories are **NOT** separated.
+For our Sphinx setup, it is the latter where the the directories **ARE** separated.
 
 Common Sphinx Commands
 ----------------------
