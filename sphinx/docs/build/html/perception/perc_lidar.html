@@ -6,9 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>&lt;no title&gt; &mdash; MUR Autonomous  documentation</title>
+  <title>LiDAR-Based Perception Pipeline: The Laser-Focused Cone Seeker &mdash; MUR Autonomous  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bd04c25a" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -18,7 +19,9 @@
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Simultaneous Localization and Mapping (SLAM)" href="../slam/index.html" />
+    <link rel="prev" title="Camera-Based Perception Pipeline: A Visually-Guided Cone-Whisperer" href="perc_image.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -31,6 +34,7 @@
           
           <a href="../index.html" class="icon icon-home">
             MUR Autonomous
+              <img src="../_static/MURA_logo_title.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -44,11 +48,17 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quick_start_guide.html">Quick Start Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sphinx_doc_guide.html">Editing MUR Autonomous Documentation using Sphinx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_setup.html">Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../literature_resources.html">Literature Review Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Us</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Perception</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Perception</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="perc_image.html">Camera-Based Perception Pipeline: A Visually-Guided Cone-Whisperer</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">LiDAR-Based Perception Pipeline: The Laser-Focused Cone Seeker</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Pathing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
@@ -68,9 +78,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+          <li class="breadcrumb-item"><a href="index.html">Perception</a></li>
+      <li class="breadcrumb-item active">LiDAR-Based Perception Pipeline: The Laser-Focused Cone Seeker</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/perception/perc_lidar.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -78,11 +88,42 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
+  <section id="lidar-based-perception-pipeline-the-laser-focused-cone-seeker">
+<h1>LiDAR-Based Perception Pipeline: The Laser-Focused Cone Seeker<a class="headerlink" href="#lidar-based-perception-pipeline-the-laser-focused-cone-seeker" title="Link to this heading"></a></h1>
+<p>While camera-based systems give you color and context, LiDAR-based perception brings raw, unfiltered truth — point clouds don’t lie (they just occasionally bounce off the grass). In the high-speed, high-stakes domain of FSAE Driverless, LiDAR plays the role of the sharp-eyed, distance-measuring sentinel that turns raw spatial data into precise 3D maps of cone-dotted circuits.</p>
+<p class="rubric">Point Cloud Acquisition: Painting the World in Dots</p>
+<p>LiDAR (usually 3D, rotating, multi-layer units like Velodyne or Ouster) generates point clouds at high frequency — often 10–20 Hz. Each scan returns a dense array of points with XYZ coordinates (and sometimes intensity), effectively forming a 3D snapshot of the surroundings. Think of it as an echolocation party with lasers — except no bats, just math.</p>
+<p class="rubric">Preprocessing: Cleaning Up the Noise</p>
+<p>LiDAR data is accurate but not always clean. So we do some digital janitorial work:
+- Ground Plane Removal: Using RANSAC or plane-fitting to subtract the track surface from the scene — cones are exciting, the ground is not.
+- Downsampling: Voxel grid filters reduce data size without losing essential structure.
+- ROI Filtering: Keep only the points within a reasonable forward and lateral field — no need to process trees 50 meters away.</p>
+<p class="rubric">Cone Detection: Extracting the Spikes from the Cloud</p>
+<p>This is where the system shifts from cloudy to clear — identifying individual cones from the remaining 3D points. Typical pipeline involves:
+- Clustering: Euclidean clustering or DBSCAN is applied to group nearby points into object candidates.
+- Feature Extraction: For each cluster, features like height, width, shape, and number of points are computed.
+- Classification:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Rule-based: If it quacks like a cone (i.e., ~30 cm tall and not moving), it probably is.</p></li>
+<li><p>ML-based: Use of classifiers like Random Forests or CNNs trained on 3D features (e.g. PointNet or projection-based approaches).</p></li>
+</ul>
+</div></blockquote>
+<p class="rubric">Cone Classification: Adding Color Without a Camera</p>
+<p>Since LiDAR doesn’t “see” color, classification into blue/yellow/orange becomes a detective game. Solutions include:
+- Sensor Fusion: Project LiDAR detections into the camera frame and fetch the color label from the vision pipeline.
+- Spatial Inference: If fusion fails, cones may be classified heuristically based on position (e.g., left vs. right side of track).
+This is where LiDAR and camera must play nice — a fusion of talents like Sherlock and Watson, but with more calibration headaches.</p>
+<p>WIP</p>
+</section>
+
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="perc_image.html" class="btn btn-neutral float-left" title="Camera-Based Perception Pipeline: A Visually-Guided Cone-Whisperer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../slam/index.html" class="btn btn-neutral float-right" title="Simultaneous Localization and Mapping (SLAM)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

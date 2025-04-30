@@ -9,6 +9,7 @@
   <title>Simultaneous Localization and Mapping (SLAM) &mdash; MUR Autonomous  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bd04c25a" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -20,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Pathing" href="../pathing/index.html" />
-    <link rel="prev" title="Perception" href="../perception/index.html" /> 
+    <link rel="prev" title="LiDAR-Based Perception Pipeline: The Laser-Focused Cone Seeker" href="../perception/perc_lidar.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -33,6 +34,7 @@
           
           <a href="../index.html" class="icon icon-home">
             MUR Autonomous
+              <img src="../_static/MURA_logo_title.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -46,7 +48,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quick_start_guide.html">Quick Start Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sphinx_doc_guide.html">Editing MUR Autonomous Documentation using Sphinx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_setup.html">Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../literature_resources.html">Literature Review Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Us</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
 <ul class="current">
@@ -72,7 +76,6 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Simultaneous Localization and Mapping (SLAM)</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/slam/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -82,15 +85,19 @@
              
   <section id="simultaneous-localization-and-mapping-slam">
 <h1>Simultaneous Localization and Mapping (SLAM)<a class="headerlink" href="#simultaneous-localization-and-mapping-slam" title="Link to this heading"></a></h1>
-<p>What is SLAM? To understand SLAM, a couple of definitions need to be addressed. Let’s start with <strong>mapping</strong>; mapping is the creation or reconstruction of the world around the autonomous system. Building off from perception, the vehicle may <em>see</em> the world around it, but it doesn’t necessarily make a remember and make a connection to it. In other words, without mapping, you can think of perception as going one ear and out of the other. With mapping, the vehicle is taking what it sees and tries to remember what the world looks like. Now, just like how human memory can be fuzzy at times, when a mapping algorithm constructs the world it sees, it may not be an exact representation of it. Next is <strong>localization</strong>; when the map is constructed, how does the vehicle know exactly where it is in that constructed map? That’s is where localization comes in. Localization algorithms estimates the vehicle position and orientation relative to a known coordinate system and global map (which mapping constructs).</p>
-<p>Finally, we can get into what SLAM does. In a typical non-SLAM pipeline, mapping of the global map is typically done first then that map is taken as an input to the localization algorithm to determine the pose of the system. In a real-time environment, especially in a high-speed environment such as autonomous racing, we want to combine these two algorithms into one. Hence, the <strong>simultaneous</strong> in Simultaneous Localization and Mapping.</p>
+<p>What is SLAM? To appreciate the magic of SLAM—<em>Simultaneous Localization and Mapping</em>—we first need to unpack its two core components: <strong>mapping</strong> and <strong>localization</strong>.</p>
+<p>Let’s begin with mapping. At its core, mapping is the act of reconstructing the environment around an autonomous system. Perception systems allow the vehicle to <em>see</em> its surroundings, but vision alone is fleeting. Without mapping, the system is like someone watching a movie with amnesia—everything seen is quickly forgotten. Mapping, then, is the mechanism that takes those raw perceptions and assembles them into a persistent, navigable model of the world.</p>
+<p>Of course, maps aren’t always perfect—just as our memories can blur over time, mapping algorithms often construct an approximate representation of reality. After all, these systems don’t have perfect recall either.</p>
+<p>Next up is localization. Once we have a map, the next question is: <em>Where am I on this map?</em> Localization answers this by estimating the vehicle’s position and orientation (collectively called its <em>pose</em>) with respect to the map. It’s like dropping a pin on Google Maps, but done continuously and with far more math.</p>
+<p>So where does SLAM come in? Traditionally, mapping and localization were done in sequence: first build a map, then localize within it. But real-world autonomous systems—especially in fast-paced domains like autonomous racing—don’t have the luxury of waiting. Enter SLAM: a real-time algorithmic framework that builds the map <em>and</em> localizes the vehicle within it <em>at the same time</em>.</p>
+<p>Hence the “simultaneous” in <em>Simultaneous Localization and Mapping</em>—a computational two-for-one deal that allows autonomous systems to explore and understand the world without needing a pre-made map. It’s like learning where you are while simultaneously sketching the map on a moving train.</p>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../perception/index.html" class="btn btn-neutral float-left" title="Perception" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../perception/perc_lidar.html" class="btn btn-neutral float-left" title="LiDAR-Based Perception Pipeline: The Laser-Focused Cone Seeker" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../pathing/index.html" class="btn btn-neutral float-right" title="Pathing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

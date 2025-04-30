@@ -27,3 +27,8 @@ exclude_patterns = []
 # html_theme = 'alabaster'
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_show_sourcelink = False
+html_logo = "_static/MURA_logo_title.png"
+html_css_files = [
+    'custom.css',
+]

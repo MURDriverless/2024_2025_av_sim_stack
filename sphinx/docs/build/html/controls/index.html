@@ -9,6 +9,7 @@
   <title>Controls &mdash; MUR Autonomous  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bd04c25a" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -32,6 +33,7 @@
           
           <a href="../index.html" class="icon icon-home">
             MUR Autonomous
+              <img src="../_static/MURA_logo_title.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -45,14 +47,19 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quick_start_guide.html">Quick Start Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sphinx_doc_guide.html">Editing MUR Autonomous Documentation using Sphinx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_setup.html">Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../literature_resources.html">Literature Review Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Us</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Pathing</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Controls</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Controls</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pure-pursuit-a-technically-elegant-mildly-obsessive-navigator">Pure Pursuit: A Technically Elegant, Mildly Obsessive Navigator</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -71,7 +78,6 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Controls</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/controls/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -81,7 +87,23 @@
              
   <section id="controls">
 <h1>Controls<a class="headerlink" href="#controls" title="Link to this heading"></a></h1>
-<p>What is controls? The controls pipeline tells the vehicle how it should move its suite of actuators, e.g. steering actuator, pedal actuators. Now how do we know but how much and when the vehicle should move it’s actuators? Well, if you’ve been following the order of the quick start guide, the pathing pipeline outputs the trajectory the vehicle should take. This output is then fed as an input to the controls pipeline. Within the controls pipeline, the <strong>path following</strong> algorithm will attempt to generate the needed actuation commands to follow the generated path. The word <em>attempt</em> is used because in reality, the vehicle may not perfectly follow the generated path. The actuation commands the algorithm generates will attempt to get the closest <em>actual</em> path to the generated path.</p>
+<p>What is controls? At its core, the <strong>controls</strong> pipeline is the part of the autonomous system that tells the vehicle <em>how</em> to move. It’s the system’s internal coach, whispering commands to actuators placed near the steering rack, throttle, and brake—guiding every turn, acceleration, and deceleration.</p>
+<p>But how does the vehicle know <em>when</em> to move, and by <em>how much</em>? That’s where the rest of the autonomy stack lends a hand. If you’ve been reading the quick start guide in order (and we hope you have), you’ll recall that the <strong>pathing</strong> pipeline produces a desired trajectory—a virtual route that says, “Hey car, here’s where you should go.”</p>
+<p>This trajectory is handed off to the controls pipeline like a relay baton. From there, a <strong>path-following algorithm</strong> gets to work, computing the necessary actuation commands to make the vehicle trace that path as closely as physics (and tire friction) will allow.</p>
+<p>Now, we say “attempt” for a reason—vehicles aren’t drawing with laser precision here. The real world is messy, and cars can’t magically teleport onto the ideal path. Instead, control algorithms strive to <em>minimize the deviation</em> between the planned trajectory and the one the car actually takes. Think of it as trying to trace a line while riding a skateboard—you may wobble a little, but the goal is to stay as close as possible.</p>
+<p>In essence, the controls system is the final translator between intention and action—the difference between a plan and motion.</p>
+<section id="pure-pursuit-a-technically-elegant-mildly-obsessive-navigator">
+<h2>Pure Pursuit: A Technically Elegant, Mildly Obsessive Navigator<a class="headerlink" href="#pure-pursuit-a-technically-elegant-mildly-obsessive-navigator" title="Link to this heading"></a></h2>
+<p>What path-following algorithm do we use in our architecture? Well, the title of this section answers that. Pure Pursuit is a classic geometric path tracking algorithm that behaves like a driver who’s fixated on chasing a moving dot on the road — but in a good way. In the context of FSAE Driverless, it’s a fundamental method used in the low-level control layer to convert a planned path into smooth, real-time steering commands for the autonomous race car.</p>
+<p class="rubric">The Core idea</p>
+<p>At each control cycle, the algorithm selects a lookahead point on the reference path — typically a fixed or adaptive distance ahead of the vehicle. The vehicle then calculates the circular arc that would steer it from its current position to that lookahead point, and commands a steering angle that would follow that arc. Technically speaking, we have the:</p>
+<ul class="simple">
+<li><p>Lookahead Distance (L): This is the distance ahead of the vehicle where the target point is selected. It can be fixed or dynamically adjusted based on speed.</p></li>
+<li><p>Goal Point Selection: The algorithm identifies a point on the reference trajectory at a distance, L, from the vehicle’s current position, in the vehicle’s local coordinate frame.</p></li>
+<li><p>Curvature Calculation: The required curvature, k, is computed using:k = 2y/L^2 where y is the lateral offset of the lookahead point from the vehicle’s heading.</p></li>
+<li><p>Steering Angle Command: This curvature is then converted into a steering angle using the vehicle’s geometry (often using a bicycle model).</p></li>
+</ul>
+</section>
 </section>
 
 

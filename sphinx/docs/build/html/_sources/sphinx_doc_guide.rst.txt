@@ -1,13 +1,15 @@
+#################################################
 Editing MUR Autonomous Documentation using Sphinx
-=================================================
+#################################################
 
-Sphinx is an auto documentation generator that makes building a documentation/wiki site a breeze. The language used to make these "pages" is known as **reStructuredText (reST)**, which is very similar to markdown. The main difference is that reST is a bit more verbose, where the same features in markdown is limited (e.g. tables).
+Sphinx is an auto documentation generator that makes building a documentation/wiki site a breeze. The language used to make these "pages" is known as **reStructuredText (reST)**, which is very similar to markdown. The main difference is that reST is a bit more verbose, where the same features in markdown is limited (e.g. tables). See the `reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_ documentation for details.
+
 
 Sphinx takes these plain text files written in reStructuredText (or Markdown, with plugins) and turns them into well-formatted documents like HTML pages, PDF manuals, and EPUB books. In this case, it's HTML pages. 
 
 To setup up Sphinx on your machine, please follow the instructions given in the `official installation guide <https://www.sphinx-doc.org/en/master/usage/installation.html#>`_.
 
-The following sections is a quick start guide on getting familiarized with Sphinx. This is not a substitute for the official Sphinx documentation.
+**The following sections is a quick start guide on getting familiarized with Sphinx. This is not a substitute for the official Sphinx documentation.**
 
 .. contents:: Content
    :local:
@@ -15,7 +17,7 @@ The following sections is a quick start guide on getting familiarized with Sphin
    :backlinks: entry
 
 Directory structure
--------------------
+===================
 
 The typical directory structure of Sphinx is:
 
@@ -59,7 +61,7 @@ If the source and build directories were separated during quickstart, then the d
 For our Sphinx setup, it is the latter where the the directories **ARE** separated.
 
 Common Sphinx Commands
-----------------------
+======================
 
 When working in the root directory, *i.e ./docs/*, and assuming you've installed sphinx, you can cleanly build the HTML pages using:
 
@@ -71,7 +73,7 @@ When working in the root directory, *i.e ./docs/*, and assuming you've installed
 This is possible due to the Makefile and make.bat files in the root directory which were created during ``sphinx-quickstart``
 
 Editing Pages
--------------
+=============
 The contents of the main page of the documentation is held within ``./docs/index.rst``. Any edits to the main page should be conducted within that file.
 
 As stated before, the syntax in Sphinx is reStructuredText so you'll need to familiarize yourself with the language to properly edit the documentation. To see documentation for reStructuredText, see the following `link <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_.
@@ -81,15 +83,15 @@ To edit sub-pages, ``e.g. example_page1 and example_page2``, go to the respectiv
 .. code-block:: text
 
    Sub Page Title
-   ==============    # Denotes title of the page
+   ##############    # Denotes title of the page
    
    Section 1
-   ---------         # Denotes a section of the page
+   =========         # Denotes a section of the page
 
 If you plan to make sub-pages and fill them in later, at least have the title of the page; if no title is present, ``make html`` will output an error.
 
 The Navigation Bar
-------------------
+==================
 
 On the left we can see the navigation bar that links sub-pages. When you create new sub-pages, ``e.g. example_page3.rst`` These files aren't automatically added to the navigation bar. To add these pages to the navigation bar, go into ``index.rst`` and find the section:
 

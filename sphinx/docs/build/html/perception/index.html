@@ -9,6 +9,7 @@
   <title>Perception &mdash; MUR Autonomous  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bd04c25a" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -19,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Simultaneous Localization and Mapping (SLAM)" href="../slam/index.html" />
-    <link rel="prev" title="Contact" href="../contact.html" /> 
+    <link rel="next" title="Camera-Based Perception Pipeline: A Visually-Guided Cone-Whisperer" href="perc_image.html" />
+    <link rel="prev" title="Contact Us" href="../contact.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -33,6 +34,7 @@
           
           <a href="../index.html" class="icon icon-home">
             MUR Autonomous
+              <img src="../_static/MURA_logo_title.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -46,11 +48,17 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quick_start_guide.html">Quick Start Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sphinx_doc_guide.html">Editing MUR Autonomous Documentation using Sphinx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_setup.html">Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../literature_resources.html">Literature Review Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Us</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Perception</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Perception</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="perc_image.html">Camera-Based Perception Pipeline: A Visually-Guided Cone-Whisperer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="perc_lidar.html">LiDAR-Based Perception Pipeline: The Laser-Focused Cone Seeker</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Pathing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
@@ -72,7 +80,6 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Perception</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/perception/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -85,18 +92,20 @@
 <p>What is perception in autonomous vehicles, or in general autonomous systems? It refers to how they “see” and interpret the world around them. These systems might perceive their environment in ways similar to—or very different from—how humans do. For instance, a camera might serve as a rough equivalent to human eyes, but cameras come in many forms, such as thermal and infrared, which capture light beyond the range of human vision. Additionally, these perception systems are not restricted to cameras. In our case, we also intend to implement the use of <strong>Light Detection and Ranging (LiDAR)</strong> which uses lasers to create a point cloud of the environment it scans.</p>
 <p>The overall perception pipeline for MUR Autonomous will be divided into two pipelines:</p>
 <ol class="arabic simple">
-<li><p>The image-based pipeline (camera-based).</p></li>
-<li><p>The LiDAR-based pipeline.</p></li>
+<li><p><a class="reference internal" href="perc_image.html"><span class="doc">The image-based pipeline (camera-based)</span></a></p></li>
+<li><p><a class="reference internal" href="perc_lidar.html"><span class="doc">The LiDAR-based pipeline</span></a></p></li>
 </ol>
-<p>The reasoning for these two pipelines is due to redundancy and safety. Sure you can run one of the pipelines, however, should one fail, you autonomous vehicle is now running blind. Ofcourse the emergency braking system should kick in, but having redundancy is essential in the robustness and safety of the system.</p>
+<p>The reasoning for these two pipelines is due to redundancy and safety. Sure you can run one of the pipelines, but should one fail, your autonomous vehicle is now running blind. Ofcourse the emergency braking system should kick in, but having redundancy is essential in the robustness and safety of the system.</p>
+<div class="toctree-wrapper compound">
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../contact.html" class="btn btn-neutral float-left" title="Contact" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../slam/index.html" class="btn btn-neutral float-right" title="Simultaneous Localization and Mapping (SLAM)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../contact.html" class="btn btn-neutral float-left" title="Contact Us" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="perc_image.html" class="btn btn-neutral float-right" title="Camera-Based Perception Pipeline: A Visually-Guided Cone-Whisperer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

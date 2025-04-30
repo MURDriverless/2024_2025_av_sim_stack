@@ -1,6 +1,15 @@
+############################################
 Simultaneous Localization and Mapping (SLAM)
-============================================
+############################################
 
-What is SLAM? To understand SLAM, a couple of definitions need to be addressed. Let's start with **mapping**; mapping is the creation or reconstruction of the world around the autonomous system. Building off from perception, the vehicle may *see* the world around it, but it doesn't necessarily make a remember and make a connection to it. In other words, without mapping, you can think of perception as going one ear and out of the other. With mapping, the vehicle is taking what it sees and tries to remember what the world looks like. Now, just like how human memory can be fuzzy at times, when a mapping algorithm constructs the world it sees, it may not be an exact representation of it. Next is **localization**; when the map is constructed, how does the vehicle know exactly where it is in that constructed map? That's is where localization comes in. Localization algorithms estimates the vehicle position and orientation relative to a known coordinate system and global map (which mapping constructs).
+What is SLAM? To appreciate the magic of SLAM—*Simultaneous Localization and Mapping*—we first need to unpack its two core components: **mapping** and **localization**.
 
-Finally, we can get into what SLAM does. In a typical non-SLAM pipeline, mapping of the global map is typically done first then that map is taken as an input to the localization algorithm to determine the pose of the system. In a real-time environment, especially in a high-speed environment such as autonomous racing, we want to combine these two algorithms into one. Hence, the **simultaneous** in Simultaneous Localization and Mapping.
+Let’s begin with mapping. At its core, mapping is the act of reconstructing the environment around an autonomous system. Perception systems allow the vehicle to *see* its surroundings, but vision alone is fleeting. Without mapping, the system is like someone watching a movie with amnesia—everything seen is quickly forgotten. Mapping, then, is the mechanism that takes those raw perceptions and assembles them into a persistent, navigable model of the world.
+
+Of course, maps aren’t always perfect—just as our memories can blur over time, mapping algorithms often construct an approximate representation of reality. After all, these systems don’t have perfect recall either.
+
+Next up is localization. Once we have a map, the next question is: *Where am I on this map?* Localization answers this by estimating the vehicle's position and orientation (collectively called its *pose*) with respect to the map. It’s like dropping a pin on Google Maps, but done continuously and with far more math.
+
+So where does SLAM come in? Traditionally, mapping and localization were done in sequence: first build a map, then localize within it. But real-world autonomous systems—especially in fast-paced domains like autonomous racing—don’t have the luxury of waiting. Enter SLAM: a real-time algorithmic framework that builds the map *and* localizes the vehicle within it *at the same time*. 
+
+Hence the “simultaneous” in *Simultaneous Localization and Mapping*—a computational two-for-one deal that allows autonomous systems to explore and understand the world without needing a pre-made map. It's like learning where you are while simultaneously sketching the map on a moving train.

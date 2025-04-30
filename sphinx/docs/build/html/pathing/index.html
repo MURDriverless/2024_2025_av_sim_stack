@@ -9,6 +9,7 @@
   <title>Pathing &mdash; MUR Autonomous  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=bd04c25a" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -33,6 +34,7 @@
           
           <a href="../index.html" class="icon icon-home">
             MUR Autonomous
+              <img src="../_static/MURA_logo_title.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -46,13 +48,18 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quick_start_guide.html">Quick Start Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sphinx_doc_guide.html">Editing MUR Autonomous Documentation using Sphinx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_setup.html">Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../literature_resources.html">Literature Review Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Us</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Pathing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pathing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#let-s-draw-a-line">Let’s Draw a Line</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
 </ul>
 
@@ -72,7 +79,6 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Pathing</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/pathing/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -82,7 +88,15 @@
              
   <section id="pathing">
 <h1>Pathing<a class="headerlink" href="#pathing" title="Link to this heading"></a></h1>
-<p>What is pathing? In this pipeline, pathing, or path generation, is the generation of the trajectory the vehicle <strong>should</strong> follow. It’s important to know that because we generated a path, it doesn’t mean that the vehicle knows <em>how</em> to <em>follow</em> that generated path. This <strong>path following</strong> algorithm which gives us our vehicle’s actuation commands, will be included within the controls pipeline and out of scope of this pipeline. In other words, for the pathing pipeline, we’ve merely told the vehicle, “hey, this is the planned path we intend to take, but I haven’t told you how to steer the car and at what input throttle”.</p>
+<p>What is pathing? In the context of this pipeline, pathing—also known as <em>path generation</em>—refers to the process of computing the desired trajectory that the vehicle <strong>should</strong> follow. However, it’s crucial to understand that just because we’ve generated a path doesn’t mean the vehicle magically knows how to follow it.</p>
+<p>The task of interpreting and executing this path—known as <em>path following</em>—is handled by a separate algorithm within the controls pipeline, which falls outside the scope of this discussion.</p>
+<p>Think of it this way: our pathing pipeline is saying to the vehicle, “Here’s the route we plan to take,” but it’s not yet telling how to steer or when to accelerate. Those details come later.</p>
+<section id="let-s-draw-a-line">
+<h2>Let’s Draw a Line<a class="headerlink" href="#let-s-draw-a-line" title="Link to this heading"></a></h2>
+<p>Before we can even consider telling the vehicle how to steer, we first need to generate a viable path. At first glance, this might seem as simple as drawing a straight line from point A to point B. And sure, that might work—if the track were a featureless runway.</p>
+<p>Fortunately, the FSAE driverless track is far more dynamic. It includes everything from high-speed straights to sweeping curves and tight slaloms—features that challenge the vehicle’s cornering capabilities and make the path planning problem far more engaging (and fun).</p>
+<p>Now the question becomes, how do we draw that line (or path)?</p>
+</section>
 </section>
 
 

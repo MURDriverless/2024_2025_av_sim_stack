@@ -9,6 +9,7 @@
   <title>Editing MUR Autonomous Documentation using Sphinx &mdash; MUR Autonomous  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=bd04c25a" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -19,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Contact" href="contact.html" />
+    <link rel="next" title="Development Environment Setup" href="dev_setup.html" />
     <link rel="prev" title="Quick Start Guide" href="quick_start_guide.html" /> 
 </head>
 
@@ -33,6 +34,7 @@
           
           <a href="index.html" class="icon icon-home">
             MUR Autonomous
+              <img src="_static/MURA_logo_title.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -52,7 +54,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#the-navigation-bar">The Navigation Bar</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_setup.html">Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="literature_resources.html">Literature Review Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact Us</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
 <ul>
@@ -78,7 +82,6 @@
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Editing MUR Autonomous Documentation using Sphinx</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/sphinx_doc_guide.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -88,10 +91,10 @@
              
   <section id="editing-mur-autonomous-documentation-using-sphinx">
 <h1>Editing MUR Autonomous Documentation using Sphinx<a class="headerlink" href="#editing-mur-autonomous-documentation-using-sphinx" title="Link to this heading"></a></h1>
-<p>Sphinx is an auto documentation generator that makes building a documentation/wiki site a breeze. The language used to make these “pages” is known as <strong>reStructuredText (reST)</strong>, which is very similar to markdown. The main difference is that reST is a bit more verbose, where the same features in markdown is limited (e.g. tables).</p>
+<p>Sphinx is an auto documentation generator that makes building a documentation/wiki site a breeze. The language used to make these “pages” is known as <strong>reStructuredText (reST)</strong>, which is very similar to markdown. The main difference is that reST is a bit more verbose, where the same features in markdown is limited (e.g. tables). See the <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a> documentation for details.</p>
 <p>Sphinx takes these plain text files written in reStructuredText (or Markdown, with plugins) and turns them into well-formatted documents like HTML pages, PDF manuals, and EPUB books. In this case, it’s HTML pages.</p>
 <p>To setup up Sphinx on your machine, please follow the instructions given in the <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/installation.html#">official installation guide</a>.</p>
-<p>The following sections is a quick start guide on getting familiarized with Sphinx. This is not a substitute for the official Sphinx documentation.</p>
+<p><strong>The following sections is a quick start guide on getting familiarized with Sphinx. This is not a substitute for the official Sphinx documentation.</strong></p>
 <nav class="contents local" id="content">
 <p class="topic-title">Content</p>
 <ul class="simple">
@@ -154,10 +157,10 @@ make html        # Builds the HTML pages
 <p>As stated before, the syntax in Sphinx is reStructuredText so you’ll need to familiarize yourself with the language to properly edit the documentation. To see documentation for reStructuredText, see the following <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">link</a>.</p>
 <p>To edit sub-pages, <code class="docutils literal notranslate"><span class="pre">e.g.</span> <span class="pre">example_page1</span> <span class="pre">and</span> <span class="pre">example_page2</span></code>, go to the respective <code class="docutils literal notranslate"><span class="pre">example_page1.rst</span></code> and <code class="docutils literal notranslate"><span class="pre">example_page2.rst</span></code> files. Again, the language these files use is reST. The most basic structure of these sub-pages rst files is:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Sub Page Title
-==============    # Denotes title of the page
+##############    # Denotes title of the page
 
 Section 1
----------         # Denotes a section of the page
+=========         # Denotes a section of the page
 </pre></div>
 </div>
 <p>If you plan to make sub-pages and fill them in later, at least have the title of the page; if no title is present, <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> will output an error.</p>
@@ -189,7 +192,7 @@ Section 1
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="quick_start_guide.html" class="btn btn-neutral float-left" title="Quick Start Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="contact.html" class="btn btn-neutral float-right" title="Contact" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="dev_setup.html" class="btn btn-neutral float-right" title="Development Environment Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

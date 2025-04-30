@@ -9,6 +9,7 @@
   <title>Quick Start Guide &mdash; MUR Autonomous  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=bd04c25a" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -33,6 +34,7 @@
           
           <a href="index.html" class="icon icon-home">
             MUR Autonomous
+              <img src="_static/MURA_logo_title.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -47,10 +49,14 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#system-requirements">System requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-environment-setup">Development Environment Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tutorials">Tutorials</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sphinx_doc_guide.html">Editing MUR Autonomous Documentation using Sphinx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_setup.html">Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="literature_resources.html">Literature Review Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact Us</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
 <ul>
@@ -76,7 +82,6 @@
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Quick Start Guide</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/quick_start_guide.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -90,6 +95,8 @@
 <p class="admonition-title">Note</p>
 <p>WORK IN PROGRESS</p>
 </div>
+<a class="reference internal image-reference" href="_images/overview1.gif"><img alt="_images/overview1.gif" src="_images/overview1.gif" style="width: 100%;" />
+</a>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>So what defines an autonomous vehicle? Well, for starters—it drives itself. Shocking, we know.</p>
@@ -103,12 +110,30 @@
 <li><p><a class="reference internal" href="pathing/index.html"><span class="doc">Pathing</span></a></p></li>
 <li><p><a class="reference internal" href="controls/index.html"><span class="doc">Controls</span></a></p></li>
 </ul>
-<p>A pipeline is basically a series of steps (or stages) where each step processess data and passes it along to the next step. You can think of it as an assembly line in a factory where raw material goes in (input), each station adds something or modifies it (data processing), and returns a finished product (output of the pipeline). These inputs and outputs may be interdependent with other pipelines as we will see in their integration with one another. We will go over these pipelines in detail in subsequent sections.</p>
+<p>A pipeline is basically a series of steps (or stages) where each step processes data and passes it along to the next step. You can think of it as an assembly line in a factory where raw material goes in (input), each station adds something or modifies it (data processing), and returns a finished product (output of the pipeline). These inputs and outputs may be interdependent with other pipelines as we will see in their integration with one another. Click on the the links above to see a more in-depth explanation of the respective pipeline but for a TLDR:</p>
+<ul class="simple">
+<li><p>Perception allows the vehicle to see.</p></li>
+<li><p>SLAM allows the vehicle to create a mini-map of its environment and find its position/orientation in that mini-map.</p></li>
+<li><p>Pathing creates the directions the vehicle needs to know to get from point A to point B.</p></li>
+<li><p>Controls tells the vehicle how to follow those directions; what “limbs” it should move.</p></li>
+</ul>
 </section>
 <section id="system-requirements">
 <h2>System requirements<a class="headerlink" href="#system-requirements" title="Link to this heading"></a></h2>
-<p>When it comes to computing, MUR has provided an NVIDIA jetson for any autonomous development. However, having your own device for development is preferred. Although not required, having a discrete GPU (dGPU), preferably NVIDIA, allows for efficient training of any machine learning algorithms, rendering of simulations, and any other GPU offloading activity.</p>
-<p>Esnure that you are familiar and have the ability to use Linux, whether you run it natively, dual booting it, running in a virtual machine, or using Windows Subsystem for Linux (WSL).</p>
+<p>When it comes to computing, MUR has provided an NVIDIA Jetson for any autonomous development. However, having your own device for development is preferred. Although not required, having a discrete GPU (dGPU), preferably NVIDIA, allows for efficient training of any machine learning algorithms, rendering of simulations, and any other GPU offloading activity.</p>
+<p>Ensure that you are familiar and have the ability to use Linux, whether you run it natively, dual booting it, running in a virtual machine, or using Windows Subsystem for Linux (WSL).</p>
+</section>
+<section id="development-environment-setup">
+<h2>Development Environment Setup<a class="headerlink" href="#development-environment-setup" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="dev_setup.html"><span class="doc">Development Environment Setup</span></a>.</p>
+</section>
+<section id="tutorials">
+<h2>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading"></a></h2>
+<p>It doesn’t help to just read without practising what you’ve learned. Below are a number of tutorials that will get you accustomed to programming with the MUR autonomous architecture.</p>
+<ul class="simple">
+<li><p>Insert tutorial1 link here</p></li>
+<li><p>Insert tutorial2 link here</p></li>
+</ul>
 </section>
 </section>
 

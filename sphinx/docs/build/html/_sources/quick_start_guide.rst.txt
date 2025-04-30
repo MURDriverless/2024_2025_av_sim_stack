@@ -1,11 +1,15 @@
+#################
 Quick Start Guide
-=================
+#################
 
 .. note::
     WORK IN PROGRESS
 
+.. image:: _static/overview1.gif
+    :width: 100%
+
 Overview
---------
+========
 
 So what defines an autonomous vehicle? Well, for starters—it drives itself. Shocking, we know.
 
@@ -22,11 +26,28 @@ When it comes to the software, the autonomous architecture consists of many diff
 - :doc:`Pathing <pathing/index>`
 - :doc:`Controls <controls/index>`
 
-A pipeline is basically a series of steps (or stages) where each step processess data and passes it along to the next step. You can think of it as an assembly line in a factory where raw material goes in (input), each station adds something or modifies it (data processing), and returns a finished product (output of the pipeline). These inputs and outputs may be interdependent with other pipelines as we will see in their integration with one another. We will go over these pipelines in detail in subsequent sections.
+A pipeline is basically a series of steps (or stages) where each step processes data and passes it along to the next step. You can think of it as an assembly line in a factory where raw material goes in (input), each station adds something or modifies it (data processing), and returns a finished product (output of the pipeline). These inputs and outputs may be interdependent with other pipelines as we will see in their integration with one another. Click on the the links above to see a more in-depth explanation of the respective pipeline but for a TLDR:
+
+- Perception allows the vehicle to see.
+- SLAM allows the vehicle to create a mini-map of its environment and find its position/orientation in that mini-map.
+- Pathing creates the directions the vehicle needs to know to get from point A to point B.
+- Controls tells the vehicle how to follow those directions; what "limbs" it should move.
 
 System requirements
--------------------
+===================
 
-When it comes to computing, MUR has provided an NVIDIA jetson for any autonomous development. However, having your own device for development is preferred. Although not required, having a discrete GPU (dGPU), preferably NVIDIA, allows for efficient training of any machine learning algorithms, rendering of simulations, and any other GPU offloading activity.
+When it comes to computing, MUR has provided an NVIDIA Jetson for any autonomous development. However, having your own device for development is preferred. Although not required, having a discrete GPU (dGPU), preferably NVIDIA, allows for efficient training of any machine learning algorithms, rendering of simulations, and any other GPU offloading activity.
 
-Esnure that you are familiar and have the ability to use Linux, whether you run it natively, dual booting it, running in a virtual machine, or using Windows Subsystem for Linux (WSL).
+Ensure that you are familiar and have the ability to use Linux, whether you run it natively, dual booting it, running in a virtual machine, or using Windows Subsystem for Linux (WSL).
+
+Development Environment Setup
+=============================
+See :doc:`Development Environment Setup<dev_setup>`.
+
+Tutorials
+=========
+
+It doesn't help to just read without practising what you've learned. Below are a number of tutorials that will get you accustomed to programming with the MUR autonomous architecture.
+
+- Insert tutorial1 link here
+- Insert tutorial2 link here
