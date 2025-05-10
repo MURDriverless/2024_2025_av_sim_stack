@@ -1,4 +1,3 @@
-##############################################################
 LiDAR-Based Perception Pipeline: The Laser-Focused Cone Seeker
 ##############################################################
 
@@ -11,6 +10,7 @@ LiDAR (usually 3D, rotating, multi-layer units like Velodyne or Ouster) generate
 .. rubric:: Preprocessing: Cleaning Up the Noise
 
 LiDAR data is accurate but not always clean. So we do some digital janitorial work:
+
 - Ground Plane Removal: Using RANSAC or plane-fitting to subtract the track surface from the scene — cones are exciting, the ground is not.
 - Downsampling: Voxel grid filters reduce data size without losing essential structure.
 - ROI Filtering: Keep only the points within a reasonable forward and lateral field — no need to process trees 50 meters away.
@@ -18,6 +18,7 @@ LiDAR data is accurate but not always clean. So we do some digital janitorial wo
 .. rubric:: Cone Detection: Extracting the Spikes from the Cloud
 
 This is where the system shifts from cloudy to clear — identifying individual cones from the remaining 3D points. Typical pipeline involves:
+
 - Clustering: Euclidean clustering or DBSCAN is applied to group nearby points into object candidates.
 - Feature Extraction: For each cluster, features like height, width, shape, and number of points are computed.
 - Classification:
@@ -27,8 +28,10 @@ This is where the system shifts from cloudy to clear — identifying individual 
 .. rubric:: Cone Classification: Adding Color Without a Camera
 
 Since LiDAR doesn’t “see” color, classification into blue/yellow/orange becomes a detective game. Solutions include:
+
 - Sensor Fusion: Project LiDAR detections into the camera frame and fetch the color label from the vision pipeline.
 - Spatial Inference: If fusion fails, cones may be classified heuristically based on position (e.g., left vs. right side of track).
+
 This is where LiDAR and camera must play nice — a fusion of talents like Sherlock and Watson, but with more calibration headaches.
 
 WIP

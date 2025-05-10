@@ -3,7 +3,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-###################
 MUR Autonomous Home
 ###################
 
@@ -39,6 +38,8 @@ Welcome to the MUR Autonomous page. This site provides all the documentation an 
    :caption: Pipelines
    :maxdepth: 2
 
+   pipeline_overview
+   pipeline_tutorial
    perception/index
    slam/index
    pathing/index
@@ -48,3 +49,5 @@ Welcome to the MUR Autonomous page. This site provides all the documentation an 
    :hidden:
    :caption: Tutorials
    :maxdepth: 2
+
+   tutorials/index

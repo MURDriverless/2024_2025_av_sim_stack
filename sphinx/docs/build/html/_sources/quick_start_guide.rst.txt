@@ -1,4 +1,3 @@
-#################
 Quick Start Guide
 #################
 
@@ -49,5 +48,5 @@ Tutorials
 
 It doesn't help to just read without practising what you've learned. Below are a number of tutorials that will get you accustomed to programming with the MUR autonomous architecture.
 
-- Insert tutorial1 link here
+- :ref:`_perception_pipeline_label`
 - Insert tutorial2 link here

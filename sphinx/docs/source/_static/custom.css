@@ -1,3 +1,8 @@
 /* .document {
     text-align: justify;
 } */
+
+/* custom.css */
+.wy-nav-content {
+    max-width: 1000px;  /* Adjust this as needed */
+}
