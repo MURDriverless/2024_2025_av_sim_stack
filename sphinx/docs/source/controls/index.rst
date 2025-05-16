@@ -1,5 +1,5 @@
 Controls
-########
+========
 
 What is controls? At its core, the **controls** pipeline is the part of the autonomous system that tells the vehicle *how* to move. It’s the system's internal coach, whispering commands to actuators placed near the steering rack, throttle, and brake—guiding every turn, acceleration, and deceleration.
 
@@ -12,7 +12,7 @@ Now, we say "attempt" for a reason—vehicles aren’t drawing with laser precis
 In essence, the controls system is the final translator between intention and action—the difference between a plan and motion.
 
 Pure Pursuit: A Technically Elegant, Mildly Obsessive Navigator
-===============================================================
+---------------------------------------------------------------
 
 What path-following algorithm do we use in our architecture? Well, the title of this section answers that. Pure Pursuit is a classic geometric path tracking algorithm that behaves like a driver who’s fixated on chasing a moving dot on the road — but in a good way. In the context of FSAE Driverless, it's a fundamental method used in the low-level control layer to convert a planned path into smooth, real-time steering commands for the autonomous race car.
 

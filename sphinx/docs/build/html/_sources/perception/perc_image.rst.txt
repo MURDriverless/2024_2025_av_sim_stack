@@ -1,5 +1,5 @@
 Camera-Based Perception Pipeline: A Visually-Guided Cone-Whisperer
-##################################################################
+==================================================================
 
 In the high-speed world of FSAE Driverless, where autonomous race cars must navigate circuits defined by nothing more than colored traffic cones, a camera-based perception pipeline plays the role of both artist and analyst — painting the scene in pixels and extracting structure from chaos. While LiDAR may have the spatial flair, it’s the humble camera that brings the color and context.
 

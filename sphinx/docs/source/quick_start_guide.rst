@@ -1,5 +1,5 @@
 Quick Start Guide
-#################
+=================
 
 .. note::
     WORK IN PROGRESS
@@ -8,7 +8,7 @@ Quick Start Guide
     :width: 100%
 
 Overview
-========
+--------
 
 So what defines an autonomous vehicle? Well, for starters—it drives itself. Shocking, we know.
 
@@ -33,20 +33,19 @@ A pipeline is basically a series of steps (or stages) where each step processes 
 - Controls tells the vehicle how to follow those directions; what "limbs" it should move.
 
 System requirements
-===================
+-------------------
 
 When it comes to computing, MUR has provided an NVIDIA Jetson for any autonomous development. However, having your own device for development is preferred. Although not required, having a discrete GPU (dGPU), preferably NVIDIA, allows for efficient training of any machine learning algorithms, rendering of simulations, and any other GPU offloading activity.
 
 Ensure that you are familiar and have the ability to use Linux, whether you run it natively, dual booting it, running in a virtual machine, or using Windows Subsystem for Linux (WSL).
 
 Development Environment Setup
-=============================
+-----------------------------
 See :doc:`Development Environment Setup<dev_setup>`.
 
 Tutorials
-=========
+---------
 
 It doesn't help to just read without practising what you've learned. Below are a number of tutorials that will get you accustomed to programming with the MUR autonomous architecture.
 
-- :ref:`_perception_pipeline_label`
-- Insert tutorial2 link here
+- :doc:`List of tutorials<tutorials/index>`

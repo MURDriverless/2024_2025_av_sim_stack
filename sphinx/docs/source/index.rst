@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 MUR Autonomous Home
-###################
+====================
 
 .. image:: _static/MURA_rviz.gif
    :width: 100%

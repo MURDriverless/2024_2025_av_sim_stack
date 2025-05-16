@@ -1,5 +1,5 @@
 Simultaneous Localization and Mapping (SLAM)
-############################################
+============================================
 
 What is SLAM? To appreciate the magic of SLAM—*Simultaneous Localization and Mapping*—we first need to unpack its two core components: **mapping** and **localization**.
 

@@ -163,10 +163,10 @@ make html        # Builds the HTML pages
 <p>As stated before, the syntax in Sphinx is reStructuredText so you’ll need to familiarize yourself with the language to properly edit the documentation. To see documentation for reStructuredText, see the following <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">link</a>.</p>
 <p>To edit sub-pages, <code class="docutils literal notranslate"><span class="pre">e.g.</span> <span class="pre">example_page1</span> <span class="pre">and</span> <span class="pre">example_page2</span></code>, go to the respective <code class="docutils literal notranslate"><span class="pre">example_page1.rst</span></code> and <code class="docutils literal notranslate"><span class="pre">example_page2.rst</span></code> files. Again, the language these files use is reST. The most basic structure of these sub-pages rst files is:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Sub Page Title
-##############    # Denotes title of the page
+==============    = Denotes title of the page
 
 Section 1
-=========         # Denotes a section of the page
+---------         # Denotes a section of the page
 </pre></div>
 </div>
 <p>If you plan to make sub-pages and fill them in later, at least have the title of the page; if no title is present, <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> will output an error.</p>

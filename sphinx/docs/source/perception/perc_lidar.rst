@@ -1,5 +1,5 @@
 LiDAR-Based Perception Pipeline: The Laser-Focused Cone Seeker
-##############################################################
+==============================================================
 
 While camera-based systems give you color and context, LiDAR-based perception brings raw, unfiltered truth — point clouds don't lie (they just occasionally bounce off the grass). In the high-speed, high-stakes domain of FSAE Driverless, LiDAR plays the role of the sharp-eyed, distance-measuring sentinel that turns raw spatial data into precise 3D maps of cone-dotted circuits.
 
