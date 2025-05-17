@@ -119,11 +119,7 @@ All of this is wrapped inside the `pursue()` function:
 
 .. code-block:: python
 
-   def pursue(self):
-       delta_dot = self.compute_steering_rate(...)
-       velocity = self.compute_velocity()
-       F = self.compute_throttle_force(...)
-       return Input(F, delta_dot)
+   # need to redo
 
 This returns a `throttle` and `steering rate` command for the car to execute.
 
