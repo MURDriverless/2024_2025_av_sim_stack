@@ -25,3 +25,13 @@ Pathing Tutorials
     :maxdepth: 2
 
     tut_pathgen
+
+Controls Tutorials
+---------------------
+- :doc:`Path Following Tutorial<tut_controls>`
+
+.. toctree::
+    :hidden:
+    :maxdepth: 2
+
+    tut_controls
