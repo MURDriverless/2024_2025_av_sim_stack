@@ -1,0 +1,399 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>World and Track Building Tutorial &mdash; MUR Autonomous  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3e8edd65" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lidar Perception Pipeline Tutorial" href="tut_perception.html" />
+    <link rel="prev" title="Tutorials" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MUR Autonomous
+              <img src="../_static/MURA_logo_title.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start_guide.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sphinx_doc_guide.html">Editing MUR Autonomous Documentation using Sphinx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_setup.html">Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../literature_resources.html">Literature Review Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Us</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tutorial.html">Pipeline Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Pathing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#track-and-vehicle-model-tutorials">Track and Vehicle Model Tutorials</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">World and Track Building Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-a-cone">What Is a Cone?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-world-class">The World Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#track-time">Track Time!</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#managing-cars-on-a-track">Managing Cars on a Track</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#track-class-api-overview">Track Class API Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bonus-create-your-own-track">Bonus: Create Your Own Track</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#files-involved">Files Involved</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-it-works">How It Works</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#start-finish-line">Start/Finish Line</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#export-to-json-csv">Export to JSON / CSV</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#command-line-generator">Command Line Generator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#perception-tutorials">Perception Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#pathing-tutorials">Pathing Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#controls-tutorials">Controls Tutorials</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MUR Autonomous</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">World and Track Building Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="world-and-track-building-tutorial">
+<h1>World and Track Building Tutorial<a class="headerlink" href="#world-and-track-building-tutorial" title="Link to this heading"></a></h1>
+<p>Let’s start your simulation journey by building the virtual <em>sandbox</em> for our autonomous car using:</p>
+<ul class="simple">
+<li><p><cite>World</cite>: the top-level simulation space</p></li>
+<li><p><cite>Track</cite>: defines the race layout using cones</p></li>
+<li><p><cite>Cone</cite>: the fundamental building block of the track</p></li>
+</ul>
+<p>These components manage everything from race layouts to simulation time and car placement. Think of this as laying out the playground before sending in our autonomous car.</p>
+<nav class="contents local" id="content">
+<p class="topic-title">Content</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#what-is-a-cone" id="id1">What Is a Cone?</a></p>
+<ul>
+<li><p><a class="reference internal" href="#bonus-cone-type-trackedcone" id="id2">Bonus Cone Type: TrackedCone</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#the-world-class" id="id3">The World Class</a></p></li>
+<li><p><a class="reference internal" href="#track-time" id="id4">Track Time!</a></p></li>
+<li><p><a class="reference internal" href="#managing-cars-on-a-track" id="id5">Managing Cars on a Track</a></p></li>
+<li><p><a class="reference internal" href="#track-class-api-overview" id="id6">Track Class API Overview</a></p></li>
+<li><p><a class="reference internal" href="#bonus-create-your-own-track" id="id7">Bonus: Create Your Own Track</a></p>
+<ul>
+<li><p><a class="reference internal" href="#procedural-track-generator-fsae-style" id="id8">Procedural Track Generator (FSAE Style)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#files-involved" id="id9">Files Involved</a></p></li>
+<li><p><a class="reference internal" href="#how-it-works" id="id10">How It Works</a></p></li>
+<li><p><a class="reference internal" href="#start-finish-line" id="id11">Start/Finish Line</a></p></li>
+<li><p><a class="reference internal" href="#export-to-json-csv" id="id12">Export to JSON / CSV</a></p></li>
+<li><p><a class="reference internal" href="#command-line-generator" id="id13">Command Line Generator</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id14">Summary</a></p></li>
+</ul>
+</nav>
+<section id="what-is-a-cone">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">What Is a Cone?</a><a class="headerlink" href="#what-is-a-cone" title="Link to this heading"></a></h2>
+<p>In our simulation, <strong>cones define the boundaries of the race track</strong>. Each cone has a position and a color, and the car must navigate between them.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cone</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cone</span>
+
+<span class="n">cone_test</span> <span class="o">=</span> <span class="n">Cone</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">3.2</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="mf">1.7</span><span class="p">,</span> <span class="n">colour</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Position of test cone: &quot;</span><span class="p">,</span> <span class="n">cone_test</span><span class="o">.</span><span class="n">get_position</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Attributes:</p>
+<ul class="simple">
+<li><p><cite>x</cite>, <cite>y</cite>: position</p></li>
+<li><p><cite>color</cite>: “blue”, “yellow”, or “orange”</p></li>
+<li><p><cite>radius</cite>: default 0.1 m</p></li>
+</ul>
+<p class="rubric">Pro Tip:</p>
+<p>Use orange cones to define <strong>start line boundaries</strong>. blue = left, yellow = right!</p>
+<section id="bonus-cone-type-trackedcone">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">Bonus Cone Type: TrackedCone</a><a class="headerlink" href="#bonus-cone-type-trackedcone" title="Link to this heading"></a></h3>
+<p>The <cite>TrackedCone</cite> is an extended version used for cone persistence across frames:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">TrackedCone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It includes:</p>
+<ul class="simple">
+<li><p><cite>id</cite>: unique cone identifier</p></li>
+<li><p><cite>last_seen</cite>: frame index</p></li>
+<li><p><cite>missed_count</cite>: how many frames it’s been invisible</p></li>
+</ul>
+</section>
+</section>
+<section id="the-world-class">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">The World Class</a><a class="headerlink" href="#the-world-class" title="Link to this heading"></a></h2>
+<p>The <cite>World</cite> class is your top-level container — it holds all tracks and cars.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">world</span><span class="w"> </span><span class="kn">import</span> <span class="n">World</span>
+
+<span class="n">world</span> <span class="o">=</span> <span class="n">World</span><span class="p">(</span><span class="s2">&quot;Earth&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can add tracks into this world. All existing worlds live in a global <cite>worlds</cite> list for easy tracking.</p>
+<p class="rubric">Try This:</p>
+<p>Print all world names after creation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;World Name: &quot;</span><span class="p">,</span> <span class="n">world</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="track-time">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Track Time!</a><a class="headerlink" href="#track-time" title="Link to this heading"></a></h2>
+<p>Each world can have multiple <strong>tracks</strong>, which are sequences of cones defining a racing layout.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">track</span><span class="w"> </span><span class="kn">import</span> <span class="n">Track</span>
+
+<span class="n">cones</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;orange&quot;</span><span class="p">],</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;orange&quot;</span><span class="p">],</span>  <span class="c1"># Start line</span>
+    <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;blue&quot;</span><span class="p">],</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;yellow&quot;</span><span class="p">],</span>   <span class="c1"># Track layout</span>
+    <span class="p">[[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;blue&quot;</span><span class="p">],</span> <span class="p">[[</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;yellow&quot;</span><span class="p">],</span>
+    <span class="p">[[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;blue&quot;</span><span class="p">],</span> <span class="p">[[</span><span class="mi">12</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;yellow&quot;</span><span class="p">],</span>
+    <span class="p">[[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;blue&quot;</span><span class="p">],</span> <span class="p">[[</span><span class="mi">17</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;yellow&quot;</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">track</span> <span class="o">=</span> <span class="n">Track</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Straight Line Test&quot;</span><span class="p">,</span> <span class="n">cones</span><span class="o">=</span><span class="n">cones</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Every cone is either:</p>
+<ul class="simple">
+<li><p>An actual <cite>Cone</cite> object, or</p></li>
+<li><p>A list containing cone coordinates and color: <cite>[[x, y], color]</cite></p></li>
+</ul>
+<p class="rubric">Fun Fact:</p>
+<p>Orange cones define the <strong>start line</strong>. Their midpoint becomes the <strong>starting position</strong>.</p>
+<p class="rubric">Try This:</p>
+<p>Log or visualize the start point:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting position of track: &quot;</span><span class="p">,</span> <span class="n">track</span><span class="o">.</span><span class="n">start_point</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="managing-cars-on-a-track">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Managing Cars on a Track</a><a class="headerlink" href="#managing-cars-on-a-track" title="Link to this heading"></a></h2>
+<p>Add a car to your track (we’ll fully define the <cite>Car</cite> later):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">track</span><span class="o">.</span><span class="n">add_car</span><span class="p">(</span><span class="n">car</span><span class="p">)</span>           <span class="c1"># Car class will be discussed in the Vehicle Modeling section.</span>
+</pre></div>
+</div>
+<p>Get the names of all cars on this track:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">track</span><span class="o">.</span><span class="n">get_car_names</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>You can also query cones by color:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">blues</span> <span class="o">=</span> <span class="n">track</span><span class="o">.</span><span class="n">get_cones_by_color</span><span class="p">(</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="track-class-api-overview">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Track Class API Overview</a><a class="headerlink" href="#track-class-api-overview" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>What It Does</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><cite>add_car(car)</cite></p></td>
+<td><p>Adds a car to the track</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>get_car_names()</cite></p></td>
+<td><p>Returns names of all cars on track</p></td>
+</tr>
+<tr class="row-even"><td><p><cite>get_car_by_name()</cite></p></td>
+<td><p>Returns car object by name</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>get_cones_by_color()</cite></p></td>
+<td><p>Filters cones by color</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bonus-create-your-own-track">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Bonus: Create Your Own Track</a><a class="headerlink" href="#bonus-create-your-own-track" title="Link to this heading"></a></h2>
+<section id="procedural-track-generator-fsae-style">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Procedural Track Generator (FSAE Style)</a><a class="headerlink" href="#procedural-track-generator-fsae-style" title="Link to this heading"></a></h3>
+<p>Why hand-place cones when you can <strong>generate</strong> them with a script?</p>
+<p>This section introduces the <strong>Track Generator</strong> pipeline (not necessarily integrated within the autonomous architecture) — a procedurally generated FSAE-style loop complete with yellow and blue cones, smooth centerlines, and a clean start/finish.</p>
+<a class="reference internal image-reference" href="../_images/generated_track1.png"><img alt="Generated FSAE Track" class="align-center" src="../_images/generated_track1.png" style="width: 100%;" />
+</a>
+</section>
+</section>
+<section id="files-involved">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Files Involved</a><a class="headerlink" href="#files-involved" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Role</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><cite>track_generator.py</cite></p></td>
+<td><p>Builds centerline and cones procedurally</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>visualizer.py</cite></p></td>
+<td><p>Matplotlib preview of the generated track</p></td>
+</tr>
+<tr class="row-even"><td><p><cite>exporter.py</cite></p></td>
+<td><p>Saves JSON and CSV versions of the track</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>main_generate_track.py</cite></p></td>
+<td><p>Command-line interface to the pipeline</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="how-it-works">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">How It Works</a><a class="headerlink" href="#how-it-works" title="Link to this heading"></a></h2>
+<p>In <em>main_generate_track.py</em>, you define:</p>
+<ul class="simple">
+<li><p><cite>FILENAME</cite>: the name of JSON file</p></li>
+<li><p><cite>num_waypoints</cite>: how many control points (affects curvature)</p></li>
+<li><p><cite>track_width</cite>: width between yellow and blue cones</p></li>
+<li><p><cite>cone_spacing</cite>: distance between cones</p></li>
+<li><p><cite>total_length</cite>: target track length in meters</p></li>
+<li><p><cite>show_centerline</cite>: whether to show or hide the centerline in the plot (centerline will be created regardless)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">FILENAME</span> <span class="o">=</span> <span class="s2">&quot;fs_track.json&quot;</span>
+
+<span class="n">num_waypoints</span> <span class="o">=</span> <span class="mi">18</span>
+<span class="n">track_width</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">cone_spacing</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">total_length</span> <span class="o">=</span> <span class="mi">500</span>
+
+<span class="n">show_centerline</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Cones are offset from the centerline using normal vectors — this ensures spacing is consistent and clean.</p>
+</section>
+<section id="start-finish-line">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Start/Finish Line</a><a class="headerlink" href="#start-finish-line" title="Link to this heading"></a></h2>
+<p>The <strong>first pair</strong> of cones (left/right) are colored orange and used as the start line:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;orange&quot;</span><span class="p">}</span>
+<span class="n">right</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;orange&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>These should match an FSAE Driverless event expectation of an orange start marker!</p>
+</section>
+<section id="export-to-json-csv">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Export to JSON / CSV</a><a class="headerlink" href="#export-to-json-csv" title="Link to this heading"></a></h2>
+<p>By default, tracks are saved in a JSON file that will be loaded into the script if it already exists. In our pipelines however, we will be using the exported CSV file from the track generator. Either file formats works as long as variables are consistent.</p>
+</section>
+<section id="command-line-generator">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Command Line Generator</a><a class="headerlink" href="#command-line-generator" title="Link to this heading"></a></h2>
+<p>The full track generation pipeline can be run with a CLI tool:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>main_generate_track.py<span class="w"> </span>--force<span class="w"> </span>--export-csv
+</pre></div>
+</div>
+<p>Arguments:</p>
+<ul class="simple">
+<li><p><cite>–file</cite>: output JSON file (default: <cite>fs_track.json</cite>)</p></li>
+<li><p><cite>–export-csv</cite>: save a CSV version of the track</p></li>
+<li><p><cite>–force</cite>: regenerate even if the file already exists</p></li>
+</ul>
+<p>The JSON file works great for loading back in. The CSV file is human-readable and can be used in analysis tools. Note that if a JSON file already exists, the script will automatically load that file and plot it. If you want a new track, use the –force argument.</p>
+<p>In the <cite>main_generate_track.py</cite> file, customize with your own defaults.</p>
+<p class="rubric">Try This</p>
+<ol class="arabic simple">
+<li><p>Vary <cite>num_waypoints</cite> → What happens to corner sharpness?</p></li>
+<li><p>Set <cite>cone_spacing = 2.5</cite> → More cones, tighter perception</p></li>
+<li><p>Open the CSV in Excel or plot it manually using pandas</p></li>
+</ol>
+</section>
+<section id="summary">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>You now know how to:</p>
+<ul class="simple">
+<li><p>Build structured tracks using cone objects</p></li>
+<li><p>Organize tracks within simulation worlds</p></li>
+<li><p>Generate full FSAE-style tracks with smooth curvature</p></li>
+<li><p>Preview, export, and customize tracks via CLI or script</p></li>
+</ul>
+<p>Next up: <strong>Vehicle Modeling</strong> — understanding the physics of your car and what makes it go!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tut_perception.html" class="btn btn-neutral float-right" title="Lidar Perception Pipeline Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Abner, Aidan, Jaewon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

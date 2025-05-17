@@ -1,6 +1,6 @@
 import argparse
 import os
-from track import Track
+from track_generator import TrackGen
 from visualizer import TrackVisualizer
 from exporter import TrackExporter
 
@@ -20,7 +20,7 @@ def main(num_waypoints, track_width, cone_spacing, total_length, show_centerline
 
     else:
         print(f"{'--force used:' if args.force else 'Track file not found.'} Generating new track...")
-        track = Track(num_waypoints, track_width, cone_spacing, total_length)
+        track = TrackGen(num_waypoints, track_width, cone_spacing, total_length)
         track.generate_track()
         track_data = track.get_track_data()
         print(track.get_start_finish_line)

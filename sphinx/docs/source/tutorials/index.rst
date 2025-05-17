@@ -5,6 +5,16 @@ This page is a compiled list of tutorial to get autonomous members acquainted wi
 
 .. _perception_pipeline_label:
 
+Track and Vehicle Model Tutorials
+----------------------------------
+- :doc:`Track and Vehicle Model Tutorial<tut_vehicle_modeling>`
+
+.. toctree::
+    :hidden:
+    :maxdepth: 2
+
+    tut_vehicle_modeling
+
 Perception Tutorials
 ---------------------
 - :doc:`LiDAR Tutorial<tut_perception>`

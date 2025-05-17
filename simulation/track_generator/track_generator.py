@@ -1,7 +1,7 @@
 from scipy.interpolate import splprep, splev
 import numpy as np
 
-class Track:
+class TrackGen:
     def __init__(self, num_waypoints=12, track_width=5, cone_spacing=5, total_length=250):
         self.num_waypoints = num_waypoints
         self.track_width = track_width

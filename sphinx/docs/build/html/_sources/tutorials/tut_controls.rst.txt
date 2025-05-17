@@ -40,10 +40,61 @@ This is implemented in:
        ...
        # Uses target to compute curvature and steering
 
+Controller Framework
+------------------------
+
+At the base of our control system is an abstract `Controller` class:
+
+.. code-block:: python
+
+   class Controller:
+       def __init__(self):
+           self.car = None
+           self.time = 0.0
+
+       def set_car(self, car):
+           self.car = car
+
+       def set_path(self, path):
+           raise NotImplementedError()
+
+       def pursue(self):
+           raise NotImplementedError()
+
+The purpose of this class is to define a common interface:
+
+- `set_car()` attaches the car to the controller.
+- `set_path()` defines the reference trajectory.
+- `pursue()` returns the control commands at each timestep.
+
+Any controller must implement `set_path()` and `pursue()`.
+
+Enter: PurePursuit
+----------------------
+
+The `PurePursuit` class inherits from `Controller` and implements a geometric steering algorithm that uses a lookahead point.
+
+.. code-block:: python
+
+   class PurePursuit(Controller):
+       def __init__(self, lookahead_distance, u_max, k_speed_c, k_throttle):
+           self.lookahead_distance = lookahead_distance
+           self.u_max = u_max
+           self.k_speed_c = k_speed_c
+           self.k_throttle = k_throttle
+           ...
+
+Constructor Parameters:
+- `lookahead_distance`: how far ahead the target point should be.
+- `u_max`: maximum velocity.
+- `k_speed_c`: controls how much curvature slows the car.
+- `k_throttle`: controls how aggressively the car accelerates.
+
 Step 1: Finding the Target Point
 -----------------------------------
 
 We check all path points to see if they are:
+
 - Within the **lookahead distance**
 - Inside a **±85° field of view**
 
@@ -158,4 +209,3 @@ In this tutorial, you learned:
 - How to tune your controller for different behaviors
 
 Next up: Advanced control methods like **LQR** and **Model Predictive Control (MPC)** — but Pure Pursuit is already race-ready!
-
