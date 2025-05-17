@@ -241,6 +241,39 @@ In the `main_generate_track.py` file, customize with your own defaults.
 2. Set `cone_spacing = 2.5` → More cones, tighter perception
 3. Open the CSV in Excel or plot it manually using pandas
 
+Importing Cones from CSV and Creating the World and Track Objects
+------------------------------------------------------------------
+
+Suppose the track has been exported to a CSV file. We can import the CSV file into our simulation using:
+
+.. code-block:: python
+
+    import CSV
+
+    cones = []
+
+    with open('fs_track.csv', 'r') as file:
+        reader = csv.reader(file)
+        next(reader)
+        for row in reader:
+            if not row:  # skip empty rows
+                continue
+            x, y, obj_type, color = row
+            if color == 'black':
+                continue
+            cones.append([[float(x), float(y)], color])
+
+    print(len(cones))
+
+Next, creating the world and track is as simple as two lines:
+
+.. code-block:: python
+
+    earth = World("Earth")
+    test_track = Track(earth, 'Test Track', cones)
+
+We now have our cones, world, and track!
+
 Summary
 ----------
 
