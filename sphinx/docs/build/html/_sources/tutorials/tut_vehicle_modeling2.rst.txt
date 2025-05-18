@@ -101,7 +101,7 @@ Assumes perfect grip, no tire forces — ideal for parking lot speeds. This is i
     & \dot{x} = u \cos(\theta) - v \sin(\theta) \\
     & \dot{y} = u \sin(\theta) + v \cos(\theta) \\
     & \dot{\psi} = \omega \\
-    & \dot{u} = \frac{1}{m}(1/m) * F_x \\
+    & \dot{u} = \frac{1}{m} F_x \\
     & \dot{v} = (\dot{\delta} v_x + \delta \dot{v_x}) \frac{l_r}{ l_r + l_f} \\
     & \dot{w} = (\dot{\delta} v_x + \delta \dot{v_x}) \frac{1}{ l_r + l_f} \\
     \end{align}
@@ -139,7 +139,7 @@ The dynamics of the full dynamic model is calculated within the following functi
 3. Blending Factor
 ^^^^^^^^^^^^^^^^^^
 
-As stated, the full vehicle model is a blend of the two above models. Depending on forward speed `u`, a **mix factor** chooses how much of each model to use, i.e. :math:`v_x \in [u_{min}, u_{max}]`. When `u` is below `u_{min}`, the kinematic model is solely used and when `u` is above `u_{max}`, the dynamic model is purely used; when `u` is in between, a mixture of both models are used.
+As stated, the full vehicle model is a blend of the two above models. Depending on forward speed `u`, a **mix factor** chooses how much of each model to use, i.e. :math:`v_x \in [u_{min}, u_{max}]`. When `u` is below :math:`u_{min}`, the kinematic model is solely used and when `u` is above :math:`u_{max}`, the dynamic model is purely used; when `u` is in between, a mixture of both models are used.
 
 .. code-block:: python
 
@@ -151,19 +151,11 @@ The full derivate of the state model is now computed from:
 
    state_dot = (1 - mix_factor) * kinematic + mix_factor * dynamic
 
-Try This:
-^^^^^^^^^^
-
-Print the mix factor:
-
-.. code-block:: python
-
-   print("Mix factor:", mix_factor)
 
 RK4 Integration
 ------------------
 
-The car updates its state using **Runge-Kutta 4th order integration**:
+Because we want to run this in real-time and not at a specific time instance, the car updates its state using **Runge-Kutta 4th order integration**:
 
 .. code-block:: python
 
@@ -202,14 +194,14 @@ Create a tiny test loop:
 Modular Add-ons
 -------------------
 
-Sensors and controllers are plug-and-play:
+Sensors and controllers are plug-and-play which we will go over in the following tutorials. To add these sensors in, use:
 
 .. code-block:: python
 
    car.add_lidar(my_lidar)
    car.add_controller(my_controller)
 
-The car also links modules to a `GPU` object, which manages updates to sensors and controls.
+The car also links modules to a `GPU` object, which manages updates to sensors and controls. It can be considered as a `helper` class and will not necessarily have its own tutorial/section.
 
 Interactive Debug Tips
 -------------------------
@@ -228,7 +220,7 @@ Interactive Debug Tips
 Summary
 ----------
 
-You’ve just built a car… in code!
+You’ve just built a car in code! So far, we've now learned how to:
 
 - Modeled car motion with kinematic and dynamic equations  
 - Tracked full vehicle state with the `State` class  
