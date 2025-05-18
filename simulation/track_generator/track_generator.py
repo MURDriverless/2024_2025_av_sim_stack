@@ -13,7 +13,7 @@ class TrackGen:
 
     def generate_track(self):
         # Generate random waypoints on a perturbed circle
-        angles = np.linspace(0, -2*np.pi, self.num_waypoints, endpoint=False)
+        angles = np.linspace(0, 2*np.pi, self.num_waypoints, endpoint=False)
         radii = np.random.uniform(50, 60, size=self.num_waypoints)  # Controls how "round" the track is
         x = radii * np.cos(angles)
         y = radii * np.sin(angles)
@@ -107,8 +107,8 @@ class TrackGen:
                 self.right_cones.append({"x": right[0], "y": right[1], "side": "right", "color": "orange"})
             else:
                 # add color to the cones as well as which side of the track these cones are placed
-                self.left_cones.append({"x": left[0], "y": left[1], "side": "left", "color": "yellow"})
-                self.right_cones.append({"x": right[0], "y": right[1], "side": "right", "color": "blue"})
+                self.left_cones.append({"x": left[0], "y": left[1], "side": "left", "color": "blue"})
+                self.right_cones.append({"x": right[0], "y": right[1], "side": "right", "color": "yellow"})
 
     def get_track_data(self):
         return {
