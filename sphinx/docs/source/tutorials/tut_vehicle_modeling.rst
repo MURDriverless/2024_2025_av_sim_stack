@@ -14,20 +14,39 @@ This is where the action happens. Your car is a subclass of `Vehicle`, and is in
 
 .. code-block:: python
 
-   car = Car(world, track, car_name="Cheetah")
+   car = Car(world, track, car_name="MUR Autonomous Mk1", State([x,y,yaw,u,v,w,delta]))
+   # Parameters
+   # world = name of the World class you've created
+   # track = name of the track class you've created/generated
+   # car_name = name of the autonomous car
+   # State([]) = initial starting state of the vehicle
 
-It connects to a `World`, a `Track`, and sets its initial state using the track's start line.
+It connects to a `World`, a `Track`, and sets its initial `State` using the track's start line.
 
 Physical Properties
 -----------------------
 
-Let’s peek under the hood. Your car has:
+Let’s peek under the hood. In the provided `vehicle.py` file, the car has:
 
-- Mass: `self.mass = 1420`
-- Front/Rear Lengths: `lf = 1.0`, `lr = 1.9`
-- Inertia: `Iz = 1500`
-- Drag: `Cd = 0.1`
-- Max steering: `60°` (`np.deg2rad(60)`)
+- Mass in kg: 
+   - `mass = 240`
+- Front/Rear Lengths in meters: 
+   - `lf = 1.0`, `lr = 1.9`
+   - Note that this distance is from the center of mass to the front/rear wheelbase.
+- Inertia in the `Z` direction: 
+   - `Iz = 1500`
+- Motor constant that converts the drive command to force applied at the wheel:
+   - `Cm = 0.15`
+- Max steering of `60°` given by: 
+   - `max_steer = np.deg2rad(60)`
+- Pacejka's tire formula "peak" coefficient:
+   - `Bp = 10`
+- Pacejka's tire formula "shape" coefficient:
+   - `Cp = 1.9`
+- Pacejka's tire formula "stiffness" coefficient:
+   - `Dp = 1`
+- Pacejka's tire formula "curvature" coefficient:
+   - `Ep = 0.97`
 
 This data feeds into the **equations of motion**.
 

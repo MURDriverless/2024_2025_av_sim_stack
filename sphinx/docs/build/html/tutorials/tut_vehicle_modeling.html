@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Lidar Perception Pipeline Tutorial" href="tut_perception.html" />
+    <link rel="next" title="Vehicle Modeling Tutorial: Physics on Wheels" href="tut_vehicle_modeling2.html" />
     <link rel="prev" title="World and Track Building Tutorial" href="tut_world_track_cones.html" /> 
 </head>
 
@@ -77,6 +77,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="tut_vehicle_modeling2.html">Vehicle Modeling Tutorial: Physics on Wheels</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#perception-tutorials">Perception Tutorials</a></li>
@@ -128,20 +129,84 @@
 <section id="meet-the-car-class">
 <h2><a class="toc-backref" href="#id1" role="doc-backlink">Meet the <cite>Car</cite> Class</a><a class="headerlink" href="#meet-the-car-class" title="Link to this heading"></a></h2>
 <p>This is where the action happens. Your car is a subclass of <cite>Vehicle</cite>, and is initialized with:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">car</span> <span class="o">=</span> <span class="n">Car</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">car_name</span><span class="o">=</span><span class="s2">&quot;Cheetah&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">car</span> <span class="o">=</span> <span class="n">Car</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">car_name</span><span class="o">=</span><span class="s2">&quot;MUR Autonomous Mk1&quot;</span><span class="p">,</span> <span class="n">State</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">yaw</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">delta</span><span class="p">]))</span>
+<span class="c1"># Parameters</span>
+<span class="c1"># world = name of the World class you&#39;ve created</span>
+<span class="c1"># track = name of the track class you&#39;ve created/generated</span>
+<span class="c1"># car_name = name of the autonomous car</span>
+<span class="c1"># State([]) = initial starting state of the vehicle</span>
 </pre></div>
 </div>
-<p>It connects to a <cite>World</cite>, a <cite>Track</cite>, and sets its initial state using the track’s start line.</p>
+<p>It connects to a <cite>World</cite>, a <cite>Track</cite>, and sets its initial <cite>State</cite> using the track’s start line.</p>
 </section>
 <section id="physical-properties">
 <h2><a class="toc-backref" href="#id2" role="doc-backlink">Physical Properties</a><a class="headerlink" href="#physical-properties" title="Link to this heading"></a></h2>
-<p>Let’s peek under the hood. Your car has:</p>
+<p>Let’s peek under the hood. In the provided <cite>vehicle.py</cite> file, the car has:</p>
 <ul class="simple">
-<li><p>Mass: <cite>self.mass = 1420</cite></p></li>
-<li><p>Front/Rear Lengths: <cite>lf = 1.0</cite>, <cite>lr = 1.9</cite></p></li>
-<li><p>Inertia: <cite>Iz = 1500</cite></p></li>
-<li><p>Drag: <cite>Cd = 0.1</cite></p></li>
-<li><p>Max steering: <cite>60°</cite> (<cite>np.deg2rad(60)</cite>)</p></li>
+<li><dl class="simple">
+<dt>Mass in kg:</dt><dd><ul>
+<li><p><cite>mass = 240</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Front/Rear Lengths in meters:</dt><dd><ul>
+<li><p><cite>lf = 1.0</cite>, <cite>lr = 1.9</cite></p></li>
+<li><p>Note that this distance is from the center of mass to the front/rear wheelbase.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Inertia in the <cite>Z</cite> direction:</dt><dd><ul>
+<li><p><cite>Iz = 1500</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Motor constant that converts the drive command to force applied at the wheel:</dt><dd><ul>
+<li><p><cite>Cm = 0.15</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Max steering of <cite>60°</cite> given by:</dt><dd><ul>
+<li><p><cite>max_steer = np.deg2rad(60)</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Pacejka’s tire formula “peak” coefficient:</dt><dd><ul>
+<li><p><cite>Bp = 10</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Pacejka’s tire formula “shape” coefficient:</dt><dd><ul>
+<li><p><cite>Cp = 1.9</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Pacejka’s tire formula “stiffness” coefficient:</dt><dd><ul>
+<li><p><cite>Dp = 1</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Pacejka’s tire formula “curvature” coefficient:</dt><dd><ul>
+<li><p><cite>Ep = 0.97</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
 </ul>
 <p>This data feeds into the <strong>equations of motion</strong>.</p>
 </section>
@@ -224,7 +289,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="tut_world_track_cones.html" class="btn btn-neutral float-left" title="World and Track Building Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tut_perception.html" class="btn btn-neutral float-right" title="Lidar Perception Pipeline Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tut_vehicle_modeling2.html" class="btn btn-neutral float-right" title="Vehicle Modeling Tutorial: Physics on Wheels" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

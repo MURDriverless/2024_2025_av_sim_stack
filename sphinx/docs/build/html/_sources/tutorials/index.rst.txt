@@ -9,6 +9,7 @@ Track and Vehicle Model Tutorials
 ----------------------------------
 - :doc:`World and Track Building Tutorial<tut_world_track_cones>`
 - :doc:`Vehicle Modeling Tutorial<tut_vehicle_modeling>`
+- :doc:`Vehicle Modeling Tutorial2<tut_vehicle_modeling2>`
 
 
 .. toctree::
@@ -17,6 +18,7 @@ Track and Vehicle Model Tutorials
 
     tut_world_track_cones
     tut_vehicle_modeling
+    tut_vehicle_modeling2
 
 Perception Tutorials
 ---------------------
