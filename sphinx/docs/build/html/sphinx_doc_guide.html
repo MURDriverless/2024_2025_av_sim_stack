@@ -1,0 +1,227 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editing MUR Autonomous Documentation using Sphinx &mdash; MUR Autonomous  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3e8edd65" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Development Environment Setup" href="dev_setup.html" />
+    <link rel="prev" title="Quick Start Guide" href="quick_start_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MUR Autonomous
+              <img src="_static/MURA_logo_title.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quick_start_guide.html">Quick Start Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Editing MUR Autonomous Documentation using Sphinx</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#directory-structure">Directory structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#common-sphinx-commands">Common Sphinx Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#editing-pages">Editing Pages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-navigation-bar">The Navigation Bar</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dev_setup.html">Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="literature_resources.html">Literature Review Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact Us</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_tutorial.html">Pipeline Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="perception/index.html">Perception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pathing/index.html">Pathing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="controls/index.html">Controls</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MUR Autonomous</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Editing MUR Autonomous Documentation using Sphinx</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="editing-mur-autonomous-documentation-using-sphinx">
+<h1>Editing MUR Autonomous Documentation using Sphinx<a class="headerlink" href="#editing-mur-autonomous-documentation-using-sphinx" title="Link to this heading"></a></h1>
+<p>Sphinx is an auto documentation generator that makes building a documentation/wiki site a breeze. The language used to make these “pages” is known as <strong>reStructuredText (reST)</strong>, which is very similar to markdown. The main difference is that reST is a bit more verbose, where the same features in markdown is limited (e.g. tables). See the <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a> documentation for details.</p>
+<p>Sphinx takes these plain text files written in reStructuredText (or Markdown, with plugins) and turns them into well-formatted documents like HTML pages, PDF manuals, and EPUB books. In this case, it’s HTML pages.</p>
+<p>To setup up Sphinx on your machine, please follow the instructions given in the <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/installation.html#">official installation guide</a>.</p>
+<p><strong>The following sections is a quick start guide on getting familiarized with Sphinx. This is not a substitute for the official Sphinx documentation.</strong></p>
+<nav class="contents local" id="content">
+<p class="topic-title">Content</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#directory-structure" id="id1">Directory structure</a></p></li>
+<li><p><a class="reference internal" href="#common-sphinx-commands" id="id2">Common Sphinx Commands</a></p></li>
+<li><p><a class="reference internal" href="#editing-pages" id="id3">Editing Pages</a></p></li>
+<li><p><a class="reference internal" href="#the-navigation-bar" id="id4">The Navigation Bar</a></p></li>
+</ul>
+</nav>
+<section id="directory-structure">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Directory structure</a><a class="headerlink" href="#directory-structure" title="Link to this heading"></a></h2>
+<p>The typical directory structure of Sphinx is:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>docs/
+├── _build/             # Compiled output (HTML, PDF, etc.)
+├── _static/            # Custom static files (e.g., CSS, images)
+├── _templates/         # Custom HTML templates
+├── conf.py             # Sphinx configuration file
+├── index.rst           # Root document
+├── example_page1.rst   # Example page 1
+├── example_page2.rst   # Example page 2
+└── other_pages.rst     # Additional docs
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This only applied if you have not separated the source and build directory during:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>sphinx-quickstart
+</pre></div>
+</div>
+</div>
+<p>If the source and build directories were separated during quickstart, then the directory structure should look like:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>docs/
+├── build/                  # Compiled output (HTML, PDF, etc.)
+├── source/
+│   ├── _static/            # Custom static files (e.g., CSS, images)
+│   ├── _templates/         # Custom HTML templates
+│   ├── conf.py             # Configuration file for Sphinx
+│   ├── index.rst           # Root document
+│   ├── example_page1.rst   # Example page 1
+│   ├── example_page2.rst   # Example page 2
+│   └── other_pages.rst     # Other documentation pages
+├── Makefile                # For Unix-based make builds
+└── make.bat                # For Windows builds
+</pre></div>
+</div>
+<p>For our Sphinx setup, it is the latter where the the directories <strong>ARE</strong> separated.</p>
+</section>
+<section id="common-sphinx-commands">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Common Sphinx Commands</a><a class="headerlink" href="#common-sphinx-commands" title="Link to this heading"></a></h2>
+<p>When working in the root directory, <em>i.e ./docs/</em>, and assuming you’ve installed sphinx, you can cleanly build the HTML pages using:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>make clean       # Removes and cleans the _build/ folder. This ensures that pages a refreshed with the changes you&#39;ve made
+make html        # Builds the HTML pages
+</pre></div>
+</div>
+<p>This is possible due to the Makefile and make.bat files in the root directory which were created during <code class="docutils literal notranslate"><span class="pre">sphinx-quickstart</span></code></p>
+</section>
+<section id="editing-pages">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Editing Pages</a><a class="headerlink" href="#editing-pages" title="Link to this heading"></a></h2>
+<p>The contents of the main page of the documentation is held within <code class="docutils literal notranslate"><span class="pre">./docs/index.rst</span></code>. Any edits to the main page should be conducted within that file.</p>
+<p>As stated before, the syntax in Sphinx is reStructuredText so you’ll need to familiarize yourself with the language to properly edit the documentation. To see documentation for reStructuredText, see the following <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">link</a>.</p>
+<p>To edit sub-pages, <code class="docutils literal notranslate"><span class="pre">e.g.</span> <span class="pre">example_page1</span> <span class="pre">and</span> <span class="pre">example_page2</span></code>, go to the respective <code class="docutils literal notranslate"><span class="pre">example_page1.rst</span></code> and <code class="docutils literal notranslate"><span class="pre">example_page2.rst</span></code> files. Again, the language these files use is reST. The most basic structure of these sub-pages rst files is:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Sub Page Title
+==============    = Denotes title of the page
+
+Section 1
+---------         # Denotes a section of the page
+</pre></div>
+</div>
+<p>If you plan to make sub-pages and fill them in later, at least have the title of the page; if no title is present, <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> will output an error.</p>
+</section>
+<section id="the-navigation-bar">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">The Navigation Bar</a><a class="headerlink" href="#the-navigation-bar" title="Link to this heading"></a></h2>
+<p>On the left we can see the navigation bar that links sub-pages. When you create new sub-pages, <code class="docutils literal notranslate"><span class="pre">e.g.</span> <span class="pre">example_page3.rst</span></code> These files aren’t automatically added to the navigation bar. To add these pages to the navigation bar, go into <code class="docutils literal notranslate"><span class="pre">index.rst</span></code> and find the section:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>.. toctree::
+   :hidden:
+   :maxdepth: 2
+</pre></div>
+</div>
+<p>In this content block, add the respective pages using the file name without the .rst</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>.. toctree::
+   :hidden:
+   :maxdepth: 2
+
+   example_page1
+   example_page2
+   example_page3
+</pre></div>
+</div>
+<p>The sub-pages should now be added to the navigation bar.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quick_start_guide.html" class="btn btn-neutral float-left" title="Quick Start Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dev_setup.html" class="btn btn-neutral float-right" title="Development Environment Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Abner, Aidan, Jaewon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

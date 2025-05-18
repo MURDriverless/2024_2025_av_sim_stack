@@ -1,0 +1,256 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Path Generation with Delaunay Triangulation &mdash; MUR Autonomous  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3e8edd65" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Path Following with Pure Pursuit" href="tut_controls.html" />
+    <link rel="prev" title="Lidar Perception Pipeline Tutorial" href="tut_perception.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MUR Autonomous
+              <img src="../_static/MURA_logo_title.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start_guide.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sphinx_doc_guide.html">Editing MUR Autonomous Documentation using Sphinx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_setup.html">Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../literature_resources.html">Literature Review Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Us</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tutorial.html">Pipeline Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Pathing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#track-and-vehicle-model-tutorials">Track and Vehicle Model Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#perception-tutorials">Perception Tutorials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#pathing-tutorials">Pathing Tutorials</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Path Generation with Delaunay Triangulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-are-we-trying-to-do">What Are We Trying to Do?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#delaunay-triangulation">Delaunay Triangulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filtering-valid-triangles">Filtering Valid Triangles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#constructing-midpoints">Constructing Midpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visualize-your-midpoints">Visualize Your Midpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#interactive-checkpoint">Interactive Checkpoint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#persistent-path-building">Persistent Path Building</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#want-more">Want More?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#controls-tutorials">Controls Tutorials</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MUR Autonomous</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Path Generation with Delaunay Triangulation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="path-generation-with-delaunay-triangulation">
+<h1>Path Generation with Delaunay Triangulation<a class="headerlink" href="#path-generation-with-delaunay-triangulation" title="Link to this heading"></a></h1>
+<p>Welcome to the <strong>Path Generation Tutorial</strong>!</p>
+<p>In this section, you’ll learn how we extract a raceable centerline path from a cloud of cones using a computational geometry technique called <strong>Delaunay triangulation</strong>. Don’t worry — it’s way cooler than it sounds.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#what-are-we-trying-to-do" id="id1">What Are We Trying to Do?</a></p></li>
+<li><p><a class="reference internal" href="#delaunay-triangulation" id="id2">Delaunay Triangulation</a></p></li>
+<li><p><a class="reference internal" href="#filtering-valid-triangles" id="id3">Filtering Valid Triangles</a></p></li>
+<li><p><a class="reference internal" href="#constructing-midpoints" id="id4">Constructing Midpoints</a></p></li>
+<li><p><a class="reference internal" href="#visualize-your-midpoints" id="id5">Visualize Your Midpoints</a></p></li>
+<li><p><a class="reference internal" href="#interactive-checkpoint" id="id6">Interactive Checkpoint</a></p></li>
+<li><p><a class="reference internal" href="#persistent-path-building" id="id7">Persistent Path Building</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id8">Summary</a></p></li>
+<li><p><a class="reference internal" href="#want-more" id="id9">Want More?</a></p></li>
+</ul>
+</nav>
+<section id="what-are-we-trying-to-do">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">What Are We Trying to Do?</a><a class="headerlink" href="#what-are-we-trying-to-do" title="Link to this heading"></a></h2>
+<p>Given a set of yellow and blue cones from LiDAR, we want to find the <strong>centerline path</strong> between them so the vehicle knows where to drive. It’s like creating a yellow-brick road… except it’s floating in your mind (or code).</p>
+<a class="reference internal image-reference" href="../_images/tut_dt.png"><img alt="Target centerline generation" class="align-center" src="../_images/tut_dt.png" style="width: 100%;" />
+</a>
+</section>
+<section id="delaunay-triangulation">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Delaunay Triangulation</a><a class="headerlink" href="#delaunay-triangulation" title="Link to this heading"></a></h2>
+<p>Our first tool: <cite>scipy.spatial.Delaunay</cite></p>
+<p>This algorithm connects points to form triangles such that no point is inside the circumcircle of any triangle. Here’s how we use it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cone_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cone</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span> <span class="k">for</span> <span class="n">cone</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_cones</span><span class="p">])</span>
+<span class="n">tri_vis</span> <span class="o">=</span> <span class="n">Delaunay</span><span class="p">(</span><span class="n">cone_positions</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This gives us a network of triangles spanning all cones in sight. But not all triangles are useful…</p>
+</section>
+<section id="filtering-valid-triangles">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Filtering Valid Triangles</a><a class="headerlink" href="#filtering-valid-triangles" title="Link to this heading"></a></h2>
+<p>We <em>only</em> keep triangles that look like part of the track.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">tri_vis</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_cones</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">color</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">simplex</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;yellow&#39;</span> <span class="ow">in</span> <span class="n">colors</span> <span class="ow">and</span> <span class="s1">&#39;blue&#39;</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">colors</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">valid_triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This skips triangles with cones all of the same color — those are likely from the same side of the track.</p>
+</section>
+<section id="constructing-midpoints">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Constructing Midpoints</a><a class="headerlink" href="#constructing-midpoints" title="Link to this heading"></a></h2>
+<p>From each valid triangle, we extract <strong>edges</strong> that cross the track (i.e. one yellow + one blue cone). We take their midpoint as part of the path:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">midpoint</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="n">cone1</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">cone2</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">cone1</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">cone2</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+<span class="p">)</span>
+<span class="n">midpoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">midpoint</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These midpoints form our <em>centerline path</em>. Your car will eventually follow this!</p>
+</section>
+<section id="visualize-your-midpoints">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Visualize Your Midpoints</a><a class="headerlink" href="#visualize-your-midpoints" title="Link to this heading"></a></h2>
+<p>Try plotting your midpoints as dots overlaid on the cones:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Path Midpoints&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="interactive-checkpoint">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Interactive Checkpoint</a><a class="headerlink" href="#interactive-checkpoint" title="Link to this heading"></a></h2>
+<p>Here’s a fun mini-challenge!</p>
+<ol class="arabic">
+<li><p>Modify the filtering criteria to:
+- Only accept triangles with <strong>exactly 1 yellow, 1 blue, and 1 orange</strong> cone.
+- Bonus: Filter out midpoints that are <strong>less than 2 meters</strong> from any orange cone.</p></li>
+<li><p>Print how many midpoints you generate each frame:
+.. code-block:: python</p>
+<blockquote>
+<div><p>print(f”Frame {self.i}: {len(self.path)} midpoints generated”)</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="persistent-path-building">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Persistent Path Building</a><a class="headerlink" href="#persistent-path-building" title="Link to this heading"></a></h2>
+<p>We don’t throw away midpoints from previous frames — that would be wasteful. We store all midpoints we’ve ever seen in:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">seen_path</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">midpoint</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is helpful for SLAM or loop closure, and avoids flickering paths from noisy sensor data.</p>
+</section>
+<section id="summary">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>You’ve just learned:</p>
+<ul class="simple">
+<li><p>What Delaunay triangulation is</p></li>
+<li><p>How we extract a driveable path using cone pair midpoints</p></li>
+<li><p>Why filtering and midpoint tracking matter</p></li>
+</ul>
+<p>This centerline will become the <strong>target trajectory</strong> for the path following algorithm (coming soon in the Pure Pursuit tutorial!).</p>
+</section>
+<section id="want-more">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Want More?</a><a class="headerlink" href="#want-more" title="Link to this heading"></a></h2>
+<p>Try extending this:</p>
+<ul class="simple">
+<li><p>Visualize edges used vs rejected (<cite>valid_edges</cite> vs <cite>invalid_edges</cite>)</p></li>
+<li><p>Animate how the path builds up over time</p></li>
+<li><p>Use a confidence metric: cones seen more than N times are more trustworthy</p></li>
+</ul>
+<p>Stay tuned for: 🏎️ <strong>Path Following with Pure Pursuit</strong></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tut_perception.html" class="btn btn-neutral float-left" title="Lidar Perception Pipeline Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tut_controls.html" class="btn btn-neutral float-right" title="Path Following with Pure Pursuit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Abner, Aidan, Jaewon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

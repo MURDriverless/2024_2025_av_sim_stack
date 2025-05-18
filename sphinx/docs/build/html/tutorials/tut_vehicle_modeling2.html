@@ -1,0 +1,376 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vehicle Modeling Tutorial: Physics on Wheels &mdash; MUR Autonomous  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3e8edd65" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lidar Perception Pipeline Tutorial" href="tut_perception.html" />
+    <link rel="prev" title="World and Track Building Tutorial" href="tut_world_track_cones.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MUR Autonomous
+              <img src="../_static/MURA_logo_title.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start_guide.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sphinx_doc_guide.html">Editing MUR Autonomous Documentation using Sphinx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_setup.html">Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../literature_resources.html">Literature Review Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Us</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_tutorial.html">Pipeline Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Pathing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#track-and-vehicle-model-tutorials">Track and Vehicle Model Tutorials</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tut_world_track_cones.html">World and Track Building Tutorial</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Vehicle Modeling Tutorial: Physics on Wheels</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-the-car-class">What Is the <cite>Car</cite> Class?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-state-class-memory-of-the-machine">The <cite>State</cite> Class: Memory of the Machine</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vehicle-parameters">Vehicle Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#kinematic-and-dynamic-models">Kinematic and Dynamic Models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rk4-integration">RK4 Integration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#control-inputs">Control Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modular-add-ons">Modular Add-ons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#interactive-debug-tips">Interactive Debug Tips</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#perception-tutorials">Perception Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#pathing-tutorials">Pathing Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#controls-tutorials">Controls Tutorials</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MUR Autonomous</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Vehicle Modeling Tutorial: Physics on Wheels</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="vehicle-modeling-tutorial-physics-on-wheels">
+<h1>Vehicle Modeling Tutorial: Physics on Wheels<a class="headerlink" href="#vehicle-modeling-tutorial-physics-on-wheels" title="Link to this heading"></a></h1>
+<p>Welcome to the vehicle modeling tutorial — where code meets physics to simulate the dynamics of our autonomous car! In this module, you’ll explore:</p>
+<ul class="simple">
+<li><p>The <strong>Car</strong> class and how it simulates real-world dynamics</p></li>
+<li><p>The <strong>State</strong> class and how the car’s brain tracks motion</p></li>
+<li><p>The transition between <strong>kinematic</strong> and <strong>dynamic</strong> modeling</p></li>
+<li><p>Integration with control inputs</p></li>
+</ul>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#what-is-the-car-class" id="id1">What Is the <cite>Car</cite> Class?</a></p></li>
+<li><p><a class="reference internal" href="#the-state-class-memory-of-the-machine" id="id2">The <cite>State</cite> Class: Memory of the Machine</a></p></li>
+<li><p><a class="reference internal" href="#vehicle-parameters" id="id3">Vehicle Parameters</a></p></li>
+<li><p><a class="reference internal" href="#kinematic-and-dynamic-models" id="id4">Kinematic and Dynamic Models</a></p>
+<ul>
+<li><p><a class="reference internal" href="#kinematic-model-low-speeds" id="id5">1. Kinematic Model (low speeds)</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-model-high-speeds" id="id6">2. Dynamic Model (high speeds)</a></p></li>
+<li><p><a class="reference internal" href="#blending-factor" id="id7">3. Blending Factor</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#rk4-integration" id="id8">RK4 Integration</a></p></li>
+<li><p><a class="reference internal" href="#control-inputs" id="id9">Control Inputs</a></p>
+<ul>
+<li><p><a class="reference internal" href="#try-this" id="id10">Try This:</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#modular-add-ons" id="id11">Modular Add-ons</a></p></li>
+<li><p><a class="reference internal" href="#interactive-debug-tips" id="id12">Interactive Debug Tips</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id13">Summary</a></p></li>
+</ul>
+</nav>
+<section id="what-is-the-car-class">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">What Is the <cite>Car</cite> Class?</a><a class="headerlink" href="#what-is-the-car-class" title="Link to this heading"></a></h2>
+<p>Our <cite>Car</cite> class is a subclass of <cite>Vehicle</cite>, and it’s the core of our simulation. It encapsulates the car’s physics, sensors, controllers, and interactions with the world.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">car</span> <span class="o">=</span> <span class="n">Car</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">car_name</span><span class="o">=</span><span class="s2">&quot;Neo&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The car is initialized with:
+- The <cite>world</cite> and <cite>track</cite> it belongs to
+- A <cite>car_name</cite> to identify it
+- An initial <cite>State</cite>, which defaults to the track’s start line</p>
+</section>
+<section id="the-state-class-memory-of-the-machine">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">The <cite>State</cite> Class: Memory of the Machine</a><a class="headerlink" href="#the-state-class-memory-of-the-machine" title="Link to this heading"></a></h2>
+<p>The <cite>State</cite> object keeps track of everything about the car:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">state</span><span class="w"> </span><span class="kn">import</span> <span class="n">State</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yaw</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">delta</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Attributes:</p>
+<ul class="simple">
+<li><p><cite>x, y</cite>: Position in world coordinates</p></li>
+<li><p><cite>yaw</cite>: Heading angle (radians)</p></li>
+<li><p><cite>u</cite>: Forward velocity (longitudinal)</p></li>
+<li><p><cite>v</cite>: Lateral velocity</p></li>
+<li><p><cite>w</cite>: Yaw rate</p></li>
+<li><p><cite>delta</cite>: Steering angle</p></li>
+</ul>
+<p>Access methods:</p>
+<ul class="simple">
+<li><p><cite>get_state()</cite> → Returns a NumPy array of the state</p></li>
+<li><p><cite>print_state()</cite> → Nicely prints values</p></li>
+<li><p><cite>__repr__()</cite> → Human-readable string</p></li>
+</ul>
+<p class="rubric">Try This:</p>
+<p>Print your car’s state every 50 frames:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">50</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">car</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">print_state</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="vehicle-parameters">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Vehicle Parameters</a><a class="headerlink" href="#vehicle-parameters" title="Link to this heading"></a></h2>
+<p>The car is parameterized with physical constants:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Mass</p></td>
+<td><p>240 kg</p></td>
+</tr>
+<tr class="row-odd"><td><p>Lf (front)</p></td>
+<td><p>0.722 m</p></td>
+</tr>
+<tr class="row-even"><td><p>Lr (rear)</p></td>
+<td><p>0.888 m</p></td>
+</tr>
+<tr class="row-odd"><td><p>Inertia <cite>Iz</cite></p></td>
+<td><p>1500 kg·m²</p></td>
+</tr>
+<tr class="row-even"><td><p>Max Steering</p></td>
+<td><p>±30°</p></td>
+</tr>
+<tr class="row-odd"><td><p>Cm, Cd</p></td>
+<td><p>Motor/aerodynamic drag coeffs</p></td>
+</tr>
+</tbody>
+</table>
+<p>These values define how your car <strong>responds to forces</strong>.</p>
+</section>
+<section id="kinematic-and-dynamic-models">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Kinematic and Dynamic Models</a><a class="headerlink" href="#kinematic-and-dynamic-models" title="Link to this heading"></a></h2>
+<p>We will be modeling the vehicle dynamics of our autonomous vehicle with the bicycle model with non-linear tire force laws. This model is simple enough for our simulation to be solved in real-time.</p>
+<p>The car blends two motion models, (1) a kinematic model, (2) a dynamic model. This is due to the non-linear behavior of the vehicle when it is driving at its operational limits.</p>
+<section id="kinematic-model-low-speeds">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">1. Kinematic Model (low speeds)</a><a class="headerlink" href="#kinematic-model-low-speeds" title="Link to this heading"></a></h3>
+<p>Assumes perfect grip, no tire forces — ideal for parking lot speeds. This is important for slow speeds at race start and in tight corners, however, this model is not suited for fast driving as it neglects the interaction between the tires and ground. The equations of motion for the kinematic model is given by the following:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp; \dot{x} = u \cos(\theta) - v \sin(\theta) \\
+&amp; \dot{y} = u \sin(\theta) + v \cos(\theta) \\
+&amp; \dot{\psi} = \omega \\
+&amp; \dot{u} = \frac{1}{m} F_x \\
+&amp; \dot{v} = (\dot{\delta} v_x + \delta \dot{v_x}) \frac{l_r}{ l_r + l_f} \\
+&amp; \dot{w} = (\dot{\delta} v_x + \delta \dot{v_x}) \frac{1}{ l_r + l_f} \\
+\end{align}\end{split}\]</div>
+<p>The dynamics of the above kinematics states is calculated within the following function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute_state_dot_k</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+<section id="dynamic-model-high-speeds">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">2. Dynamic Model (high speeds)</a><a class="headerlink" href="#dynamic-model-high-speeds" title="Link to this heading"></a></h3>
+<p>Uses tire slip angles, lateral forces, and inertia for realism at the limit of vehicle handling. This model captures the non-linearities that become significant at high speeds or aggressive maneuvers. The full dynamic model is given by the following:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align}
+&amp; \dot{x} = u \cos(\theta) - v \sin(\theta) \\
+&amp; \dot{y} = u \sin(\theta) + v \cos(\theta) \\
+&amp; \dot{\psi} = \omega \\
+&amp; \dot{u} = \frac{1}{m} (F_{x,r} - F_{y,f} \sin{\delta} + m v_y r) \\
+&amp; \dot{v} = \frac{1}{m} (F_{y,r} + F_{y,f} \cos{\delta} - m v_x r) \\
+&amp; \dot{w} = \frac{1}{I_z} (F_{y,f} \cos{delta} - F_{y,r} l_r + \tau_{TV}) \\
+\end{align}\end{split}\]</div>
+<p>The dynamics of the full dynamic model is calculated within the following function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute_state_dot_d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+<section id="blending-factor">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">3. Blending Factor</a><a class="headerlink" href="#blending-factor" title="Link to this heading"></a></h3>
+<p>As stated, the full vehicle model is a blend of the two above models. Depending on forward speed <cite>u</cite>, a <strong>mix factor</strong> chooses how much of each model to use, i.e. <span class="math notranslate nohighlight">\(v_x \in [u_{min}, u_{max}]\)</span>. When <cite>u</cite> is below <span class="math notranslate nohighlight">\(u_{min}\)</span>, the kinematic model is solely used and when <cite>u</cite> is above <span class="math notranslate nohighlight">\(u_{max}\)</span>, the dynamic model is purely used; when <cite>u</cite> is in between, a mixture of both models are used.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mix_factor</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">((</span><span class="n">u</span> <span class="o">-</span> <span class="n">MAX_KIN</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">MIN_DYN</span> <span class="o">-</span> <span class="n">MAX_KIN</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The full derivate of the state model is now computed from:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">state_dot</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mix_factor</span><span class="p">)</span> <span class="o">*</span> <span class="n">kinematic</span> <span class="o">+</span> <span class="n">mix_factor</span> <span class="o">*</span> <span class="n">dynamic</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="rk4-integration">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">RK4 Integration</a><a class="headerlink" href="#rk4-integration" title="Link to this heading"></a></h2>
+<p>Because we want to run this in real-time and not at a specific time instance, the car updates its state using <strong>Runge-Kutta 4th order integration</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">m1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_state_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">+=</span> <span class="n">state_var</span>
+</pre></div>
+</div>
+<p>This provides stable and accurate motion updates, especially through curves.</p>
+</section>
+<section id="control-inputs">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Control Inputs</a><a class="headerlink" href="#control-inputs" title="Link to this heading"></a></h2>
+<p>Each update step accepts an <cite>Input</cite> object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">state</span><span class="w"> </span><span class="kn">import</span> <span class="n">Input</span>
+<span class="n">control</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">F</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">delta_dot</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">car</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Inputs:</p>
+<ul class="simple">
+<li><p><cite>F</cite>: Throttle/brake force (in Newtons)</p></li>
+<li><p><cite>delta_dot</cite>: Steering rate (rad/s)</p></li>
+</ul>
+<section id="try-this">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Try This:</a><a class="headerlink" href="#try-this" title="Link to this heading"></a></h3>
+<p>Create a tiny test loop:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">car</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Input</span><span class="p">(</span><span class="n">F</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">delta_dot</span><span class="o">=</span><span class="mf">0.0</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="modular-add-ons">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Modular Add-ons</a><a class="headerlink" href="#modular-add-ons" title="Link to this heading"></a></h2>
+<p>Sensors and controllers are plug-and-play which we will go over in the following tutorials. To add these sensors in, use:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">car</span><span class="o">.</span><span class="n">add_lidar</span><span class="p">(</span><span class="n">my_lidar</span><span class="p">)</span>
+<span class="n">car</span><span class="o">.</span><span class="n">add_controller</span><span class="p">(</span><span class="n">my_controller</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The car also links modules to a <cite>GPU</cite> object, which manages updates to sensors and controls. It can be considered as a <cite>helper</cite> class and will not necessarily have its own tutorial/section.</p>
+</section>
+<section id="interactive-debug-tips">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Interactive Debug Tips</a><a class="headerlink" href="#interactive-debug-tips" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Want to log heading?
+.. code-block:: python</p>
+<blockquote>
+<div><p>print(“Yaw (deg):”, np.rad2deg(car.state.yaw))</p>
+</div></blockquote>
+</li>
+<li><p>Check steering saturation:
+.. code-block:: python</p>
+<blockquote>
+<div><dl class="simple">
+<dt>if abs(car.state.delta) &gt;= car.max_steer:</dt><dd><p>print(“Steering limit reached!”)</p>
+</dd>
+</dl>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="summary">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>You’ve just built a car in code! So far, we’ve now learned how to:</p>
+<ul class="simple">
+<li><p>Modeled car motion with kinematic and dynamic equations</p></li>
+<li><p>Tracked full vehicle state with the <cite>State</cite> class</p></li>
+<li><p>Integrated inputs with RK4</p></li>
+<li><p>Connected sensors and control modules</p></li>
+</ul>
+<p>Next up: Controller logic using <strong>Pure Pursuit</strong>, <strong>LQR</strong>, or <strong>MPC</strong>!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tut_world_track_cones.html" class="btn btn-neutral float-left" title="World and Track Building Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tut_perception.html" class="btn btn-neutral float-right" title="Lidar Perception Pipeline Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Abner, Aidan, Jaewon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -15,9 +15,9 @@ class TrackVisualizer:
             plt.plot(center[:, 0], center[:, 1], 'k--', label='Centerline')
 
         plt.scatter([c['x'] for c in left if c['color'] == 'orange'], [c['y'] for c in left if c['color'] == 'orange'], color='orange', s=10,)
-        plt.scatter([c['x'] for c in left if c['color'] == 'yellow'], [c['y'] for c in left if c['color'] == 'yellow'], color='yellow', s=10, label='Left Cones (Yellow)')
+        plt.scatter([c['x'] for c in left if c['color'] == 'blue'], [c['y'] for c in left if c['color'] == 'blue'], color='blue', s=10, label='Left Cones (Blue)')
         plt.scatter([c['x'] for c in right if c['color'] == 'orange'], [c['y'] for c in right if c['color'] == 'orange'], color='orange', s=10)
-        plt.scatter([c['x'] for c in right if c['color'] == 'blue'], [c['y'] for c in right if c['color'] == 'blue'], color='blue', s=10, label='Right Cones (Blue)')
+        plt.scatter([c['x'] for c in right if c['color'] == 'yellow'], [c['y'] for c in right if c['color'] == 'yellow'], color='yellow', s=10, label='Right Cones (Yellow)')
 
         # Add solid black start/finish line using orange cones
         left_start = next((c for c in left if c['color'] == 'orange'), None)
