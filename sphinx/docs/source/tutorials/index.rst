@@ -7,12 +7,15 @@ This page is a compiled list of tutorial to get autonomous members acquainted wi
 
 Track and Vehicle Model Tutorials
 ----------------------------------
-- :doc:`Track and Vehicle Model Tutorial<tut_vehicle_modeling>`
+- :doc:`World and Track Building Tutorial<tut_world_track_cones>`
+- :doc:`Vehicle Modeling Tutorial<tut_vehicle_modeling>`
+
 
 .. toctree::
     :hidden:
     :maxdepth: 2
 
+    tut_world_track_cones
     tut_vehicle_modeling
 
 Perception Tutorials
