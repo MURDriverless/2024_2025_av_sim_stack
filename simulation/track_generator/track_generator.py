@@ -13,8 +13,8 @@ class TrackGen:
 
     def generate_track(self):
         # Generate random waypoints on a perturbed circle
-        angles = np.linspace(0, 2*np.pi, self.num_waypoints, endpoint=False)
-        radii = np.random.uniform(20, 30, size=self.num_waypoints)  # Controls how "round" the track is
+        angles = np.linspace(0, -2*np.pi, self.num_waypoints, endpoint=False)
+        radii = np.random.uniform(50, 60, size=self.num_waypoints)  # Controls how "round" the track is
         x = radii * np.cos(angles)
         y = radii * np.sin(angles)
 
