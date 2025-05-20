@@ -71,9 +71,9 @@ The car is parameterized with physical constants:
 +================+===============================+
 | Mass           | 240 kg                        |
 +----------------+-------------------------------+
-| Lf (front)     | 0.722 m                       |
+| lf (front)     | 0.722 m                       |
 +----------------+-------------------------------+
-| Lr (rear)      | 0.888 m                       |
+| lr (rear)      | 0.888 m                       |
 +----------------+-------------------------------+
 | Inertia `Iz`   | 1500 kg·m²                    |
 +----------------+-------------------------------+
@@ -156,7 +156,7 @@ The full derivate of the state model is now computed from:
 RK4 Integration
 ------------------
 
-Because we want to run this in real-time and not at a specific time instance, the car updates its state using **Runge-Kutta 4th order integration**:
+Because we want to run this in real-time and not at a specific time instance, the car updates its state using **Runge-Kutta 4th order integration**. More specifically, it is primarily used for numerically solving the differential equations from the vehicle model. These ordinary differential equations (ODEs) include longitudinal/lateral dynamics, tire models, and steering and throttle/braking input effects.
 
 .. code-block:: python
 
@@ -164,7 +164,7 @@ Because we want to run this in real-time and not at a specific time instance, th
    ...
    self.state += state_var
 
-This provides stable and accurate motion updates, especially through curves.
+Therefore, this provides stable and accurate motion updates, especially through curves.
 
 Control Inputs
 ------------------

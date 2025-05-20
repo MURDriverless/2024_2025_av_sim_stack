@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Path Following with Pure Pursuit" href="tut_controls.html" />
-    <link rel="prev" title="Lidar Perception Pipeline Tutorial" href="tut_perception.html" /> 
+    <link rel="next" title="Lidar Perception Pipeline Tutorial" href="tut_perception.html" />
+    <link rel="prev" title="Vehicle Modeling Tutorial: Physics on Wheels" href="tut_vehicle_modeling.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -65,22 +65,21 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#track-and-vehicle-model-tutorials">Track and Vehicle Model Tutorials</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#perception-tutorials">Perception Tutorials</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html#pathing-tutorials">Pathing Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#path-generation-tutorials">Path Generation Tutorials</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Path Generation with Delaunay Triangulation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#what-are-we-trying-to-do">What Are We Trying to Do?</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#delaunay-triangulation">Delaunay Triangulation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#filtering-valid-triangles">Filtering Valid Triangles</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#constructing-midpoints">Constructing Midpoints</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#visualize-your-midpoints">Visualize Your Midpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#stipulations">Stipulations</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#interactive-checkpoint">Interactive Checkpoint</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#persistent-path-building">Persistent Path Building</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#want-more">Want More?</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#perception-tutorials">Perception Tutorials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#controls-tutorials">Controls Tutorials</a></li>
 </ul>
 </li>
@@ -120,44 +119,152 @@
 <li><p><a class="reference internal" href="#delaunay-triangulation" id="id2">Delaunay Triangulation</a></p></li>
 <li><p><a class="reference internal" href="#filtering-valid-triangles" id="id3">Filtering Valid Triangles</a></p></li>
 <li><p><a class="reference internal" href="#constructing-midpoints" id="id4">Constructing Midpoints</a></p></li>
-<li><p><a class="reference internal" href="#visualize-your-midpoints" id="id5">Visualize Your Midpoints</a></p></li>
+<li><p><a class="reference internal" href="#stipulations" id="id5">Stipulations</a></p></li>
 <li><p><a class="reference internal" href="#interactive-checkpoint" id="id6">Interactive Checkpoint</a></p></li>
-<li><p><a class="reference internal" href="#persistent-path-building" id="id7">Persistent Path Building</a></p></li>
-<li><p><a class="reference internal" href="#summary" id="id8">Summary</a></p></li>
-<li><p><a class="reference internal" href="#want-more" id="id9">Want More?</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id7">Summary</a></p></li>
+<li><p><a class="reference internal" href="#want-more" id="id8">Want More?</a></p></li>
 </ul>
 </nav>
 <section id="what-are-we-trying-to-do">
 <h2><a class="toc-backref" href="#id1" role="doc-backlink">What Are We Trying to Do?</a><a class="headerlink" href="#what-are-we-trying-to-do" title="Link to this heading"></a></h2>
-<p>Given a set of yellow and blue cones from LiDAR, we want to find the <strong>centerline path</strong> between them so the vehicle knows where to drive. It’s like creating a yellow-brick road… except it’s floating in your mind (or code).</p>
-<a class="reference internal image-reference" href="../_images/tut_dt.png"><img alt="Target centerline generation" class="align-center" src="../_images/tut_dt.png" style="width: 100%;" />
+<p>Assume the car already knows where every blue and yellow cone is. The next step is to carve out a drivable corridor between the track boundaries. We do that with Delaunay triangulation: connect the cones, then join the mid-points of those connections to form a provisional centerline.</p>
+<p>That centerline isn’t the fastest “racing line,” but it’s exactly what you want on the first lap, when there’s no pre-built map and cone positions keep appearing only as the LiDAR or cameras detect them. In that uncertain first lap, a geometric centerline is the safest, most reliable path—as long as the perception pipeline is solid.</p>
+<a class="reference internal image-reference" href="../_images/dt0.png"><img alt="Target centerline generation" class="align-center" src="../_images/dt0.png" style="width: 100%;" />
 </a>
 </section>
 <section id="delaunay-triangulation">
 <h2><a class="toc-backref" href="#id2" role="doc-backlink">Delaunay Triangulation</a><a class="headerlink" href="#delaunay-triangulation" title="Link to this heading"></a></h2>
 <p>Our first tool: <cite>scipy.spatial.Delaunay</cite></p>
 <p>This algorithm connects points to form triangles such that no point is inside the circumcircle of any triangle. Here’s how we use it:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cone_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cone</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span> <span class="k">for</span> <span class="n">cone</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_cones</span><span class="p">])</span>
-<span class="n">tri_vis</span> <span class="o">=</span> <span class="n">Delaunay</span><span class="p">(</span><span class="n">cone_positions</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Suppose we have cone locations in the form of:</span>
+<span class="n">cones_raw</span> <span class="o">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="c1"># We will treat the cone locations as a single point for now</span>
+
+<span class="c1"># --- Create Cone objects ---</span>
+<span class="n">cones</span> <span class="o">=</span> <span class="p">[</span><span class="n">Cone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span> <span class="k">for</span> <span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">color</span><span class="p">)</span> <span class="ow">in</span> <span class="n">cones_raw</span><span class="p">]</span>
+<span class="n">cone_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cone</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span> <span class="k">for</span> <span class="n">cone</span> <span class="ow">in</span> <span class="n">cones</span><span class="p">])</span>
+<span class="n">cone_colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cone</span><span class="o">.</span><span class="n">color</span> <span class="k">for</span> <span class="n">cone</span> <span class="ow">in</span> <span class="n">cones</span><span class="p">])</span>
+
+<span class="c1"># --- Delaunay triangulation ---</span>
+<span class="n">triangles</span> <span class="o">=</span> <span class="n">Delaunay</span><span class="p">(</span><span class="n">cone_positions</span><span class="p">)</span>
+
+<span class="c1"># --- Plot ---</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">triplot</span><span class="p">(</span><span class="n">cone_positions</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">cone_positions</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">triangles</span><span class="o">.</span><span class="n">simplices</span><span class="p">)</span>
+<span class="n">color_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;blue&quot;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">:</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">:</span> <span class="s1">&#39;orange&#39;</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">cone</span> <span class="ow">in</span> <span class="n">cones</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cone</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">cone</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_map</span><span class="p">[</span><span class="n">cone</span><span class="o">.</span><span class="n">color</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>Suppose the the top-down view of the track looked like:</p>
+<a class="reference internal image-reference" href="../_images/dt1.png"><img alt="Top-down view of the track." class="align-center" src="../_images/dt1.png" style="width: 100%;" />
+</a>
+<p>The network of triangles that we created for the track using Delaunay() gives us:</p>
+<a class="reference internal image-reference" href="../_images/dt2.png"><img alt="Top-down view of the track." class="align-center" src="../_images/dt2.png" style="width: 100%;" />
+</a>
 <p>This gives us a network of triangles spanning all cones in sight. But not all triangles are useful…</p>
 </section>
 <section id="filtering-valid-triangles">
 <h2><a class="toc-backref" href="#id3" role="doc-backlink">Filtering Valid Triangles</a><a class="headerlink" href="#filtering-valid-triangles" title="Link to this heading"></a></h2>
 <p>We <em>only</em> keep triangles that look like part of the track.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">tri_vis</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
-    <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_cones</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">color</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">simplex</span><span class="p">]</span>
-    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;yellow&#39;</span> <span class="ow">in</span> <span class="n">colors</span> <span class="ow">and</span> <span class="s1">&#39;blue&#39;</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">colors</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
-        <span class="n">valid_triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">We grab the indices of cones/points forming the simplices in the triangulation and</span>
+<span class="sd">use those indices to determine the color of the points of the cones</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">simplices</span> <span class="o">=</span> <span class="n">triangles</span><span class="o">.</span><span class="n">simplices</span>
+<span class="n">triangle_colors</span> <span class="o">=</span> <span class="n">cone_colors</span><span class="p">[</span><span class="n">simplices</span><span class="p">]</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Now we want to filter out only valid triangles using the color of the cones.</span>
+<span class="sd">If all three cones that form the triangle are the same color, it is considered</span>
+<span class="sd">invalid.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">triangle_colors</span> <span class="o">==</span> <span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">triangle_colors</span> <span class="o">==</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="o">|</span>
+    <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">triangle_colors</span> <span class="o">==</span> <span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">valid_triangles</span> <span class="o">=</span> <span class="n">simplices</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>This skips triangles with cones all of the same color — those are likely from the same side of the track.</p>
+<a class="reference internal image-reference" href="../_images/dt3.png"><img alt="Top-down view of the track." class="align-center" src="../_images/dt3.png" style="width: 100%;" />
+</a>
 </section>
 <section id="constructing-midpoints">
 <h2><a class="toc-backref" href="#id4" role="doc-backlink">Constructing Midpoints</a><a class="headerlink" href="#constructing-midpoints" title="Link to this heading"></a></h2>
 <p>From each valid triangle, we extract <strong>edges</strong> that cross the track (i.e. one yellow + one blue cone). We take their midpoint as part of the path:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">midpoint</span> <span class="o">=</span> <span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="p">[],</span>
+ <span class="s1">&#39;path boundary&#39;</span><span class="p">:</span> <span class="p">[],</span>
+ <span class="s1">&#39;valid edges&#39;</span><span class="p">:</span> <span class="p">[],</span>
+ <span class="s1">&#39;seen edges&#39;</span><span class="p">:</span> <span class="p">[],</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="n">triangle_points</span> <span class="ow">in</span> <span class="n">valid_triangles</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">triangle_points</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">triangle_points</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">]])</span>
+        <span class="n">edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;seen edges&#39;</span><span class="p">]:</span>
+            <span class="k">continue</span>
+
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;seen edges&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+
+        <span class="n">cone1</span> <span class="o">=</span> <span class="n">cones</span><span class="p">[</span><span class="n">p1</span><span class="p">]</span>
+        <span class="n">cone2</span> <span class="o">=</span> <span class="n">cones</span><span class="p">[</span><span class="n">p2</span><span class="p">]</span>
+
+        <span class="n">color1</span> <span class="o">=</span> <span class="n">cone1</span><span class="o">.</span><span class="n">color</span>
+        <span class="n">color2</span> <span class="o">=</span> <span class="n">cone2</span><span class="o">.</span><span class="n">color</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;orange&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">color1</span><span class="p">,</span> <span class="n">color2</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">color1</span> <span class="o">==</span> <span class="n">color2</span><span class="p">):</span>
+                <span class="n">data</span><span class="p">[</span><span class="s1">&#39;path boundary&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cone1</span><span class="p">,</span> <span class="n">cone2</span><span class="p">))</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="s1">&#39;valid edges&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cone1</span><span class="p">,</span> <span class="n">cone2</span><span class="p">))</span>
+
+                <span class="n">midpoint</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="n">cone1</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">cone2</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">cone1</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">cone2</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+                <span class="p">)</span>
+
+                <span class="n">data</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">midpoint</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">color1</span> <span class="o">==</span> <span class="n">color2</span><span class="p">):</span>
+                <span class="n">data</span><span class="p">[</span><span class="s1">&#39;valid edges&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cone1</span><span class="p">,</span> <span class="n">cone2</span><span class="p">))</span>
+
+                <span class="n">midpoint</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="n">cone1</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">cone2</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">cone1</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">cone2</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+                <span class="p">)</span>
+
+                <span class="n">data</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">midpoint</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dx</span> <span class="o">=</span> <span class="n">cone1</span><span class="o">.</span><span class="n">get_position</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">cone2</span><span class="o">.</span><span class="n">get_position</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">dy</span> <span class="o">=</span> <span class="n">cone1</span><span class="o">.</span><span class="n">get_position</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">cone2</span><span class="o">.</span><span class="n">get_position</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;valid edges&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cone1</span><span class="p">,</span> <span class="n">cone2</span><span class="p">))</span>
+
+                    <span class="n">midpoint</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="p">(</span><span class="n">cone1</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">cone2</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">cone1</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">cone2</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+                    <span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;path boundary&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cone1</span><span class="p">,</span> <span class="n">cone2</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">triplot</span><span class="p">(</span><span class="n">cone_positions</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">cone_positions</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">valid_triangles</span><span class="p">)</span>
+<span class="n">color_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;blue&quot;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">:</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">:</span> <span class="s1">&#39;orange&#39;</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">cone</span> <span class="ow">in</span> <span class="n">cones</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cone</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">cone</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_map</span><span class="p">[</span><span class="n">cone</span><span class="o">.</span><span class="n">color</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">midpoint</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">midpoint</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">midpoint</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">midpoint</span> <span class="o">=</span> <span class="p">(</span>
     <span class="p">(</span><span class="n">cone1</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">cone2</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
     <span class="p">(</span><span class="n">cone1</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">cone2</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
 <span class="p">)</span>
@@ -165,17 +272,12 @@
 </pre></div>
 </div>
 <p>These midpoints form our <em>centerline path</em>. Your car will eventually follow this!</p>
+<a class="reference internal image-reference" href="../_images/dt4.png"><img alt="Top-down view of the track." class="align-center" src="../_images/dt4.png" style="width: 100%;" />
+</a>
 </section>
-<section id="visualize-your-midpoints">
-<h2><a class="toc-backref" href="#id5" role="doc-backlink">Visualize Your Midpoints</a><a class="headerlink" href="#visualize-your-midpoints" title="Link to this heading"></a></h2>
-<p>Try plotting your midpoints as dots overlaid on the cones:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Path Midpoints&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
+<section id="stipulations">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Stipulations</a><a class="headerlink" href="#stipulations" title="Link to this heading"></a></h2>
+<p>Realistically, in an actual FSAE Driverless trackdrive event, the track is completely unknown to the autonomous car for the first lap. After the first lap, the architecture should’ve built a map of the track. This means that, initially, all cone locations are unavailable to the car except for the cones in visible view <strong>and</strong> detected by the perception pipeline. Nevertheless, the process of finding the midpoints via Delaunay Triangulation remains the same.</p>
 </section>
 <section id="interactive-checkpoint">
 <h2><a class="toc-backref" href="#id6" role="doc-backlink">Interactive Checkpoint</a><a class="headerlink" href="#interactive-checkpoint" title="Link to this heading"></a></h2>
@@ -184,41 +286,31 @@
 <li><p>Modify the filtering criteria to:
 - Only accept triangles with <strong>exactly 1 yellow, 1 blue, and 1 orange</strong> cone.
 - Bonus: Filter out midpoints that are <strong>less than 2 meters</strong> from any orange cone.</p></li>
-<li><p>Print how many midpoints you generate each frame:
-.. code-block:: python</p>
-<blockquote>
-<div><p>print(f”Frame {self.i}: {len(self.path)} midpoints generated”)</p>
-</div></blockquote>
+<li><p>Print how many midpoints you generate each frame:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Frame </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2"> midpoints generated&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </li>
 </ol>
 </section>
-<section id="persistent-path-building">
-<h2><a class="toc-backref" href="#id7" role="doc-backlink">Persistent Path Building</a><a class="headerlink" href="#persistent-path-building" title="Link to this heading"></a></h2>
-<p>We don’t throw away midpoints from previous frames — that would be wasteful. We store all midpoints we’ve ever seen in:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">seen_path</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">midpoint</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>This is helpful for SLAM or loop closure, and avoids flickering paths from noisy sensor data.</p>
-</section>
 <section id="summary">
-<h2><a class="toc-backref" href="#id8" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
 <p>You’ve just learned:</p>
 <ul class="simple">
 <li><p>What Delaunay triangulation is</p></li>
 <li><p>How we extract a driveable path using cone pair midpoints</p></li>
 <li><p>Why filtering and midpoint tracking matter</p></li>
 </ul>
-<p>This centerline will become the <strong>target trajectory</strong> for the path following algorithm (coming soon in the Pure Pursuit tutorial!).</p>
+<p>These midpoints will become the <strong>target trajectory</strong> for the path following algorithm (coming soon in the Pure Pursuit tutorial!).</p>
 </section>
 <section id="want-more">
-<h2><a class="toc-backref" href="#id9" role="doc-backlink">Want More?</a><a class="headerlink" href="#want-more" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Want More?</a><a class="headerlink" href="#want-more" title="Link to this heading"></a></h2>
 <p>Try extending this:</p>
 <ul class="simple">
 <li><p>Visualize edges used vs rejected (<cite>valid_edges</cite> vs <cite>invalid_edges</cite>)</p></li>
 <li><p>Animate how the path builds up over time</p></li>
 <li><p>Use a confidence metric: cones seen more than N times are more trustworthy</p></li>
 </ul>
-<p>Stay tuned for: 🏎️ <strong>Path Following with Pure Pursuit</strong></p>
 </section>
 </section>
 
@@ -226,8 +318,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tut_perception.html" class="btn btn-neutral float-left" title="Lidar Perception Pipeline Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tut_controls.html" class="btn btn-neutral float-right" title="Path Following with Pure Pursuit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tut_vehicle_modeling.html" class="btn btn-neutral float-left" title="Vehicle Modeling Tutorial: Physics on Wheels" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tut_perception.html" class="btn btn-neutral float-right" title="Lidar Perception Pipeline Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

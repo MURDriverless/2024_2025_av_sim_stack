@@ -18,6 +18,16 @@ Track and Vehicle Model Tutorials
     tut_world_track_cones
     tut_vehicle_modeling
 
+Path Generation Tutorials
+--------------------------
+- :doc:`Path Generation Tutorial<tut_pathgen>`
+
+.. toctree::
+    :hidden:
+    :maxdepth: 2
+
+    tut_pathgen
+
 Perception Tutorials
 ---------------------
 - :doc:`LiDAR Tutorial<tut_perception>`
@@ -29,15 +39,6 @@ Perception Tutorials
 
     tut_perception
 
-Pathing Tutorials
----------------------
-- :doc:`Path Generation Tutorial<tut_pathgen>`
-
-.. toctree::
-    :hidden:
-    :maxdepth: 2
-
-    tut_pathgen
 
 Controls Tutorials
 ---------------------

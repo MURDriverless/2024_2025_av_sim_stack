@@ -198,10 +198,10 @@
 <tr class="row-even"><td><p>Mass</p></td>
 <td><p>240 kg</p></td>
 </tr>
-<tr class="row-odd"><td><p>Lf (front)</p></td>
+<tr class="row-odd"><td><p>lf (front)</p></td>
 <td><p>0.722 m</p></td>
 </tr>
-<tr class="row-even"><td><p>Lr (rear)</p></td>
+<tr class="row-even"><td><p>lr (rear)</p></td>
 <td><p>0.888 m</p></td>
 </tr>
 <tr class="row-odd"><td><p>Inertia <cite>Iz</cite></p></td>
@@ -271,13 +271,13 @@
 </section>
 <section id="rk4-integration">
 <h2><a class="toc-backref" href="#id8" role="doc-backlink">RK4 Integration</a><a class="headerlink" href="#rk4-integration" title="Link to this heading"></a></h2>
-<p>Because we want to run this in real-time and not at a specific time instance, the car updates its state using <strong>Runge-Kutta 4th order integration</strong>:</p>
+<p>Because we want to run this in real-time and not at a specific time instance, the car updates its state using <strong>Runge-Kutta 4th order integration</strong>. More specifically, it is primarily used for numerically solving the differential equations from the vehicle model. These ordinary differential equations (ODEs) include longitudinal/lateral dynamics, tire models, and steering and throttle/braking input effects.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">m1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_state_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
 <span class="o">...</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">+=</span> <span class="n">state_var</span>
 </pre></div>
 </div>
-<p>This provides stable and accurate motion updates, especially through curves.</p>
+<p>Therefore, this provides stable and accurate motion updates, especially through curves.</p>
 </section>
 <section id="control-inputs">
 <h2><a class="toc-backref" href="#id9" role="doc-backlink">Control Inputs</a><a class="headerlink" href="#control-inputs" title="Link to this heading"></a></h2>
