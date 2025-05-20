@@ -91,6 +91,20 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /slam_landmarks
       Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Marker
+      Namespaces:
+        car: true
+        speed_text: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /car_model_marker
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -137,7 +151,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/ThirdPersonFollower
-      Distance: 12.76676082611084
+      Distance: 14.1830472946167
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -155,7 +169,7 @@ Visualization Manager:
       Pitch: 0.5
       Target Frame: car_pose
       Value: ThirdPersonFollower (rviz_default_plugins)
-      Yaw: 3.1589999198913574
+      Yaw: 3.094003200531006
     Saved: ~
 Window Geometry:
   Displays:

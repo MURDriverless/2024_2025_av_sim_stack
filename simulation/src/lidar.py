@@ -5,12 +5,13 @@ from scipy.spatial import cKDTree
 import matplotlib.cm as cm
 from collections import Counter
 from scipy.optimize import minimize
+from collections import deque
 
 from cone import Cone
 
 
 class Lidar:
-    def __init__(self, pos=[0,0], yaw=0, pos_c=[0,0], range_min=0.1, range_max=10.0, angle_min=-np.deg2rad(80), angle_max = np.deg2rad(80),resolution=math.pi/500, fps=30):
+    def __init__(self, pos=[0,0], yaw=0, pos_c=[0,0], range_min=0.1, range_max=10.0, angle_min=-np.deg2rad(70), angle_max = np.deg2rad(70),resolution=math.pi/200, fps=30):
         
         self.car = None
         self.pos = pos
@@ -71,7 +72,7 @@ class Lidar:
         return t_min * d  # intersection point
 
 
-
+    # @profile
     def sense_obstacle_fast_cones(self, track):
 
         data = []
@@ -148,9 +149,45 @@ class Lidar:
             'indices': [i for i, d in enumerate(data) if d['position'] is not None]
         }
 
+    # def fast_euclidean_clustering(self, distance_threshold=0.5, min_cluster_size=1):
+    #     positions = self.points['positions']
+    #     original_indices = self.points['indices']
+
+    #     N = len(positions)  # ✅ Avoid repeated len()
+    #     tree = cKDTree(positions)
+    #     visited = np.zeros(N, dtype=bool)
+    #     clusters = []
+
+    #     for i in range(N):
+    #         if visited[i]:
+    #             continue
+
+    #         queue = deque([i])  # ✅ Faster than list for queue behavior
+    #         cluster = []
+
+    #         while queue:
+    #             idx = queue.pop()  # ✅ LIFO here; change to popleft() for BFS
+    #             if visited[idx]:
+    #                 continue
+    #             visited[idx] = True
+    #             cluster.append(idx)
+
+    #             neighbors = tree.query_ball_point(positions[idx], distance_threshold)
+
+    #             # ✅ Avoid redundant `visited[n]` checks
+    #             for n in neighbors:
+    #                 if not visited[n]:
+    #                     queue.append(n)
+
+    #         if len(cluster) >= min_cluster_size:
+    #             # ✅ No changes here — this is already efficient
+    #             original_cluster = [original_indices[j] for j in cluster]
+    #             clusters.append(original_cluster)
+
+    #     return clusters
 
 
-    
+    # @profile
     def fast_euclidean_clustering(self, distance_threshold=0.5, min_cluster_size=1):
         positions = self.points['positions']
         original_indices = self.points['indices']
@@ -303,24 +340,60 @@ class Lidar:
         
         return c     # , r
     
+    # @staticmethod
+    # def fit_circle_fixed_radius(points: np.ndarray, known_radius: float) -> np.ndarray:
+    #     """
+    #     Estimate circle center (x, y) from noisy 2D points, given a known radius.
+    #     Uses nonlinear least squares minimization.
+    #     """
+    #     def objective(center):
+    #         dists = np.linalg.norm(points - center, axis=1)
+    #         return np.sum((dists - known_radius)**2)
+
+    #     # Initial guess: centroid
+    #     initial = np.mean(points, axis=0)
+    #     result = minimize(objective, initial, method='BFGS')
+
+    #     if result.success:
+    #         return result.x  # center (x, y)
+    #     else:
+    #         return None
+        
     @staticmethod
     def fit_circle_fixed_radius(points: np.ndarray, known_radius: float) -> np.ndarray:
         """
-        Estimate circle center (x, y) from noisy 2D points, given a known radius.
-        Uses nonlinear least squares minimization.
+        Fast approximate circle center estimate given known radius.
+        Fits a center such that all points lie ~radius from it using algebraic averaging.
         """
-        def objective(center):
-            dists = np.linalg.norm(points - center, axis=1)
-            return np.sum((dists - known_radius)**2)
-
-        # Initial guess: centroid
-        initial = np.mean(points, axis=0)
-        result = minimize(objective, initial, method='BFGS')
-
-        if result.success:
-            return result.x  # center (x, y)
-        else:
+        if len(points) < 2:
             return None
+
+        # Compute pairwise midpoints and normals
+        centers = []
+        for i in range(len(points)):
+            for j in range(i+1, len(points)):
+                p1, p2 = points[i], points[j]
+                midpoint = (p1 + p2) / 2
+                d = np.linalg.norm(p2 - p1)
+
+                if d == 0 or d > 2 * known_radius:
+                    continue  # Cannot form valid circle
+
+                h = np.sqrt(known_radius**2 - (d / 2)**2)  # height to center
+                direction = (p2 - p1) / d
+                normal = np.array([-direction[1], direction[0]])
+
+                # Two possible centers
+                center1 = midpoint + h * normal
+                center2 = midpoint - h * normal
+                centers.append(center1)
+                centers.append(center2)
+
+        if not centers:
+            return None
+
+        return np.mean(centers, axis=0)  # Average for robustness
+
 
     @staticmethod
     def fit_circle_from_two_points(p1: np.ndarray, p2: np.ndarray, radius: float, lidar_origin=np.array([0, 0])) -> np.ndarray:
@@ -350,7 +423,7 @@ class Lidar:
 
     
 
-
+    # @profile
     def estimate_cone_center(self, cluster_indices, known_radius=0.1):
         """
         Estimate the center of a cone from clustered LiDAR point indices (original indices into self.sense_data).
@@ -396,7 +469,7 @@ class Lidar:
 
         
 
-
+    # @profile
     def get_detected_cones(self, clusters, cone_pos):
         """
         Converts self.cone_pos and cluster color info into a list of Cone objects.

@@ -1,10 +1,3 @@
-"""
-
-FastSLAM 2.0 example
-
-author: Atsushi Sakai (@Atsushi_twi)
-
-"""
 
 import math
 import numpy as np
@@ -21,7 +14,7 @@ R = np.diag([0.1, 0.2, np.deg2rad(1.0)]) ** 2
 MAX_RANGE = 20.0  # maximum observation range
 STATE_SIZE = 3  # State size [x,y,yaw]
 LM_SIZE = 2  # LM state size [x,y]
-N_PARTICLE = 5  # number of particle
+N_PARTICLE = 3  # number of particle
 NTH = N_PARTICLE / 1.5  # Number of particle for re-sampling
 dt = ws.DT*50
 

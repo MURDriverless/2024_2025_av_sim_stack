@@ -37,7 +37,7 @@ def setup_car(world, track):
     car.add_lidar(Lidar())
     car.add_camera(Stereo())
     car.add_controller(PurePursuit(
-        lookahead_distance=4, u_max=20, k_speed_c=100, k_throttle=6000
+        lookahead_distance=4, u_max=40, k_speed_c=150, k_throttle=6000
     ))
     return car
 
