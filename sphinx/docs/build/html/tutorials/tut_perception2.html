@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorials &mdash; MUR Autonomous  documentation</title>
+  <title>From the LiDAR pipeline to the Path Gen Pipeline &mdash; MUR Autonomous  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3e8edd65" />
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="World and Track Building Tutorial" href="tut_world_track_cones.html" />
-    <link rel="prev" title="Controls" href="../controls/index.html" /> 
+    <link rel="next" title="Path Following with Pure Pursuit" href="tut_controls.html" />
+    <link rel="prev" title="Lidar Perception Pipeline Tutorial" href="tut_perception.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -63,25 +63,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorials</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#track-and-vehicle-model-tutorials">Track and Vehicle Model Tutorials</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tut_world_track_cones.html">World and Track Building Tutorial</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tut_vehicle_modeling.html">Vehicle Modeling Tutorial: Physics on Wheels</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#path-generation-tutorials">Path Generation Tutorials</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tut_pathgen.html">Path Generation with Delaunay Triangulation</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#perception-tutorials">Perception Tutorials</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#track-and-vehicle-model-tutorials">Track and Vehicle Model Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#path-generation-tutorials">Path Generation Tutorials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#perception-tutorials">Perception Tutorials</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="tut_perception.html">Lidar Perception Pipeline Tutorial</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tut_perception2.html">From the LiDAR pipeline to the Path Gen Pipeline</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">From the LiDAR pipeline to the Path Gen Pipeline</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#controls-tutorials">Controls Tutorials</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tut_controls.html">Path Following with Pure Pursuit</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#controls-tutorials">Controls Tutorials</a></li>
 </ul>
 </li>
 </ul>
@@ -100,7 +90,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Tutorials</li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">From the LiDAR pipeline to the Path Gen Pipeline</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -109,51 +100,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tutorials">
-<h1>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading"></a></h1>
-<p>This page is a compiled list of tutorial to get autonomous members acquainted with the architecture.</p>
-<section id="track-and-vehicle-model-tutorials">
-<h2>Track and Vehicle Model Tutorials<a class="headerlink" href="#track-and-vehicle-model-tutorials" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="tut_world_track_cones.html"><span class="doc">World and Track Building Tutorial</span></a></p></li>
-<li><p><a class="reference internal" href="tut_vehicle_modeling.html"><span class="doc">Vehicle Modeling Tutorial</span></a></p></li>
-</ul>
-<div class="toctree-wrapper compound">
+  <section id="from-the-lidar-pipeline-to-the-path-gen-pipeline">
+<h1>From the LiDAR pipeline to the Path Gen Pipeline<a class="headerlink" href="#from-the-lidar-pipeline-to-the-path-gen-pipeline" title="Link to this heading"></a></h1>
+<p>Recall that that we stated in the Path Generation Tutorial that the entire track is unknown to the car in the first lap, therefore it will not have any cone positions except for the cones detected by the perception pipeline.</p>
+<p>Passing Detected Cones to the</p>
+<p>From the previous <a class="reference internal" href="tut_perception.html"><span class="doc">tutorial</span></a>, we can return the detected cones from the update function of the LiDAR:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Track</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+   <span class="o">..</span>
+   <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cones</span>
+</pre></div>
 </div>
-</section>
-<section id="path-generation-tutorials">
-<h2>Path Generation Tutorials<a class="headerlink" href="#path-generation-tutorials" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="tut_pathgen.html"><span class="doc">Path Generation Tutorial</span></a></p></li>
-</ul>
-<div class="toctree-wrapper compound">
-</div>
-</section>
-<section id="perception-tutorials">
-<h2>Perception Tutorials<a class="headerlink" href="#perception-tutorials" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="tut_perception.html"><span class="doc">LiDAR Tutorial</span></a></p></li>
-<li><p><a class="reference internal" href="tut_perception2.html"><span class="doc">From LiDAR to Path Gen Tutorial</span></a></p></li>
-</ul>
-<div class="toctree-wrapper compound">
-</div>
-</section>
-<section id="controls-tutorials">
-<h2>Controls Tutorials<a class="headerlink" href="#controls-tutorials" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="tut_controls.html"><span class="doc">Path Following Tutorial</span></a></p></li>
-</ul>
-<div class="toctree-wrapper compound">
-</div>
-</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../controls/index.html" class="btn btn-neutral float-left" title="Controls" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tut_world_track_cones.html" class="btn btn-neutral float-right" title="World and Track Building Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tut_perception.html" class="btn btn-neutral float-left" title="Lidar Perception Pipeline Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tut_controls.html" class="btn btn-neutral float-right" title="Path Following with Pure Pursuit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

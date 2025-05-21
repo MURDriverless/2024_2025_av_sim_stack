@@ -105,8 +105,7 @@ The furthest such point is selected as the target.
    if angle_deg <= 85 and distance <= self.lookahead_distance:
        target_point = point
 
-Try this:
-^^^^^^^^^^
+.. rubric:: Try this:
 
 Set `lookahead_distance = 5.0` vs `2.0`. How does the car's responsiveness change?
 
@@ -130,8 +129,7 @@ This angle is then **rate-limited** to prevent crazy steering:
 
    delta_dot = np.clip(..., -max_delta_dot, +max_delta_dot)
 
-Try this:
-^^^^^^^^^^
+.. rubric:: Try this:
 
 Modify `max_delta_dot` in radians per second. Try values like:
 
