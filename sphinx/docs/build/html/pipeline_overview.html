@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Pipeline Tutorials" href="pipeline_tutorial.html" />
+    <link rel="next" title="Pipeline Integration Tutorials" href="pipeline_integration_tutorial.html" />
     <link rel="prev" title="Contact Us" href="contact.html" /> 
 </head>
 
@@ -56,12 +56,12 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline Overview (TL;DR)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#perception-pipeline">Perception Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pathing-pipeline">Pathing Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#slam-pipeline">SLAM Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#path-generation-pipeline">Path Generation Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#controls-pipeline">Controls Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#slam-pipeline">SLAM Pipeline</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline_tutorial.html">Pipeline Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_integration_tutorial.html">Pipeline Integration Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="perception/index.html">Perception</a></li>
 <li class="toctree-l1"><a class="reference internal" href="slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pathing/index.html">Pathing</a></li>
@@ -69,7 +69,11 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Pipeline Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hardware</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="jaes_docs.html">Ouster OS1-128 LiDAR Setup and Tutorial</a></li>
 </ul>
 
         </div>
@@ -139,15 +143,48 @@
 </ul>
 <p class="rubric">Image-based Perception</p>
 <p>Structured as:</p>
+<ul class="simple">
+<li><p>Uses camera input to detect and classify cones on the track.</p></li>
+<li><p>Outputs pixel-space detections and converts them to world coordinates using camera calibration.</p></li>
+<li><p>Integrates with LiDAR data for sensor fusion to improve accuracy and robustness.</p></li>
+<li><p>Applies image preprocessing (e.g., distortion correction, HSV thresholding) for reliable detection.</p></li>
+<li><p>Uses neural networks or classical vision (e.g., color segmentation + contouring) for cone recognition.</p></li>
+<li><p>Publishes detected landmarks to a ROS2 topic for use in SLAM and planning pipelines.</p></li>
+</ul>
 </section>
-<section id="pathing-pipeline">
-<h2>Pathing Pipeline<a class="headerlink" href="#pathing-pipeline" title="Link to this heading"></a></h2>
-</section>
-<section id="slam-pipeline">
-<h2>SLAM Pipeline<a class="headerlink" href="#slam-pipeline" title="Link to this heading"></a></h2>
+<section id="path-generation-pipeline">
+<h2>Path Generation Pipeline<a class="headerlink" href="#path-generation-pipeline" title="Link to this heading"></a></h2>
+<p>Structured as:</p>
+<ul class="simple">
+<li><p>Takes cone positions as input and generates a drivable centerline path.</p></li>
+<li><p>Uses Delaunay triangulation and/or spline fitting to interpolate a smooth trajectory.</p></li>
+<li><p>Ensures path meets dynamic feasibility constraints like curvature and clearance.</p></li>
+<li><p>Filters outliers and misclassified cones before generating the path.</p></li>
+<li><p>Can regenerate paths in real-time as new cone data becomes available.</p></li>
+<li><p>Exports path as waypoints or continuous trajectory for downstream controllers.</p></li>
+</ul>
 </section>
 <section id="controls-pipeline">
 <h2>Controls Pipeline<a class="headerlink" href="#controls-pipeline" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Uses the centerline path from the path planner to compute steering commands.</p></li>
+<li><p>Selects a lookahead point on the path based on vehicle speed and geometry.</p></li>
+<li><p>Minimizes lateral error by geometrically aligning the vehicle’s heading to the lookahead point.</p></li>
+<li><p>Adjusts lookahead distance dynamically to balance responsiveness and stability.</p></li>
+<li><p>Assumes constant speed or integrates with a throttle/brake controller if available.</p></li>
+<li><p>Outputs steering angles to be consumed by the vehicle’s actuation layer.</p></li>
+</ul>
+</section>
+<section id="slam-pipeline">
+<h2>SLAM Pipeline<a class="headerlink" href="#slam-pipeline" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Simultaneously estimates vehicle pose and builds a map of cone landmarks.</p></li>
+<li><p>Uses a particle filter where each particle carries its own map hypothesis.</p></li>
+<li><p>Updates landmark positions and vehicle state using sensor data and motion model.</p></li>
+<li><p>Incorporates LiDAR and camera observations to improve robustness in sparse environments.</p></li>
+<li><p>Efficient for real-time performance in environments with many static landmarks.</p></li>
+<li><p>Supports loop closure and re-localization by maintaining particle diversity.</p></li>
+</ul>
 </section>
 </section>
 
@@ -156,7 +193,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="contact.html" class="btn btn-neutral float-left" title="Contact Us" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline_tutorial.html" class="btn btn-neutral float-right" title="Pipeline Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline_integration_tutorial.html" class="btn btn-neutral float-right" title="Pipeline Integration Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,5 +1,5 @@
-Pipeline Tutorials
-==================
+Pipeline Integration Tutorials
+================================
 
 This is a test link for google collab notebook for printing "hello world".
 

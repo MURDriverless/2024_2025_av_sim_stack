@@ -1,5 +1,5 @@
-Tutorials
-==========
+Pipeline Tutorials
+===================
 
 This page is a compiled list of tutorial to get autonomous members acquainted with the architecture.
 
@@ -48,3 +48,13 @@ Controls Tutorials
     :maxdepth: 2
 
     tut_controls
+
+SLAM Tutorials
+---------------------
+- :doc:`SLAM Tutorial<tut_slam>`
+
+.. toctree::
+    :hidden:
+    :maxdepth: 2
+
+    tut_slam

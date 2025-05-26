@@ -39,7 +39,7 @@ Welcome to the MUR Autonomous page. This site provides all the documentation an 
    :maxdepth: 2
 
    pipeline_overview
-   pipeline_tutorial
+   pipeline_integration_tutorial
    perception/index
    slam/index
    pathing/index
@@ -51,3 +51,10 @@ Welcome to the MUR Autonomous page. This site provides all the documentation an 
    :maxdepth: 2
 
    tutorials/index
+
+.. toctree::
+   :hidden:
+   :caption: Hardware
+   :maxdepth: 2
+
+   jaes_docs

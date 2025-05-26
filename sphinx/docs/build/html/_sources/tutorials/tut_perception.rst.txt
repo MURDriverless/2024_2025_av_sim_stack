@@ -107,7 +107,7 @@ We convert cluster centers + color back to usable cone objects:
       ...
       return detected_cones
 
-Each `Cone` has an estimated `(x, y)` and color.
+Each `Cone` has an estimated `(x, y)` and color. It's important to note that the coordinates of the detected cones are represented in the **local frame** of the car.
 
 Visualizing the LiDAR Scan
 -----------------------------

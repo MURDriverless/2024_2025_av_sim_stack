@@ -41,13 +41,44 @@ Structured as:
 
 Structured as:
 
+- Uses camera input to detect and classify cones on the track.
+- Outputs pixel-space detections and converts them to world coordinates using camera calibration.
+- Integrates with LiDAR data for sensor fusion to improve accuracy and robustness.
+- Applies image preprocessing (e.g., distortion correction, HSV thresholding) for reliable detection.
+- Uses neural networks or classical vision (e.g., color segmentation + contouring) for cone recognition.
+- Publishes detected landmarks to a ROS2 topic for use in SLAM and planning pipelines.
 
 
-Pathing Pipeline
-----------------
+
+Path Generation Pipeline
+-------------------------
+Structured as:
+
+- Takes cone positions as input and generates a drivable centerline path.
+- Uses Delaunay triangulation and/or spline fitting to interpolate a smooth trajectory.
+- Ensures path meets dynamic feasibility constraints like curvature and clearance.
+- Filters outliers and misclassified cones before generating the path.
+- Can regenerate paths in real-time as new cone data becomes available.
+- Exports path as waypoints or continuous trajectory for downstream controllers.
+
+
+Controls Pipeline
+-----------------
+
+- Uses the centerline path from the path planner to compute steering commands.
+- Selects a lookahead point on the path based on vehicle speed and geometry.
+- Minimizes lateral error by geometrically aligning the vehicle's heading to the lookahead point.
+- Adjusts lookahead distance dynamically to balance responsiveness and stability.
+- Assumes constant speed or integrates with a throttle/brake controller if available.
+- Outputs steering angles to be consumed by the vehicle's actuation layer.
+
 
 SLAM Pipeline
 -------------
 
-Controls Pipeline
------------------
+- Simultaneously estimates vehicle pose and builds a map of cone landmarks.
+- Uses a particle filter where each particle carries its own map hypothesis.
+- Updates landmark positions and vehicle state using sensor data and motion model.
+- Incorporates LiDAR and camera observations to improve robustness in sparse environments.
+- Efficient for real-time performance in environments with many static landmarks.
+- Supports loop closure and re-localization by maintaining particle diversity.
