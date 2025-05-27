@@ -105,6 +105,48 @@
 <p>Before we can even consider telling the vehicle how to steer, we first need to generate a viable path. At first glance, this might seem as simple as drawing a straight line from point A to point B. And sure, that might work—if the track were a featureless runway.</p>
 <p>Fortunately, the FSAE driverless track is far more dynamic. It includes everything from high-speed straights to sweeping curves and tight slaloms—features that challenge the vehicle’s cornering capabilities and make the path planning problem far more engaging (and fun).</p>
 <p>Now the question becomes, how do we draw that line (or path)?</p>
+<p>Imagine you’re an autonomous car on an FSAE track. You wake up, blink your LiDAR eyes, and all you see are a bunch of blue cones to your left and yellow cones to your right. You don’t know where the track goes, but you do know: “follow the road, not the cones.”</p>
+<p>Enter the <em>Path Generation Pipeline</em> — your inner map-maker, part artist, part algorithm. Its job? Take these raw, unstructured, disorganized cone observations and stitch them into a smooth, followable path that avoids embarrassment at turn 1.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The FSAE track is a bounded environment — blue cones on the left, yellow on the right, no surprises in the middle. This consistent coloring is your best friend when it comes to computational sanity.</p>
+</div>
+<p>Delaunay Triangulation: Not Just Fancy Geometry</p>
+<hr class="docutils" />
+<p>To make sense of the chaos, we employ <em>Delaunay Triangulation</em>. No, it’s not a French dessert. It’s a computational geometry technique that creates triangles from scattered points (cones in our case) such that no point lies inside the circumcircle of any triangle.</p>
+<p>Why Delaunay?</p>
+<ul class="simple">
+<li><p>It’s robust to noise (perfect for those occasional mis-detected cones).</p></li>
+<li><p>It avoids skinny triangles, which means better spatial representation.</p></li>
+<li><p>Most importantly: it gives us an implicit connectivity between cones — even though they’re just point clouds to begin with.</p></li>
+</ul>
+<p>Here’s the clever bit: by triangulating all the cones together — left and right — and filtering triangles that connect <em>one left and one right cone</em>, we reveal the hidden <em>midpoints</em>. These midpoints are the ghostly centerline the cones never explicitly gave us. They form the <strong>ideal path</strong> our vehicle should follow.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Pseudo-snippet for triangulated midpoint generation</span>
+<span class="k">for</span> <span class="n">triangle</span> <span class="ow">in</span> <span class="n">delaunay_triangles</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">triangle_has_one_blue_and_one_yellow_cone</span><span class="p">(</span><span class="n">triangle</span><span class="p">):</span>
+        <span class="n">midpoint</span> <span class="o">=</span> <span class="n">average</span><span class="p">(</span><span class="n">blue_cone</span><span class="p">,</span> <span class="n">yellow_cone</span><span class="p">)</span>
+        <span class="n">path_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">midpoint</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Think of it like this: every blue-yellow triangle gives us a bridge from the left boundary to the right, and the midpoint of that bridge is where we want to be — balanced, elegant, and fast.</p>
+<p>Midpoint Filtering and Smoothing</p>
+<hr class="docutils" />
+<p>But raw midpoints are like rough diamonds — uncut and possibly out of order. We need to:</p>
+<ol class="arabic simple">
+<li><p><strong>Order</strong> the midpoints to form a continuous path. This is done using nearest-neighbor traversal or heuristics based on vehicle pose.</p></li>
+<li><p><strong>Smooth</strong> the path using splines or moving averages — because while our car loves racing, it hates jerky steering.</p></li>
+</ol>
+<p>The output? A continuous, smooth centerline path that navigates right through the middle of the track — the best compromise between aggression and control.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/dt0.png"><img alt="../_images/dt0.png" src="../_images/dt0.png" style="width: 80%;" />
+</a>
+<figcaption>
+<p><span class="caption-text"><em>Visual of Delaunay triangulation and centerline extraction from cone boundaries.</em></span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Next Steps</p>
+<hr class="docutils" />
+<p>This freshly cooked path doesn’t drive the car by itself (yet). It’s handed off to the next star of the show: the <em>Controls Pipeline</em>. But that’s a story for another page.</p>
 </section>
 </section>
 

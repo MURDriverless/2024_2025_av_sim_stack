@@ -19,9 +19,7 @@
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Pipeline Tutorials" href="../tutorials/index.html" />
-    <link rel="prev" title="Controls" href="../controls/index.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,18 +51,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Us</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Path Generation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Simultaneous Localization and Mapping (SLAM)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#slamming-through-the-track-fastslam-2-0">SLAMming Through the Track: FastSLAM 2.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#enter-fastslam-2-0">Enter FastSLAM 2.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#why-fastslam-2-0-rocks-for-fsae">Why FastSLAM 2.0 Rocks for FSAE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#cone-clusion">Cone-clusion</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
@@ -106,65 +98,12 @@
 <p>Next up is localization. Once we have a map, the next question is: <em>Where am I on this map?</em> Localization answers this by estimating the vehicle’s position and orientation (collectively called its <em>pose</em>) with respect to the map. It’s like dropping a pin on Google Maps, but done continuously and with far more math.</p>
 <p>So where does SLAM come in? Traditionally, mapping and localization were done in sequence: first build a map, then localize within it. But real-world autonomous systems—especially in fast-paced domains like autonomous racing—don’t have the luxury of waiting. Enter SLAM: a real-time algorithmic framework that builds the map <em>and</em> localizes the vehicle within it <em>at the same time</em>.</p>
 <p>Hence the “simultaneous” in <em>Simultaneous Localization and Mapping</em>—a computational two-for-one deal that allows autonomous systems to explore and understand the world without needing a pre-made map. It’s like learning where you are while simultaneously sketching the map on a moving train.</p>
-<section id="slamming-through-the-track-fastslam-2-0">
-<h2>SLAMming Through the Track: FastSLAM 2.0<a class="headerlink" href="#slamming-through-the-track-fastslam-2-0" title="Link to this heading"></a></h2>
-<p>Before you can follow a path, you need to <em>know where you are</em>. Welcome to the magical world of <strong>SLAM</strong> — <em>Simultaneous Localization and Mapping</em>. It’s like trying to draw a map of a maze while you’re running through it blindfolded with only a flashlight and some basic physics.</p>
-<p>SLAM’s job is to let the car build a map of the track and localize itself within that map — at the same time. And in our case, that “map” is a jungle of yellow and blue cones.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In the FSAE autonomous world, the first lap is run without any prior map of the course. The car must detect cones, build the track boundaries, and localize itself all in real-time. It’s the cartographic equivalent of tightrope walking while juggling flaming torches — with traffic cones.</p>
-</div>
-</section>
-<section id="enter-fastslam-2-0">
-<h2>Enter FastSLAM 2.0<a class="headerlink" href="#enter-fastslam-2-0" title="Link to this heading"></a></h2>
-<p>FastSLAM is the rockstar of SLAM algorithms. More specifically, <strong>FastSLAM 2.0</strong> is the sequel that doesn’t disappoint. It fuses particle filters for localization and Extended Kalman Filters (EKFs) for mapping. It’s the computational version of a buddy cop movie — where one guy (the particle) figures out where the car is, and the other (the EKF) tracks where the cones are.</p>
-<p>Here’s how FastSLAM 2.0 works, broken down with minimal hand waving:</p>
-<ol class="arabic simple">
-<li><p><strong>Particles</strong>: Each particle is a guess of where the vehicle might be on the track.</p></li>
-<li><p><strong>Landmark Estimation</strong>: Each particle carries its own map of landmarks (cones), updated via an EKF.</p></li>
-<li><p><strong>Importance Sampling</strong>: Unlike FastSLAM 1.0, version 2.0 samples particles from a more accurate proposal distribution (not just motion model) — incorporating actual observations for better guesses.</p></li>
-<li><p><strong>Weighting</strong>: Each particle is scored based on how well its predicted cone map matches what the LiDAR sees.</p></li>
-<li><p><strong>Resampling</strong>: Low-score particles go home; high-score particles reproduce.</p></li>
-</ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">particle</span> <span class="ow">in</span> <span class="n">particles</span><span class="p">:</span>
-    <span class="n">particle</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">motion_model</span><span class="p">)</span>
-    <span class="n">particle</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">observations</span><span class="p">,</span> <span class="n">ekf_update</span><span class="p">)</span>
-    <span class="n">particle</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">compute_likelihood</span><span class="p">(</span><span class="n">observations</span><span class="p">,</span> <span class="n">particle</span><span class="o">.</span><span class="n">map</span><span class="p">)</span>
-
-<span class="n">particles</span> <span class="o">=</span> <span class="n">resample</span><span class="p">(</span><span class="n">particles</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="why-fastslam-2-0-rocks-for-fsae">
-<h2>Why FastSLAM 2.0 Rocks for FSAE<a class="headerlink" href="#why-fastslam-2-0-rocks-for-fsae" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><strong>Low Latency Mapping</strong>: It keeps the map updates localized to each particle’s belief, reducing overhead.</p></li>
-<li><p><strong>Handles Data Association</strong>: Even if the cones look like an identical family reunion, FastSLAM’s EKF per landmark helps keep track of who’s who.</p></li>
-<li><p><strong>Resilient to Sensor Noise</strong>: Particle filtering and sensor fusion absorb errors better than your suspension over kerbs.</p></li>
-</ul>
-<p>And best of all? It scales well — which matters when you’re detecting a gazillion cones at 10 Hz while doing 40 kph around a hairpin.</p>
-</section>
-<section id="cone-clusion">
-<h2>Cone-clusion<a class="headerlink" href="#cone-clusion" title="Link to this heading"></a></h2>
-<p>FastSLAM 2.0 allows the car to not only figure out <em>where it is</em> but also <em>what the track looks like</em> — all from raw sensor data. It’s the foundation of autonomy during the first lap. Once a decent map is built, the vehicle can start to rely more on localization within that map and less on live mapping.</p>
-<figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="../_images/fastslam.gif"><img alt="../_images/fastslam.gif" src="../_images/fastslam.gif" style="width: 75%;" />
-</a>
-<figcaption>
-<p><span class="caption-text"><em>FastSLAM 2.0 illustrated: each particle holds a hypothesis of the car’s pose and an associated map of cones.</em></span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
-</figcaption>
-</figure>
-<p>Up next? Feed that map into the path generation pipeline and let the car stretch its legs. But remember, it all starts with knowing where you are — and for that, we FastSLAM.</p>
-</section>
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../controls/index.html" class="btn btn-neutral float-left" title="Controls" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../tutorials/index.html" class="btn btn-neutral float-right" title="Pipeline Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 
