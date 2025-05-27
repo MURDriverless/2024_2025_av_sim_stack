@@ -18,7 +18,7 @@ Welcome to the MUR Autonomous page. This site provides all the documentation an 
 
    This documentation is considered complete. However, we will always strive to improve our documentation and welcome contributions from others! :doc:`Click here to get in touch. <contact>`
 
-- Check out the :doc:`Quick Start Guide <quick_start_guide>` to get a quick overview for MUR Autonomous.
+.. - Check out the :doc:`Quick Start Guide <quick_start_guide>` to get a quick overview for MUR Autonomous.
 - Visit the :doc:`Development Environment Setup <dev_setup>` section to see how to prepare a development environment suited for MUR Autonomous.
 - Already know the theory? Test your knowledge with our :doc:`tutorials <tutorials/index>`.
 
