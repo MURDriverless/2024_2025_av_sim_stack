@@ -5,6 +5,7 @@ Quick Start Guide
     WORK IN PROGRESS
 
 .. image:: _static/overview1.gif
+    :alt: Source: Chalmers Formula Student fastest Driverless lap \| Formula Student East 2022 [Youtube]
     :width: 100%
 
 Overview
@@ -32,7 +33,7 @@ A pipeline is basically a series of steps (or stages) where each step processes 
 - Pathing creates the directions the vehicle needs to know to get from point A to point B.
 - Controls tells the vehicle how to follow those directions; what "limbs" it should move.
 
-System requirements
+System Requirements
 -------------------
 
 When it comes to computing, MUR has provided an NVIDIA Jetson for any autonomous development. However, having your own device for development is preferred. Although not required, having a discrete GPU (dGPU), preferably NVIDIA, allows for efficient training of any machine learning algorithms, rendering of simulations, and any other GPU offloading activity.

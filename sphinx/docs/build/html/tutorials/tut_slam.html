@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Ouster OS1-128 LiDAR Setup and Tutorial" href="../jaes_docs.html" />
+    <link rel="next" title="Ouster OS1-128 LiDAR Setup and Tutorial" href="../hardware/lidar.html" />
     <link rel="prev" title="Path Following with Pure Pursuit" href="tut_controls.html" /> 
 </head>
 
@@ -89,7 +89,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Hardware</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../jaes_docs.html">Ouster OS1-128 LiDAR Setup and Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware/lidar.html">Ouster OS1-128 LiDAR Setup and Tutorial</a></li>
 </ul>
 
         </div>
@@ -259,10 +259,12 @@ If particle weights diverge, we resample the best ones.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="nb">range</span><span class="p">,</span> <span class="n">bearing</span><span class="p">]</span>  <span class="c1"># relative to car</span>
 </pre></div>
 </div>
-<p>For each particle:
-1. Try to associate observed cones to known landmarks (via Mahalanobis distance)
-2. Update that landmark via Kalman filter, or
-3. Add a new landmark if no match found</p>
+<p>For each particle:</p>
+<ol class="arabic simple">
+<li><p>Try to associate observed cones to known landmarks (via Mahalanobis distance)</p></li>
+<li><p>Update that landmark via Kalman filter, or</p></li>
+<li><p>Add a new landmark if no match found</p></li>
+</ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">best_lm_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">update_landmark</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
@@ -291,11 +293,13 @@ If particle weights diverge, we resample the best ones.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gpu</span><span class="o">.</span><span class="n">plotting</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>It includes:
-- Car trajectory
-- Particle cloud (colored by weight)
-- Estimated landmarks (black Xs)
-- Target and current pose</p>
+<p>It includes:</p>
+<ul class="simple">
+<li><p>Car trajectory</p></li>
+<li><p>Particle cloud (colored by weight)</p></li>
+<li><p>Estimated landmarks (black Xs)</p></li>
+<li><p>Target and current pose</p></li>
+</ul>
 <p class="rubric">Try This:</p>
 <p>Add this inside plotting to color the best particle:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">best</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">particles</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
@@ -326,7 +330,6 @@ If particle weights diverge, we resample the best ones.</p>
 <li><p>How we run SLAM in real-time with GPU and LiDAR</p></li>
 <li><p>How to visualize and tune your SLAM system</p></li>
 </ul>
-<p>Next up: Use your SLAM-estimated map in path planning and autonomous laps!</p>
 </section>
 </section>
 
@@ -335,7 +338,7 @@ If particle weights diverge, we resample the best ones.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="tut_controls.html" class="btn btn-neutral float-left" title="Path Following with Pure Pursuit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../jaes_docs.html" class="btn btn-neutral float-right" title="Ouster OS1-128 LiDAR Setup and Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../hardware/lidar.html" class="btn btn-neutral float-right" title="Ouster OS1-128 LiDAR Setup and Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

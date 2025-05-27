@@ -57,4 +57,4 @@ Welcome to the MUR Autonomous page. This site provides all the documentation an 
    :caption: Hardware
    :maxdepth: 2
 
-   jaes_docs
+   hardware/lidar

@@ -155,6 +155,7 @@ Measurements from LiDAR are transformed into polar format:
    z = [range, bearing]  # relative to car
 
 For each particle:
+
 1. Try to associate observed cones to known landmarks (via Mahalanobis distance)
 2. Update that landmark via Kalman filter, or
 3. Add a new landmark if no match found
@@ -197,6 +198,7 @@ Particles and landmarks are plotted in:
    gpu.plotting()
 
 It includes:
+
 - Car trajectory
 - Particle cloud (colored by weight)
 - Estimated landmarks (black Xs)
@@ -236,6 +238,3 @@ You now understand:
 - How each particle carries its own map  
 - How we run SLAM in real-time with GPU and LiDAR  
 - How to visualize and tune your SLAM system
-
-Next up: Use your SLAM-estimated map in path planning and autonomous laps!
-

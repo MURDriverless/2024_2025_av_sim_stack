@@ -53,9 +53,10 @@ Launching the CSV-Based Pipeline/ or PCAP-Based Pipeline
 
 After this, you will see:
 
-# insert picture here
+.. image:: _static/Picture1.png
+    :width: 100%
 
-And it will automatically launch the rviz2
+And it will automatically launch Rviz
 
 Inspecting ROS 2 Topics
 -----------------------
@@ -86,6 +87,9 @@ should output:
     /rosout
     ...
 
+.. image:: _static/Picture2.png
+    :width: 100%
+
 This shows every topic currently being published or subscribed.
 
 Viewing Topic Data (“Echo”)
@@ -93,18 +97,26 @@ Viewing Topic Data (“Echo”)
 
 .. code-block:: bash
 
-    ros2 topic echo /cone_markers
+    ros2 topic echo <topic_name>
 
 Example:
 
 .. code-block:: bash
 
-    ros2 topic echo --once /pointcloud
+    ros2 topic echo /cone_markers
+
+.. image:: _static/Picture3.png
 
 Filtering Echo Output
 ^^^^^^^^^^^^^^^^^^^^^^
 
 First 5 messages only:
+
+.. code-block:: bash
+
+    ros2 topic echo --once /pointcloud
+
+or to a single field:
 
 .. code-block:: bash
 
@@ -179,8 +191,16 @@ What You’ll Need
 ^^^^^^^^^^^^^^^^
 
 - Test Vehicle & Mounting Hardware
+
+.. image:: _static/Picture4.png
+    :width: 100%
+
 - Power Supply: Auxiliary 24 V battery pack (20 W peak)
 - Software: Ouster Studio for health checks & parameter tuning
+
+.. image:: _static/Picture5.png
+    :width: 100%
+
 - ROS 2 Humble with lidar_integration (Pcap) and csv_to_pointcloud_node (CSV)
 
 Mounting & Sensor Configuration
@@ -200,13 +220,20 @@ Driving Tests & Data Recording
 
 - Arrange traffic cones:
 
-  - Spacing: 5 m between cones
-  - Lane width: 11 m
+    - Spacing: 5 m between cones
+    - Lane width: 11 m
 
 - Perform two runs:
 
-  - Straight lane
-  - Curve lane
+    - Straight lane
+
+    .. image:: _static/Picture6.png
+        :width: 100%
+
+    - Curve lane
+
+    .. image:: _static/Picture7.png
+        :width: 100%
 
 - While driving, launch both pipelines to record:
 
@@ -232,6 +259,9 @@ Where:
 - θ (azimuth): angle in the xy plane
 - φ (elevation): angle from +z toward xy plane
 
+.. image:: _static/Picture8.png
+    :width: 50%
+
 Python Snippet:
 
 .. code-block:: python
@@ -247,6 +277,9 @@ Benefits of removing zero-range points:
 - Eliminates Origin Spikes
 - Improves Clustering & Detection
 - Speeds Up Downstream Processing
+
+.. .. image:: _static/Picture9.png
+..     :width: 100%
 
 Preprocessing PCAP + JSON Data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -282,6 +315,9 @@ No explicit “no-return” flag in PCAP packets. To filter:
            std::memcpy(pkt.buf.data(), data, pkt_info.packet_size);
        }
 
+.. .. image:: _static/Picture10.png
+..     :width: 100%
+
 Benefits:
 
 - Lower Parsing Overhead
@@ -295,6 +331,9 @@ By the end of this tutorial, you will have:
 
 - A clear visual of the CSV→PointCloud2 processing pipeline
 - Concise summaries of core functions in the CSV reader node
+
+.. image:: _static/Picture11.png
+    :width: 100%
 
 Pipeline Stages
 ^^^^^^^^^^^^^^^
@@ -313,6 +352,9 @@ Pipeline Stages
 
 Lidar.cpp Node
 ^^^^^^^^^^^^^^
+
+.. image:: _static/Picture12.png
+    :width: 100%
 
 Wall Timer at 10 Hz:
 
@@ -348,4 +390,226 @@ Batch Size = 1024 × 128:
     current_index_    = end_index;
 
 This reflects Ouster OS-1 resolution: 1024 azimuth steps × 128 channels = 131,072 points.
+
+.. _crop_box_roi:
+
+Defining the Crop-Box Region of Interest
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: _static/Picture13.png
+    :width: 100%
+
+.. image:: _static/Picture14.png
+    :width: 100%
+
+In our ``pointcloud_callback()``, we use a 3D axis-aligned box to trim away everything outside the area where cones will appear. Mathematically, we want to keep only those points satisfying:
+
+.. code-block:: none
+
+    x_min ≤ x ≤ x_max
+    y_min ≤ y ≤ y_max
+    z_min ≤ z ≤ z_max
+
+For our FSAE track setup, we chose:
+
+.. code-block:: cpp
+
+    Eigen::Vector4f min_point(4.0f,  -6.0f, -1.6f, 1.0f);
+    Eigen::Vector4f max_point(12.0f,  6.0f,  0.0f, 1.0f);
+
+This box covers an 8 m (from 4 m to 12 m ahead of the vehicle), 12 m wide, 1.6 m tall swath in front of the vehicle.
+
+In visualization, Rviz2 renders our defined crop-box as a translucent prism surrounding the region of interest in front of the vehicle as well as ground removal from top down 1.6m. This “virtual fencing” makes it easy to see which points are being retained and which are discarded before cone detection begins.
+
+.. code-block:: cpp
+
+    // Create the CropBox filter
+    pcl::CropBox<pcl::PointXYZI> crop;
+    crop.setInputCloud(cloud);
+    crop.setMin(min_point);
+    crop.setMax(max_point);
+
+    // Allocate output and run the filter
+    pcl::PointCloud<pcl::PointXYZI>::Ptr cropped(new pcl::PointCloud<pcl::PointXYZI>);
+    crop.filter(*cropped);
+
+Points satisfying all six constraints remain in the resulting cropped cloud. By casting the box this way, we efficiently remove unwanted background and ground returns, leaving only the in-front section where traffic cones lie.
+
+.. _cone_detection_pipeline:
+
+Cone Detection Pipeline Overview
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: _static/Picture15.png
+    :width: 100%
+
+.. image:: _static/Picture16.png
+    :width: 100%
+
+.. image:: _static/Picture17.png
+    :width: 100%
+
+The ``cone_detection.cpp`` is a key component of our perception integration system.
+
+Our cone detection pipeline takes in a cropped point cloud and processes it through several stages to reliably identify traffic cones:
+
+.. image:: _static/Picture18.png
+    :width: 25%
+
+Reflectivity and Height Filtering
+"""""""""""""""""""""""""""""""""""
+
+Although the input point cloud is already cropped by the crop_box node, further refinement is performed through clustering based on height ``z`` and intensity (reflectivity).
+
+The reflectivity value reflects the intensity of the laser return, which helps differentiate cones from other objects. For instance, low-reflectivity objects like the ground or trees can cause noise during driving.
+
+Since cones have highly reflective tape, their reflectivity typically exceeds a threshold of 25.
+
+.. code-block:: cpp
+
+    while (iter_x != iter_x.end()) {
+        if (*iter_reflectivity > 25.0f && *iter_z > -1.59f) {
+            filtered_points.push_back({*iter_x, *iter_y, *iter_z, *iter_reflectivity});
+        }
+        ++iter_x; ++iter_y; ++iter_z; ++iter_reflectivity;
+    }
+
+Filtering condition: ``Reflectivity > 25.0``, ``z > −1.59m``.
+
+.. image:: _static/Picture19.png
+    :width: 100%
+
+Voxel Grid Downsampling
+""""""""""""""""""""""""""
+
+To reduce computational load and remove redundant points, Voxel Grid Downsampling is applied.
+
+This partitions the point cloud into a 3D grid of voxels (small cubes), replacing all points inside each voxel with a representative point (typically the centroid).
+
+Voxel size used: **0.03 meters** (x, y, z). This balances preserving detail and improving speed.
+
+Voxel filtering is performed *after* initial reflectivity and height filtering, and *before* clustering.
+
+Euclidean Clustering
+""""""""""""""""""""""
+
+A Kd-Tree-based Euclidean clustering groups points based on their Euclidean distance.
+
+.. code-block:: cpp
+
+    pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
+    ec.setClusterTolerance(0.1);   // Max distance between points (meters)
+    ec.setMinClusterSize(5);       // Ignore clusters smaller than 5
+    ec.setMaxClusterSize(300);     // Ignore clusters larger than 300
+    ec.setSearchMethod(tree);
+    ec.setInputCloud(cloud_filtered);
+    ec.extract(cluster_indices);
+
+- **d_tol** = 0.1 m
+- **Min cluster size** = 5 points
+- **Max cluster size** = 300 points
+
+Small clusters are likely noise. Large clusters are likely non-cone objects.
+
+Cylindrical Volume Reconstruction
+""""""""""""""""""""""""""""""""""
+
+Some cone points may be mistakenly removed as ground. This step recovers them using a cylindrical volume centered on the XY-projected cluster centroid.
+
+.. code-block:: cpp
+
+    Eigen::Matrix3f cylinderMatrix = Eigen::Matrix3f::Zero();
+    cylinderMatrix(0,0) = 1.0f;
+    cylinderMatrix(1,1) = 1.0f;
+
+    Eigen::Vector3f cylinderV;
+    cylinderV << -centre.x, -centre.y, 0.0f;
+
+    float radius = 0.5f;
+    float cylinderScalar = centre.x * centre.x + centre.y * centre.y - (radius * radius);
+
+    pcl::TfQuadraticXYZComparison<pcl::PointXYZ>::Ptr cyl_comp(
+        new pcl::TfQuadraticXYZComparison<pcl::PointXYZ>(
+            pcl::ComparisonOps::LE, cylinderMatrix, cylinderV, cylinderScalar));
+
+    pcl::ConditionAnd<pcl::PointXYZ>::Ptr cyl_cond(new pcl::ConditionAnd<pcl::PointXYZ>());
+    cyl_cond->addComparison(cyl_comp);
+
+    pcl::PointCloud<pcl::PointXYZ> recovered;
+    pcl::ConditionalRemoval<pcl::PointXYZ> condrem(true);
+    condrem.setCondition(cyl_cond);
+    condrem.setInputCloud(cloud_cluster);
+    condrem.setKeepOrganized(false);
+    condrem.filter(recovered);
+
+This filter retains points inside the cylindrical volume.
+
+Cluster Geometric Size Filtering
+""""""""""""""""""""""""""""""""""
+
+Real-world cone dimensions:
+
+- **Height**: 0.323 m
+- **Base diameter**: 0.156 m
+- **Base width (square)**: 0.26 m
+
+Filtering constraints:
+
+- Height: 0.1 m – 0.45 m
+- Width: 0.1 m – 0.25 m
+- Depth: 0.1 m – 0.35 m
+
+.. code-block:: cpp
+
+    if (height < 0.1 || height > 0.45) continue;
+    if (width < 0.1 || width > 0.25) continue;
+    if (depth < 0.1 || depth > 0.35) continue;
+
+Clusters not meeting these constraints are excluded.
+
+.. image:: _static/Picture20.png
+    :width: 50%
+
+Publishing Results
+""""""""""""""""""""
+
+.. code-block:: cpp
+
+    marker_pub_->publish(marker_array);
+
+    std::string csv_path = ament_index_cpp::get_package_share_directory("csv_to_pointcloud_node") + "/data/cone_paths.csv";
+
+    std::ofstream outfile(csv_path);
+    outfile << "x,y,label\n";
+
+    for (const auto& [x, y] : cluster_xy_centers) {
+        std::string label = (y > 0) ? "right" : "left";
+        outfile << x << "," << y << "," << label << "\n";
+    }
+
+    outfile.close();
+
+Filtered clouds and cluster markers are published. Centroid positions are saved to CSV for future use.
+
+Running the Full Pipeline
+""""""""""""""""""""""""""
+
+.. code-block:: none
+
+    ros2 launch csv_to_pointcloud_node full_pipeline.launch.py
+
+This command starts all nodes including CSV reading, cropping, cone detection, and visualization.
+
+Visualization of Detected Cones
+""""""""""""""""""""""""""""""""
+
+Detected cones are shown as **spherical markers** in RViz2, clearly highlighting their positions.
+
+Example Output Log:
+
+.. code-block:: none
+
+    [INFO] Filtered cloud size: XXX
+    [INFO] Detected cone clusters: YYY
+
 
