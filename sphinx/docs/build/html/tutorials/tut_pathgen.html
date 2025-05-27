@@ -56,9 +56,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Pathing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Path Generation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
@@ -133,7 +133,7 @@
 <h2><a class="toc-backref" href="#id1" role="doc-backlink">What Are We Trying to Do?</a><a class="headerlink" href="#what-are-we-trying-to-do" title="Link to this heading"></a></h2>
 <p>Assume the car already knows where every blue and yellow cone is. The next step is to carve out a drivable corridor between the track boundaries. We do that with Delaunay triangulation: connect the cones, then join the mid-points of those connections to form a provisional centerline.</p>
 <p>That centerline isn’t the fastest “racing line,” but it’s exactly what you want on the first lap, when there’s no pre-built map and cone positions keep appearing only as the LiDAR or cameras detect them. In that uncertain first lap, a geometric centerline is the safest, most reliable path—as long as the perception pipeline is solid.</p>
-<a class="reference internal image-reference" href="../_images/dt0.png"><img alt="Target centerline generation" class="align-center" src="../_images/dt0.png" style="width: 100%;" />
+<a class="reference internal image-reference" href="../_images/dt0.png"><img alt="Target centerline generation" class="align-center" src="../_images/dt0.png" style="width: 50%;" />
 </a>
 </section>
 <section id="delaunay-triangulation">
@@ -161,10 +161,10 @@
 </pre></div>
 </div>
 <p>Suppose the the top-down view of the track looked like:</p>
-<a class="reference internal image-reference" href="../_images/dt1.png"><img alt="Top-down view of the track." class="align-center" src="../_images/dt1.png" style="width: 100%;" />
+<a class="reference internal image-reference" href="../_images/dt1.png"><img alt="Top-down view of the track." class="align-center" src="../_images/dt1.png" style="width: 75%;" />
 </a>
 <p>The network of triangles that we created for the track using Delaunay() gives us:</p>
-<a class="reference internal image-reference" href="../_images/dt2.png"><img alt="Top-down view of the track." class="align-center" src="../_images/dt2.png" style="width: 100%;" />
+<a class="reference internal image-reference" href="../_images/dt2.png"><img alt="Top-down view of the track." class="align-center" src="../_images/dt2.png" style="width: 75%;" />
 </a>
 <p>This gives us a network of triangles spanning all cones in sight. But not all triangles are useful…</p>
 </section>
@@ -192,7 +192,7 @@
 </pre></div>
 </div>
 <p>This skips triangles with cones all of the same color — those are likely from the same side of the track.</p>
-<a class="reference internal image-reference" href="../_images/dt3.png"><img alt="Top-down view of the track." class="align-center" src="../_images/dt3.png" style="width: 100%;" />
+<a class="reference internal image-reference" href="../_images/dt3.png"><img alt="Top-down view of the track." class="align-center" src="../_images/dt3.png" style="width: 75%;" />
 </a>
 </section>
 <section id="constructing-midpoints">
@@ -276,7 +276,7 @@
 </pre></div>
 </div>
 <p>These midpoints form our <em>centerline path</em>. Your car will eventually follow this!</p>
-<a class="reference internal image-reference" href="../_images/dt4.png"><img alt="Top-down view of the track." class="align-center" src="../_images/dt4.png" style="width: 100%;" />
+<a class="reference internal image-reference" href="../_images/dt4.png"><img alt="Top-down view of the track." class="align-center" src="../_images/dt4.png" style="width: 75%;" />
 </a>
 </section>
 <section id="stipulations">

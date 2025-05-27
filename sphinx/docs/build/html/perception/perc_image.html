@@ -60,9 +60,9 @@
 <li class="toctree-l2"><a class="reference internal" href="perc_lidar.html">LiDAR-Based Perception Pipeline: The Laser-Focused Cone Seeker</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Pathing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Path Generation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
@@ -103,23 +103,28 @@
 <p class="rubric">Image Acquisition: A Frame-Worthy Start</p>
 <p>The process begins with RGB cameras (usually global shutter to avoid motion artifacts), capturing high-frequency images of the scene ahead. These cameras are mounted to provide a wide, strategically-angled field of view to maximize cone visibility — because missing a cone in FSAE is like missing a gate in slalom skiing: embarrassing and point-costly.</p>
 <p class="rubric">Preprocessing</p>
-<p>Raw images undergo a series of essential grooming steps:
-- Undistortion: Correcting for fisheye or barrel distortion using known camera intrinsics.
-- Normalization: Adjusting illumination and contrast for visual consistency under ever-treacherous lighting conditions.
-- Region of Interest (ROI): Cropping out sky and other irrelevancies — cones don’t fly, so neither should your pixels.</p>
+<p>Raw images undergo a series of essential grooming steps:</p>
+<ul class="simple">
+<li><p>Undistortion: Correcting for fisheye or barrel distortion using known camera intrinsics.</p></li>
+<li><p>Normalization: Adjusting illumination and contrast for visual consistency under ever-treacherous lighting conditions.</p></li>
+<li><p>Region of Interest (ROI): Cropping out sky and other irrelevancies — cones don’t fly, so neither should your pixels.</p></li>
+</ul>
 <p class="rubric">Detection &amp; Classification: Where Vision Meets Intelligence</p>
-<p>At this stage, the pipeline identifies cones and tells them apart — not just as blobs, but as team players (blue = left, yellow = right, orange = start/finish). Two primary approaches coexist (sometimes contentiously):
-- Traditional CV Methods: Color segmentation in HSV space combined with contour detection and morphological operations. Effective, if slightly old-school — think of it as the vinyl of perception.
-- Deep Learning Methods: Convolutional Neural Networks (e.g., YOLO, SSD, or Faster R-CNN) trained on labeled FSAE datasets deliver robust bounding boxes and class probabilities. These models thrive on GPU-powered hardware and caffeine-fueled training marathons.</p>
+<p>At this stage, the pipeline identifies cones and tells them apart — not just as blobs, but as team players (blue = left, yellow = right, orange = start/finish). Two primary approaches coexist (sometimes contentiously):</p>
+<ul class="simple">
+<li><p>Traditional CV Methods: Color segmentation in HSV space combined with contour detection and morphological operations. Effective, if slightly old-school — think of it as the vinyl of perception.</p></li>
+<li><p>Deep Learning Methods: Convolutional Neural Networks (e.g., YOLO, SSD, or Faster R-CNN) trained on labeled FSAE datasets deliver robust bounding boxes and class probabilities. These models thrive on GPU-powered hardware and caffeine-fueled training marathons.</p></li>
+</ul>
 <p>Either way, the output is a set of 2D bounding boxes, complete with cone classification, timestamped and ready for dimensional resurrection.</p>
 <p class="rubric">From Flatland to Trackland</p>
-<p>Now comes the geometric magic — lifting detections from the 2D image plane into the 3D world:
-- Stereo Vision: Disparity maps from synchronized stereo cameras yield triangulated depth estimates.
-- Monocular Depth Estimation: For the brave or the hardware-constrained, monocular depth prediction using deep nets or size-prior heuristics can provide usable (if shakier) results.
-- Sensor Fusion with LiDAR: In many FSAE setups, the camera is not alone. LiDAR can corroborate or refine detections — an inter-sensor handshake that’s particularly helpful in uncertain terrain.</p>
+<p>Now comes the geometric magic — lifting detections from the 2D image plane into the 3D world:</p>
+<ul class="simple">
+<li><p>Stereo Vision: Disparity maps from synchronized stereo cameras yield triangulated depth estimates.</p></li>
+<li><p>Monocular Depth Estimation: For the brave or the hardware-constrained, monocular depth prediction using deep nets or size-prior heuristics can provide usable (if shakier) results.</p></li>
+<li><p>Sensor Fusion with LiDAR: In many FSAE setups, the camera is not alone. LiDAR can corroborate or refine detections — an inter-sensor handshake that’s particularly helpful in uncertain terrain.</p></li>
+</ul>
 <p class="rubric">Cone Tracking and Map Construction: Herding the Pixels</p>
 <p>Cone detections across frames are fused and filtered using algorithms such as Kalman filters or Hungarian matching. This ensures consistency, avoids duplication, and builds a short-term memory of the environment — essentially, a cone map annotated with color and position. This is handed off to the SLAM pipeline.</p>
-<p>WIP</p>
 </section>
 
 

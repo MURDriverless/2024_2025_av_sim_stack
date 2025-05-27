@@ -50,6 +50,7 @@ Structured as:
 
 Path Generation Pipeline
 -------------------------
+
 Structured as:
 
 - Takes cone positions as input and generates a drivable centerline path.
@@ -63,6 +64,8 @@ Structured as:
 Controls Pipeline
 -----------------
 
+Structured as:
+
 - Uses the midpoints of the path from the path generation pipeline to compute steering commands.
 - Selects a lookahead point on the path based on vehicle speed and geometry.
 - Minimizes lateral error by geometrically aligning the vehicle's heading to the lookahead point.
@@ -73,6 +76,8 @@ Controls Pipeline
 
 SLAM Pipeline
 -------------
+
+Structured as:
 
 - Simultaneously estimates vehicle pose and builds a map of cone landmarks using FastSLAM 2.0.
 - Uses a particle filter where each particle carries its own map hypothesis.

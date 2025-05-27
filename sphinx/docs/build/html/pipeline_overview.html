@@ -62,9 +62,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="perception/index.html">Perception</a></li>
-<li class="toctree-l1"><a class="reference internal" href="slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pathing/index.html">Pathing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pathing/index.html">Path Generation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="controls/index.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
@@ -170,6 +170,7 @@
 </section>
 <section id="controls-pipeline">
 <h2>Controls Pipeline<a class="headerlink" href="#controls-pipeline" title="Link to this heading"></a></h2>
+<p>Structured as:</p>
 <ul class="simple">
 <li><p>Uses the midpoints of the path from the path generation pipeline to compute steering commands.</p></li>
 <li><p>Selects a lookahead point on the path based on vehicle speed and geometry.</p></li>
@@ -181,6 +182,7 @@
 </section>
 <section id="slam-pipeline">
 <h2>SLAM Pipeline<a class="headerlink" href="#slam-pipeline" title="Link to this heading"></a></h2>
+<p>Structured as:</p>
 <ul class="simple">
 <li><p>Simultaneously estimates vehicle pose and builds a map of cone landmarks using FastSLAM 2.0.</p></li>
 <li><p>Uses a particle filter where each particle carries its own map hypothesis.</p></li>

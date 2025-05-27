@@ -40,9 +40,9 @@ Welcome to the MUR Autonomous page. This site provides all the documentation an 
 
    pipeline_overview
    perception/index
-   slam/index
    pathing/index
    controls/index
+   slam/index
 
 .. toctree::
    :hidden:

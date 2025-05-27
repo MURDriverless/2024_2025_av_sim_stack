@@ -19,7 +19,7 @@ That centerline isn’t the fastest “racing line,” but it’s exactly what y
 .. image:: _static/dt0.png
    :alt: Target centerline generation
    :align: center
-   :width: 100%
+   :width: 50%
 
 Delaunay Triangulation
 -------------------------
@@ -54,14 +54,14 @@ Suppose the the top-down view of the track looked like:
 .. image:: _static/dt1.png
    :alt: Top-down view of the track.
    :align: center
-   :width: 100%
+   :width: 75%
 
 The network of triangles that we created for the track using Delaunay() gives us:
 
 .. image:: _static/dt2.png
    :alt: Top-down view of the track.
    :align: center
-   :width: 100%
+   :width: 75%
 
 This gives us a network of triangles spanning all cones in sight. But not all triangles are useful...
 
@@ -96,7 +96,7 @@ This skips triangles with cones all of the same color — those are likely from 
 .. image:: _static/dt3.png
    :alt: Top-down view of the track.
    :align: center
-   :width: 100%
+   :width: 75%
 
 Constructing Midpoints
 --------------------------
@@ -187,7 +187,7 @@ These midpoints form our *centerline path*. Your car will eventually follow this
 .. image:: _static/dt4.png
    :alt: Top-down view of the track.
    :align: center
-   :width: 100%
+   :width: 75%
 
 Stipulations
 ------------
