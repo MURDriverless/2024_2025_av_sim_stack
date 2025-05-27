@@ -6,7 +6,7 @@ As outlined in the :doc:`Quick Start Guide <quick_start_guide>`, a *pipeline* is
 The following block diagram is the overall simplified architecture structure for use within the simulations.
 
 .. image:: _static/sim_arch.png
-   :width: 100%
+   :width: 75%
 
 Next, we have the overall proposed architecture for the physical system itself. The sensors are depicted in green blocks, the perception pipelines are depicted in blue, pipelines relating to mapping, localization, and path generation are depicted in yellow, and pipelines relating to movement commands are depicted in red. Lastly, actuators are depicted in purple blocks.
 
@@ -41,14 +41,12 @@ Structured as:
 
 Structured as:
 
-- Uses camera input to detect and classify cones on the track.
+- Uses camera input to detect and classify cones on the track depending on color.
+    - Uses convolutional neural networks (e.g. YOLOv8) for cone recognition.
+    - Trained on the Formula Student Objects in Context (FSOCO) cone dataset.
+    - Applies image preprocessing (e.g., distortion correction, HSV thresholding) for reliable detection.
 - Outputs pixel-space detections and converts them to world coordinates using camera calibration.
-- Integrates with LiDAR data for sensor fusion to improve accuracy and robustness.
-- Applies image preprocessing (e.g., distortion correction, HSV thresholding) for reliable detection.
-- Uses neural networks or classical vision (e.g., color segmentation + contouring) for cone recognition.
 - Publishes detected landmarks to a ROS2 topic for use in SLAM and planning pipelines.
-
-
 
 Path Generation Pipeline
 -------------------------
@@ -65,7 +63,7 @@ Structured as:
 Controls Pipeline
 -----------------
 
-- Uses the centerline path from the path planner to compute steering commands.
+- Uses the midpoints of the path from the path generation pipeline to compute steering commands.
 - Selects a lookahead point on the path based on vehicle speed and geometry.
 - Minimizes lateral error by geometrically aligning the vehicle's heading to the lookahead point.
 - Adjusts lookahead distance dynamically to balance responsiveness and stability.
@@ -76,7 +74,7 @@ Controls Pipeline
 SLAM Pipeline
 -------------
 
-- Simultaneously estimates vehicle pose and builds a map of cone landmarks.
+- Simultaneously estimates vehicle pose and builds a map of cone landmarks using FastSLAM 2.0.
 - Uses a particle filter where each particle carries its own map hypothesis.
 - Updates landmark positions and vehicle state using sensor data and motion model.
 - Incorporates LiDAR and camera observations to improve robustness in sparse environments.

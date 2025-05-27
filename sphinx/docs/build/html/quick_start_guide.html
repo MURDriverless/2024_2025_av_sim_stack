@@ -61,7 +61,6 @@
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline_integration_tutorial.html">Pipeline Integration Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="perception/index.html">Perception</a></li>
 <li class="toctree-l1"><a class="reference internal" href="slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pathing/index.html">Pathing</a></li>
@@ -101,12 +100,13 @@
              
   <section id="quick-start-guide">
 <h1>Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Link to this heading"></a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>WORK IN PROGRESS</p>
-</div>
-<a class="reference internal image-reference" href="_images/overview1.gif"><img alt="Source: Chalmers Formula Student fastest Driverless lap \| Formula Student East 2022 [Youtube]" src="_images/overview1.gif" style="width: 100%;" />
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/overview1.gif"><img alt="Source: Chalmers Formula Student fastest Driverless lap - Formula Student East 2022" src="_images/overview1.gif" style="width: 100%;" />
 </a>
+<figcaption>
+<p><span class="caption-text">Source: Chalmers Formula Student fastest Driverless lap ｜ Formula Student East 2022 [Youtube]</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>So what defines an autonomous vehicle? Well, for starters—it drives itself. Shocking, we know.</p>
@@ -117,14 +117,14 @@
 <ul class="simple">
 <li><p><a class="reference internal" href="perception/index.html"><span class="doc">Perception</span></a></p></li>
 <li><p><a class="reference internal" href="slam/index.html"><span class="doc">SLAM</span></a></p></li>
-<li><p><a class="reference internal" href="pathing/index.html"><span class="doc">Pathing</span></a></p></li>
+<li><p><a class="reference internal" href="pathing/index.html"><span class="doc">Path Generation</span></a></p></li>
 <li><p><a class="reference internal" href="controls/index.html"><span class="doc">Controls</span></a></p></li>
 </ul>
 <p>A pipeline is basically a series of steps (or stages) where each step processes data and passes it along to the next step. You can think of it as an assembly line in a factory where raw material goes in (input), each station adds something or modifies it (data processing), and returns a finished product (output of the pipeline). These inputs and outputs may be interdependent with other pipelines as we will see in their integration with one another. Click on the the links above to see a more in-depth explanation of the respective pipeline but for a TLDR:</p>
 <ul class="simple">
 <li><p>Perception allows the vehicle to see.</p></li>
 <li><p>SLAM allows the vehicle to create a mini-map of its environment and find its position/orientation in that mini-map.</p></li>
-<li><p>Pathing creates the directions the vehicle needs to know to get from point A to point B.</p></li>
+<li><p>Path Generation creates the directions the vehicle needs to know to get from point A to point B.</p></li>
 <li><p>Controls tells the vehicle how to follow those directions; what “limbs” it should move.</p></li>
 </ul>
 </section>

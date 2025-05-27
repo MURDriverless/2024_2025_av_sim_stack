@@ -88,7 +88,7 @@ should output:
     ...
 
 .. image:: _static/Picture2.png
-    :width: 100%
+    :width: 50%
 
 This shows every topic currently being published or subscribed.
 

@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Pipeline Integration Tutorials" href="pipeline_integration_tutorial.html" />
+    <link rel="next" title="Perception" href="perception/index.html" />
     <link rel="prev" title="Contact Us" href="contact.html" /> 
 </head>
 
@@ -61,7 +61,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#slam-pipeline">SLAM Pipeline</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline_integration_tutorial.html">Pipeline Integration Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="perception/index.html">Perception</a></li>
 <li class="toctree-l1"><a class="reference internal" href="slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pathing/index.html">Pathing</a></li>
@@ -103,7 +102,7 @@
 <h1>Pipeline Overview (TL;DR)<a class="headerlink" href="#pipeline-overview-tl-dr" title="Link to this heading"></a></h1>
 <p>As outlined in the <a class="reference internal" href="quick_start_guide.html"><span class="doc">Quick Start Guide</span></a>, a <em>pipeline</em> is a structured sequence of processing stages, where each stage takes input, transforms it, and hands it off to the next. This modularity enables scalable development and easier maintenance. By embracing modularity, we avoid the nightmare of monolithic scripts that resist evolution. Imagine revisiting your code five years from now, only to find that convolutional neural networks for image detection have gone the way of the floppy disk. With well-isolated pipeline components, swapping in the latest detection algorithm becomes a minor update—not a total rewrite.</p>
 <p>The following block diagram is the overall simplified architecture structure for use within the simulations.</p>
-<a class="reference internal image-reference" href="_images/sim_arch.png"><img alt="_images/sim_arch.png" src="_images/sim_arch.png" style="width: 100%;" />
+<a class="reference internal image-reference" href="_images/sim_arch.png"><img alt="_images/sim_arch.png" src="_images/sim_arch.png" style="width: 75%;" />
 </a>
 <p>Next, we have the overall proposed architecture for the physical system itself. The sensors are depicted in green blocks, the perception pipelines are depicted in blue, pipelines relating to mapping, localization, and path generation are depicted in yellow, and pipelines relating to movement commands are depicted in red. Lastly, actuators are depicted in purple blocks.</p>
 <a class="reference internal image-reference" href="_images/sim_arch2.png"><img alt="_images/sim_arch2.png" src="_images/sim_arch2.png" style="width: 100%;" />
@@ -144,11 +143,16 @@
 <p class="rubric">Image-based Perception</p>
 <p>Structured as:</p>
 <ul class="simple">
-<li><p>Uses camera input to detect and classify cones on the track.</p></li>
-<li><p>Outputs pixel-space detections and converts them to world coordinates using camera calibration.</p></li>
-<li><p>Integrates with LiDAR data for sensor fusion to improve accuracy and robustness.</p></li>
+<li><dl class="simple">
+<dt>Uses camera input to detect and classify cones on the track depending on color.</dt><dd><ul>
+<li><p>Uses convolutional neural networks (e.g. YOLOv8) for cone recognition.</p></li>
+<li><p>Trained on the Formula Student Objects in Context (FSOCO) cone dataset.</p></li>
 <li><p>Applies image preprocessing (e.g., distortion correction, HSV thresholding) for reliable detection.</p></li>
-<li><p>Uses neural networks or classical vision (e.g., color segmentation + contouring) for cone recognition.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Outputs pixel-space detections and converts them to world coordinates using camera calibration.</p></li>
 <li><p>Publishes detected landmarks to a ROS2 topic for use in SLAM and planning pipelines.</p></li>
 </ul>
 </section>
@@ -167,7 +171,7 @@
 <section id="controls-pipeline">
 <h2>Controls Pipeline<a class="headerlink" href="#controls-pipeline" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>Uses the centerline path from the path planner to compute steering commands.</p></li>
+<li><p>Uses the midpoints of the path from the path generation pipeline to compute steering commands.</p></li>
 <li><p>Selects a lookahead point on the path based on vehicle speed and geometry.</p></li>
 <li><p>Minimizes lateral error by geometrically aligning the vehicle’s heading to the lookahead point.</p></li>
 <li><p>Adjusts lookahead distance dynamically to balance responsiveness and stability.</p></li>
@@ -178,7 +182,7 @@
 <section id="slam-pipeline">
 <h2>SLAM Pipeline<a class="headerlink" href="#slam-pipeline" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>Simultaneously estimates vehicle pose and builds a map of cone landmarks.</p></li>
+<li><p>Simultaneously estimates vehicle pose and builds a map of cone landmarks using FastSLAM 2.0.</p></li>
 <li><p>Uses a particle filter where each particle carries its own map hypothesis.</p></li>
 <li><p>Updates landmark positions and vehicle state using sensor data and motion model.</p></li>
 <li><p>Incorporates LiDAR and camera observations to improve robustness in sparse environments.</p></li>
@@ -193,7 +197,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="contact.html" class="btn btn-neutral float-left" title="Contact Us" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline_integration_tutorial.html" class="btn btn-neutral float-right" title="Pipeline Integration Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="perception/index.html" class="btn btn-neutral float-right" title="Perception" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
