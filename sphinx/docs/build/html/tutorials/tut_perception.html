@@ -17,11 +17,12 @@
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Path Generation with Delaunay Triangulation" href="tut_pathgen.html" />
-    <link rel="prev" title="Vehicle Modeling Tutorial: Physics on Wheels" href="tut_vehicle_modeling2.html" /> 
+    <link rel="next" title="From the LiDAR pipeline to the Path Generation Pipeline" href="tut_perception2.html" />
+    <link rel="prev" title="Path Generation with Delaunay Triangulation" href="tut_pathgen.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,35 +56,40 @@
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tutorial.html">Pipeline Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Pathing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Path Generation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Pipeline Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#track-and-vehicle-model-tutorials">Track and Vehicle Model Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#path-generation-tutorials">Path Generation Tutorials</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#perception-tutorials">Perception Tutorials</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Lidar Perception Pipeline Tutorial</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#setting-the-stage">Setting the Stage</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#how-lidar-sees">How LiDAR “Sees”</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#visualizing-the-lidar-scan">Visualizing the LiDAR Scan</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#from-points-to-clusters">From Points to Clusters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#estimating-cone-centers">Estimating Cone Centers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#creating-detected-cones">Creating Detected Cones</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visualizing-the-lidar-scan">Visualizing the LiDAR Scan</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#interactive-exercise-play-with-parameters">Interactive Exercise: Play with Parameters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#challenge-add-a-dynamic-obstacle">Challenge: Add a Dynamic Obstacle</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="tut_perception2.html">From the LiDAR pipeline to the Path Generation Pipeline</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#pathing-tutorials">Pathing Tutorials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#controls-tutorials">Controls Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#slam-tutorials">SLAM Tutorials</a></li>
 </ul>
 </li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hardware</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../hardware/lidar.html">Ouster OS1-128 LiDAR Setup and Tutorial</a></li>
 </ul>
 
         </div>
@@ -100,7 +106,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Pipeline Tutorials</a></li>
       <li class="breadcrumb-item active">Lidar Perception Pipeline Tutorial</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -113,7 +119,7 @@
   <section id="lidar-perception-pipeline-tutorial">
 <h1>Lidar Perception Pipeline Tutorial<a class="headerlink" href="#lidar-perception-pipeline-tutorial" title="Link to this heading"></a></h1>
 <p>Welcome to the <strong>LiDAR Perception Tutorial</strong> — your first step into seeing the world of autonomous perception!</p>
-<p>This tutorial is designed for new members of the MUR Autonomous team and will walk you through how our simulated LiDAR system detects cones, estimates their positions, and feeds them into the autonomy pipeline.</p>
+<p>This tutorial is designed to walk you through how our simulated LiDAR system detects cones, estimates their positions, and feeds into the Path Generation and the SLAM pipelines.</p>
 <nav class="contents local" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#setting-the-stage" id="id1">Setting the Stage</a></p></li>
@@ -122,10 +128,10 @@
 <li><p><a class="reference internal" href="#ray-circle-intersection-explained" id="id3">Ray-Circle Intersection Explained</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#visualizing-the-lidar-scan" id="id4">Visualizing the LiDAR Scan</a></p></li>
-<li><p><a class="reference internal" href="#from-points-to-clusters" id="id5">From Points to Clusters</a></p></li>
-<li><p><a class="reference internal" href="#estimating-cone-centers" id="id6">Estimating Cone Centers</a></p></li>
-<li><p><a class="reference internal" href="#creating-detected-cones" id="id7">Creating Detected Cones</a></p></li>
+<li><p><a class="reference internal" href="#from-points-to-clusters" id="id4">From Points to Clusters</a></p></li>
+<li><p><a class="reference internal" href="#estimating-cone-centers" id="id5">Estimating Cone Centers</a></p></li>
+<li><p><a class="reference internal" href="#creating-detected-cones" id="id6">Creating Detected Cones</a></p></li>
+<li><p><a class="reference internal" href="#visualizing-the-lidar-scan" id="id7">Visualizing the LiDAR Scan</a></p></li>
 <li><p><a class="reference internal" href="#interactive-exercise-play-with-parameters" id="id8">Interactive Exercise: Play with Parameters</a></p></li>
 <li><p><a class="reference internal" href="#challenge-add-a-dynamic-obstacle" id="id9">Challenge: Add a Dynamic Obstacle</a></p></li>
 <li><p><a class="reference internal" href="#summary" id="id10">Summary</a></p></li>
@@ -135,38 +141,102 @@
 <h2><a class="toc-backref" href="#id1" role="doc-backlink">Setting the Stage</a><a class="headerlink" href="#setting-the-stage" title="Link to this heading"></a></h2>
 <p>Our vehicle is equipped with a <strong>LiDAR sensor</strong> mounted at the front. It spins in an arc, casting rays and measuring distances to detect obstacles — in our case, <strong>cones</strong>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lidar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lidar</span>
-<span class="n">lidar</span> <span class="o">=</span> <span class="n">Lidar</span><span class="p">(</span><span class="n">car</span><span class="p">)</span>
+<span class="n">lidar_sensor</span> <span class="o">=</span> <span class="n">Lidar</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">yaw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pos_c</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">range_min</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">range_max</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">angle_min</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mi">80</span><span class="p">),</span> <span class="n">angle_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mi">80</span><span class="p">),</span><span class="n">resolution</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">500</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This initializes the LiDAR system and attaches it to the <cite>car</cite>. It sets parameters such as:</p>
-<ul class="simple">
-<li><p><strong>Range:</strong> 0.1 m to 10.0 m</p></li>
-<li><p><strong>Field of view:</strong> ±80 degrees</p></li>
-<li><p><strong>Resolution:</strong> π/200 radians</p></li>
-</ul>
+<p>This initializes the LiDAR system by creating a LiDAR object. The LiDAR itself can be customized by changing it’s default parameters.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Parameter</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Position in the global frame</strong><span class="math notranslate nohighlight">\(\ [pos]\)</span></p></td>
+<td><p>Sets the LiDAR’s position on the car.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Yaw relative to the heading of the car</strong><span class="math notranslate nohighlight">\([yaw]\)</span></p></td>
+<td><p>Orientation of the LiDAR relative to the heading of the car.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Position on the car relative to the center of mass</strong>: [<cite>pos_c</cite>]</p></td>
+<td><p>Sets the local coordinate frame origin of the LiDAR.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Range</strong> <span class="math notranslate nohighlight">\(\in [range_{min}, range_{max}]\)</span></p></td>
+<td><p>0.1 m to 10.0 m</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Field of View</strong> <span class="math notranslate nohighlight">\(\in [angle_{min}, angle_{max}]\)</span></p></td>
+<td><p>±80 degrees</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Resolution</strong> <span class="math notranslate nohighlight">\([resolution]\)</span></p></td>
+<td><p>π/200 radians</p></td>
+</tr>
+</tbody>
+</table>
 <p>Each frame, the LiDAR “scans” and attempts to detect cones around the car.</p>
 </section>
 <section id="how-lidar-sees">
 <h2><a class="toc-backref" href="#id2" role="doc-backlink">How LiDAR “Sees”</a><a class="headerlink" href="#how-lidar-sees" title="Link to this heading"></a></h2>
 <p>The key perception happens in <code class="xref py py-meth docutils literal notranslate"><span class="pre">Lidar.sense_obstacle_fast()</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lidar</span><span class="o">.</span><span class="n">sense_obstacle_fast</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">sense_obstacle_fast</span><span class="p">(</span><span class="n">track</span><span class="p">):</span>
+   <span class="o">...</span>
 </pre></div>
 </div>
-<p>This casts out virtual rays in the car’s heading and checks whether they hit cone-like objects using a geometric trick — ray-circle intersection!</p>
+<p>This casts out virtual rays in the car’s heading and checks whether they hit cone-like objects using a geometric trick — ray-circle intersection! This also adds additional sensor noise (range + angle) to simulate realism.</p>
 <section id="ray-circle-intersection-explained">
 <h3><a class="toc-backref" href="#id3" role="doc-backlink">Ray-Circle Intersection Explained</a><a class="headerlink" href="#ray-circle-intersection-explained" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">ray_circle_intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
     <span class="o">...</span>
 </pre></div>
 </div>
-<p>This function determines if a ray (origin <cite>o</cite>, direction <cite>d</cite>) intersects a cone modeled as a circle (<cite>c</cite>, radius <cite>r</cite>). If an intersection exists within LiDAR range, it’s added to the <cite>sense_data</cite>.</p>
+<p>Inside <code class="xref py py-meth docutils literal notranslate"><span class="pre">sense_obstacle_fast()</span></code>, the function <code class="xref py py-meth docutils literal notranslate"><span class="pre">ray_circle_intersection()</span></code> is called. This function determines if a ray (origin <cite>o</cite>, direction <cite>d</cite>) intersects a cone modeled as a circle (<cite>c</cite>, radius <cite>r</cite>). If an intersection exists within LiDAR range, it’s added to the <cite>sense_data</cite>.</p>
 </section>
+</section>
+<section id="from-points-to-clusters">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">From Points to Clusters</a><a class="headerlink" href="#from-points-to-clusters" title="Link to this heading"></a></h2>
+<p>The LiDAR doesn’t “see cones” — it sees scattered points on a pointcloud. To extract cones, we use <strong>clustering</strong>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">fast_euclidean_clustering</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">min_cluster_size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+   <span class="o">...</span>
+   <span class="k">return</span> <span class="n">clusters</span>
+</pre></div>
+</div>
+<p>We group nearby points using a fast KD-tree-based clustering method. Each cluster should (ideally) correspond to one cone.</p>
+</section>
+<section id="estimating-cone-centers">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Estimating Cone Centers</a><a class="headerlink" href="#estimating-cone-centers" title="Link to this heading"></a></h2>
+<p>Once clusters are found, we filter out small clusters (e.g. noise) below a size threshold:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_clusters_from_clusters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clusters</span><span class="p">,</span> <span class="n">min_cluster_size</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+   <span class="k">return</span> <span class="p">[</span><span class="n">cluster</span> <span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">clusters</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_cluster_size</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>and once noisy clusters are filter out, we estimate where the cone <em>actually</em> is:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">estimate_cone_center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cluster_indices</span><span class="p">,</span> <span class="n">known_radius</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+   <span class="o">...</span>
+</pre></div>
+</div>
+<p>Each cluster’s center is estimated depending on the number of points:
+- 1 point → backtracks the raw to estimate cone center
+- 2 points → midpoint + perpendicular offset
+- 3+ points → uses least-squares circle fitting with known radius</p>
+</section>
+<section id="creating-detected-cones">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Creating Detected Cones</a><a class="headerlink" href="#creating-detected-cones" title="Link to this heading"></a></h2>
+<p>We convert cluster centers + color back to usable cone objects:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_detected_cones</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clusters</span><span class="p">,</span> <span class="n">cone_pos</span><span class="p">):</span>
+   <span class="o">...</span>
+   <span class="k">return</span> <span class="n">detected_cones</span>
+</pre></div>
+</div>
+<p>Each <cite>Cone</cite> has an estimated <cite>(x, y)</cite> and color. It’s important to note that the coordinates of the detected cones are represented in the <strong>local frame</strong> of the car.</p>
 </section>
 <section id="visualizing-the-lidar-scan">
-<h2><a class="toc-backref" href="#id4" role="doc-backlink">Visualizing the LiDAR Scan</a><a class="headerlink" href="#visualizing-the-lidar-scan" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Visualizing the LiDAR Scan</a><a class="headerlink" href="#visualizing-the-lidar-scan" title="Link to this heading"></a></h2>
 <p>Want to <em>see</em> what LiDAR sees? Use:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lidar</span><span class="o">.</span><span class="n">plot_lidar</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lidar_sensor</span><span class="o">.</span><span class="n">plot_lidar</span><span class="p">()</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Ensure that you’ve created the world, track, and car objects, and that the lidar object has been added to the vehicle using: <code class="docutils literal notranslate"><span class="pre">car_name.add_lidar(lidar_sensor)</span></code></p>
 </div>
 <p>This opens a dual view:</p>
 <ul class="simple">
@@ -176,33 +246,6 @@
 <a class="reference internal image-reference" href="../_images/tut_lidar_plot.png"><img alt="Example LiDAR plot" class="align-center" src="../_images/tut_lidar_plot.png" style="width: 100%;" />
 </a>
 </section>
-<section id="from-points-to-clusters">
-<h2><a class="toc-backref" href="#id5" role="doc-backlink">From Points to Clusters</a><a class="headerlink" href="#from-points-to-clusters" title="Link to this heading"></a></h2>
-<p>The LiDAR doesn’t “see cones” — it sees scattered points. To extract cones, we use <strong>clustering</strong>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lidar</span><span class="o">.</span><span class="n">clusters</span> <span class="o">=</span> <span class="n">lidar</span><span class="o">.</span><span class="n">fast_euclidean_clustering</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>We group nearby points using a fast KD-tree-based clustering method. Each cluster should (ideally) correspond to one cone.</p>
-</section>
-<section id="estimating-cone-centers">
-<h2><a class="toc-backref" href="#id6" role="doc-backlink">Estimating Cone Centers</a><a class="headerlink" href="#estimating-cone-centers" title="Link to this heading"></a></h2>
-<p>Once clusters are found, we estimate where the cone <em>actually</em> is:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lidar</span><span class="o">.</span><span class="n">estimate_cone_center</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Depending on the number of points:
-- 1 point → backproject
-- 2 points → midpoint + perpendicular offset
-- 3+ points → solve for the circle that fits</p>
-</section>
-<section id="creating-detected-cones">
-<h2><a class="toc-backref" href="#id7" role="doc-backlink">Creating Detected Cones</a><a class="headerlink" href="#creating-detected-cones" title="Link to this heading"></a></h2>
-<p>We convert cluster centers + color back to usable cone objects:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lidar</span><span class="o">.</span><span class="n">get_detected_cones</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>Each <cite>Cone</cite> has an estimated <cite>(x, y)</cite> and color.</p>
-</section>
 <section id="interactive-exercise-play-with-parameters">
 <h2><a class="toc-backref" href="#id8" role="doc-backlink">Interactive Exercise: Play with Parameters</a><a class="headerlink" href="#interactive-exercise-play-with-parameters" title="Link to this heading"></a></h2>
 <p>Try modifying these values and re-running the simulation:</p>
@@ -211,21 +254,18 @@
 <li><p><strong>Range</strong> — What if <cite>range_max = 5.0</cite>?</p></li>
 <li><p><strong>Noise</strong> — What if you add random noise to cone positions?</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lidar</span><span class="o">.</span><span class="n">noise</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># Add this in the update loop</span>
-</pre></div>
-</div>
 </section>
 <section id="challenge-add-a-dynamic-obstacle">
 <h2><a class="toc-backref" href="#id9" role="doc-backlink">Challenge: Add a Dynamic Obstacle</a><a class="headerlink" href="#challenge-add-a-dynamic-obstacle" title="Link to this heading"></a></h2>
-<p>Extend the <cite>sense_obstacle_fast()</cite> function to ignore cones moving faster than 0.5 m/s (hint: use <cite>cone.vx</cite>, <cite>cone.vy</cite> if available).</p>
+<p>Extend the <cite>sense_obstacle_fast()</cite> function to ignore cones moving faster than 0.5 m/s.</p>
 </section>
 <section id="summary">
 <h2><a class="toc-backref" href="#id10" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
-<p>In this tutorial, you learned how our LiDAR simulation:</p>
+<p>In this tutorial, you learned how our LiDAR pipeline:</p>
 <ul class="simple">
 <li><p>Casts rays to detect obstacles</p></li>
 <li><p>Groups hits into cone-like clusters</p></li>
-<li><p>Estimates cone positions and passes them down the pipeline</p></li>
+<li><p>Estimates cone positions and returns them for use in other pipelines</p></li>
 </ul>
 </section>
 </section>
@@ -234,8 +274,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tut_vehicle_modeling2.html" class="btn btn-neutral float-left" title="Vehicle Modeling Tutorial: Physics on Wheels" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tut_pathgen.html" class="btn btn-neutral float-right" title="Path Generation with Delaunay Triangulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tut_pathgen.html" class="btn btn-neutral float-left" title="Path Generation with Delaunay Triangulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tut_perception2.html" class="btn btn-neutral float-right" title="From the LiDAR pipeline to the Path Generation Pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

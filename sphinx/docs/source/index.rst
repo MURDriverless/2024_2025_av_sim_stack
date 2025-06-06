@@ -7,20 +7,20 @@ MUR Autonomous Home
 ====================
 
 .. image:: _static/MURA_rviz.gif
-   :width: 100%
+   :width: 75%
 
 .. image:: _static/MURA_rviz2.gif
-   :width: 100%
+   :width: 75%
 
 Welcome to the MUR Autonomous page. This site provides all the documentation an autonomous member needs to understand the MUR Autonomous Architecture.
 
 .. note::
 
-   This documentation is **incomplete** and a work in progress — contributions welcome! :doc:`Click here to get in touch. <contact>`
+   This documentation is considered complete. However, we will always strive to improve our documentation and welcome contributions from others! :doc:`Click here to get in touch. <contact>`
 
-- For Aidan and Jae, see this :doc:`guide <sphinx_doc_guide>` to see how to edit our Sphinx documentation.
-- Check out the :doc:`Quick Start Guide <quick_start_guide>` to get a quick overview for MUR Autonomous.
+.. - Check out the :doc:`Quick Start Guide <quick_start_guide>` to get a quick overview for MUR Autonomous.
 - Visit the :doc:`Development Environment Setup <dev_setup>` section to see how to prepare a development environment suited for MUR Autonomous.
+- Already know the theory? Test your knowledge with our :doc:`tutorials <tutorials/index>`.
 
 .. toctree::
    :hidden:
@@ -39,11 +39,10 @@ Welcome to the MUR Autonomous page. This site provides all the documentation an 
    :maxdepth: 2
 
    pipeline_overview
-   pipeline_tutorial
    perception/index
-   slam/index
    pathing/index
    controls/index
+   slam/index
 
 .. toctree::
    :hidden:
@@ -51,3 +50,10 @@ Welcome to the MUR Autonomous page. This site provides all the documentation an 
    :maxdepth: 2
 
    tutorials/index
+
+.. toctree::
+   :hidden:
+   :caption: Hardware
+   :maxdepth: 2
+
+   hardware/lidar

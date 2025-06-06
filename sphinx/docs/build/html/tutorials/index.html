@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorials &mdash; MUR Autonomous  documentation</title>
+  <title>Pipeline Tutorials &mdash; MUR Autonomous  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3e8edd65" />
@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="World and Track Building Tutorial" href="tut_world_track_cones.html" />
-    <link rel="prev" title="Controls" href="../controls/index.html" /> 
+    <link rel="prev" title="Simultaneous Localization and Mapping (SLAM)" href="../slam/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,34 +55,42 @@
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tutorial.html">Pipeline Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Pathing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Path Generation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorials</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline Tutorials</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#track-and-vehicle-model-tutorials">Track and Vehicle Model Tutorials</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tut_world_track_cones.html">World and Track Building Tutorial</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tut_vehicle_modeling.html">Vehicle Modeling Tutorial: Physics on Wheels</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#perception-tutorials">Perception Tutorials</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tut_perception.html">Lidar Perception Pipeline Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#path-generation-tutorials">Path Generation Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tut_pathgen.html">Path Generation with Delaunay Triangulation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#pathing-tutorials">Pathing Tutorials</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tut_pathgen.html">Path Generation with Delaunay Triangulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#perception-tutorials">Perception Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tut_perception.html">Lidar Perception Pipeline Tutorial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tut_perception2.html">From the LiDAR pipeline to the Path Generation Pipeline</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#controls-tutorials">Controls Tutorials</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tut_controls.html">Path Following with Pure Pursuit</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#slam-tutorials">SLAM Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tut_slam.html">SLAM &amp; FastSLAM 2.0 Tutorial</a></li>
 </ul>
 </li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hardware</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../hardware/lidar.html">Ouster OS1-128 LiDAR Setup and Tutorial</a></li>
 </ul>
 
         </div>
@@ -99,7 +107,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Tutorials</li>
+      <li class="breadcrumb-item active">Pipeline Tutorials</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -108,14 +116,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tutorials">
-<h1>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading"></a></h1>
+  <section id="pipeline-tutorials">
+<h1>Pipeline Tutorials<a class="headerlink" href="#pipeline-tutorials" title="Link to this heading"></a></h1>
 <p>This page is a compiled list of tutorial to get autonomous members acquainted with the architecture.</p>
 <section id="track-and-vehicle-model-tutorials">
-<span id="perception-pipeline-label"></span><h2>Track and Vehicle Model Tutorials<a class="headerlink" href="#track-and-vehicle-model-tutorials" title="Link to this heading"></a></h2>
+<h2>Track and Vehicle Model Tutorials<a class="headerlink" href="#track-and-vehicle-model-tutorials" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="tut_world_track_cones.html"><span class="doc">World and Track Building Tutorial</span></a></p></li>
 <li><p><a class="reference internal" href="tut_vehicle_modeling.html"><span class="doc">Vehicle Modeling Tutorial</span></a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="path-generation-tutorials">
+<h2>Path Generation Tutorials<a class="headerlink" href="#path-generation-tutorials" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="tut_pathgen.html"><span class="doc">Path Generation Tutorial</span></a></p></li>
 </ul>
 <div class="toctree-wrapper compound">
 </div>
@@ -124,15 +140,7 @@
 <h2>Perception Tutorials<a class="headerlink" href="#perception-tutorials" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="tut_perception.html"><span class="doc">LiDAR Tutorial</span></a></p></li>
-<li><p>link to camera-based tutorial</p></li>
-</ul>
-<div class="toctree-wrapper compound">
-</div>
-</section>
-<section id="pathing-tutorials">
-<h2>Pathing Tutorials<a class="headerlink" href="#pathing-tutorials" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="tut_pathgen.html"><span class="doc">Path Generation Tutorial</span></a></p></li>
+<li><p><a class="reference internal" href="tut_perception2.html"><span class="doc">From LiDAR to Path Gen Tutorial</span></a></p></li>
 </ul>
 <div class="toctree-wrapper compound">
 </div>
@@ -145,13 +153,21 @@
 <div class="toctree-wrapper compound">
 </div>
 </section>
+<section id="slam-tutorials">
+<h2>SLAM Tutorials<a class="headerlink" href="#slam-tutorials" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="tut_slam.html"><span class="doc">SLAM Tutorial</span></a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../controls/index.html" class="btn btn-neutral float-left" title="Controls" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../slam/index.html" class="btn btn-neutral float-left" title="Simultaneous Localization and Mapping (SLAM)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="tut_world_track_cones.html" class="btn btn-neutral float-right" title="World and Track Building Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

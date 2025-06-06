@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Lidar Perception Pipeline Tutorial" href="tut_perception.html" />
+    <link rel="next" title="Path Generation with Delaunay Triangulation" href="tut_pathgen.html" />
     <link rel="prev" title="World and Track Building Tutorial" href="tut_world_track_cones.html" /> 
 </head>
 
@@ -56,15 +56,14 @@
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tutorial.html">Pipeline Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Pathing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Path Generation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Pipeline Tutorials</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#track-and-vehicle-model-tutorials">Track and Vehicle Model Tutorials</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="tut_world_track_cones.html">World and Track Building Tutorial</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Vehicle Modeling Tutorial: Physics on Wheels</a><ul>
@@ -81,11 +80,16 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#path-generation-tutorials">Path Generation Tutorials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#perception-tutorials">Perception Tutorials</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#pathing-tutorials">Pathing Tutorials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#controls-tutorials">Controls Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#slam-tutorials">SLAM Tutorials</a></li>
 </ul>
 </li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hardware</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../hardware/lidar.html">Ouster OS1-128 LiDAR Setup and Tutorial</a></li>
 </ul>
 
         </div>
@@ -102,7 +106,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Pipeline Tutorials</a></li>
       <li class="breadcrumb-item active">Vehicle Modeling Tutorial: Physics on Wheels</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -198,10 +202,10 @@
 <tr class="row-even"><td><p>Mass</p></td>
 <td><p>240 kg</p></td>
 </tr>
-<tr class="row-odd"><td><p>Lf (front)</p></td>
+<tr class="row-odd"><td><p>lf (front)</p></td>
 <td><p>0.722 m</p></td>
 </tr>
-<tr class="row-even"><td><p>Lr (rear)</p></td>
+<tr class="row-even"><td><p>lr (rear)</p></td>
 <td><p>0.888 m</p></td>
 </tr>
 <tr class="row-odd"><td><p>Inertia <cite>Iz</cite></p></td>
@@ -271,13 +275,13 @@
 </section>
 <section id="rk4-integration">
 <h2><a class="toc-backref" href="#id8" role="doc-backlink">RK4 Integration</a><a class="headerlink" href="#rk4-integration" title="Link to this heading"></a></h2>
-<p>Because we want to run this in real-time and not at a specific time instance, the car updates its state using <strong>Runge-Kutta 4th order integration</strong>:</p>
+<p>Because we want to run this in real-time and not at a specific time instance, the car updates its state using <strong>Runge-Kutta 4th order integration</strong>. More specifically, it is primarily used for numerically solving the differential equations from the vehicle model. These ordinary differential equations (ODEs) include longitudinal/lateral dynamics, tire models, and steering and throttle/braking input effects.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">m1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_state_dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
 <span class="o">...</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">+=</span> <span class="n">state_var</span>
 </pre></div>
 </div>
-<p>This provides stable and accurate motion updates, especially through curves.</p>
+<p>Therefore, this provides stable and accurate motion updates, especially through curves.</p>
 </section>
 <section id="control-inputs">
 <h2><a class="toc-backref" href="#id9" role="doc-backlink">Control Inputs</a><a class="headerlink" href="#control-inputs" title="Link to this heading"></a></h2>
@@ -344,7 +348,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="tut_world_track_cones.html" class="btn btn-neutral float-left" title="World and Track Building Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tut_perception.html" class="btn btn-neutral float-right" title="Lidar Perception Pipeline Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tut_pathgen.html" class="btn btn-neutral float-right" title="Path Generation with Delaunay Triangulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

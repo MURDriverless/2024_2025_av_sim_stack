@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pathing &mdash; MUR Autonomous  documentation</title>
+  <title>Path Generation &mdash; MUR Autonomous  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3e8edd65" />
@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Controls" href="../controls/index.html" />
-    <link rel="prev" title="Simultaneous Localization and Mapping (SLAM)" href="../slam/index.html" /> 
+    <link rel="prev" title="LiDAR-Based Perception Pipeline: The Laser-Focused Cone Seeker" href="../perception/perc_lidar.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,18 +55,21 @@
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tutorial.html">Pipeline Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Pathing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#let-s-draw-a-line">Let’s Draw a Line</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Path Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#where-s-the-path">Where’s the path?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Pipeline Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hardware</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../hardware/lidar.html">Ouster OS1-128 LiDAR Setup and Tutorial</a></li>
 </ul>
 
         </div>
@@ -83,7 +86,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Pathing</li>
+      <li class="breadcrumb-item active">Path Generation</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -92,16 +95,58 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pathing">
-<h1>Pathing<a class="headerlink" href="#pathing" title="Link to this heading"></a></h1>
-<p>What is pathing? In the context of this pipeline, pathing—also known as <em>path generation</em>—refers to the process of computing the desired trajectory that the vehicle <strong>should</strong> follow. However, it’s crucial to understand that just because we’ve generated a path doesn’t mean the vehicle magically knows how to follow it.</p>
+  <section id="path-generation">
+<h1>Path Generation<a class="headerlink" href="#path-generation" title="Link to this heading"></a></h1>
+<p>What is path generation? In the context of this pipeline, path generation—also known as <em>path generation</em>—refers to the process of computing the desired trajectory that the vehicle <strong>should</strong> follow. However, it’s crucial to understand that just because we’ve generated a path doesn’t mean the vehicle magically knows how to follow it.</p>
 <p>The task of interpreting and executing this path—known as <em>path following</em>—is handled by a separate algorithm within the controls pipeline, which falls outside the scope of this discussion.</p>
-<p>Think of it this way: our pathing pipeline is saying to the vehicle, “Here’s the route we plan to take,” but it’s not yet telling how to steer or when to accelerate. Those details come later.</p>
-<section id="let-s-draw-a-line">
-<h2>Let’s Draw a Line<a class="headerlink" href="#let-s-draw-a-line" title="Link to this heading"></a></h2>
+<p>Think of it this way: our path generation pipeline is saying to the vehicle, “Here’s the route we plan to take,” but it’s not yet telling how to steer or when to accelerate. Those details come later.</p>
+<section id="where-s-the-path">
+<h2>Where’s the path?<a class="headerlink" href="#where-s-the-path" title="Link to this heading"></a></h2>
 <p>Before we can even consider telling the vehicle how to steer, we first need to generate a viable path. At first glance, this might seem as simple as drawing a straight line from point A to point B. And sure, that might work—if the track were a featureless runway.</p>
 <p>Fortunately, the FSAE driverless track is far more dynamic. It includes everything from high-speed straights to sweeping curves and tight slaloms—features that challenge the vehicle’s cornering capabilities and make the path planning problem far more engaging (and fun).</p>
 <p>Now the question becomes, how do we draw that line (or path)?</p>
+<p>Imagine you’re an autonomous car on an FSAE track. You wake up, blink your LiDAR eyes, and all you see are a bunch of blue cones to your left and yellow cones to your right. You don’t know where the track goes, but you do know: “follow the road, not the cones.”</p>
+<p>Enter the <em>Path Generation Pipeline</em> — your inner map-maker, part artist, part algorithm. Its job? Take these raw, unstructured, disorganized cone observations and stitch them into a smooth, followable path that avoids embarrassment at turn 1.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The FSAE track is a bounded environment — blue cones on the left, yellow on the right, no surprises in the middle. This consistent coloring is your best friend when it comes to computational sanity.</p>
+</div>
+<p>Delaunay Triangulation: Not Just Fancy Geometry</p>
+<hr class="docutils" />
+<p>To make sense of the chaos, we employ <em>Delaunay Triangulation</em>. No, it’s not a French dessert. It’s a computational geometry technique that creates triangles from scattered points (cones in our case) such that no point lies inside the circumcircle of any triangle.</p>
+<p>Why Delaunay?</p>
+<ul class="simple">
+<li><p>It’s robust to noise (perfect for those occasional mis-detected cones).</p></li>
+<li><p>It avoids skinny triangles, which means better spatial representation.</p></li>
+<li><p>Most importantly: it gives us an implicit connectivity between cones — even though they’re just point clouds to begin with.</p></li>
+</ul>
+<p>Here’s the clever bit: by triangulating all the cones together — left and right — and filtering triangles that connect <em>one left and one right cone</em>, we reveal the hidden <em>midpoints</em>. These midpoints are the ghostly centerline the cones never explicitly gave us. They form the <strong>ideal path</strong> our vehicle should follow.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Pseudo-snippet for triangulated midpoint generation</span>
+<span class="k">for</span> <span class="n">triangle</span> <span class="ow">in</span> <span class="n">delaunay_triangles</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">triangle_has_one_blue_and_one_yellow_cone</span><span class="p">(</span><span class="n">triangle</span><span class="p">):</span>
+        <span class="n">midpoint</span> <span class="o">=</span> <span class="n">average</span><span class="p">(</span><span class="n">blue_cone</span><span class="p">,</span> <span class="n">yellow_cone</span><span class="p">)</span>
+        <span class="n">path_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">midpoint</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Think of it like this: every blue-yellow triangle gives us a bridge from the left boundary to the right, and the midpoint of that bridge is where we want to be — balanced, elegant, and fast.</p>
+<p>Midpoint Filtering and Smoothing</p>
+<hr class="docutils" />
+<p>But raw midpoints are like rough diamonds — uncut and possibly out of order. We need to:</p>
+<ol class="arabic simple">
+<li><p><strong>Order</strong> the midpoints to form a continuous path. This is done using nearest-neighbor traversal or heuristics based on vehicle pose.</p></li>
+<li><p><strong>Smooth</strong> the path using splines or moving averages — because while our car loves racing, it hates jerky steering.</p></li>
+</ol>
+<p>The output? A continuous, smooth centerline path that navigates right through the middle of the track — the best compromise between aggression and control.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/dt0.png"><img alt="../_images/dt0.png" src="../_images/dt0.png" style="width: 80%;" />
+</a>
+<figcaption>
+<p><span class="caption-text"><em>Visual of Delaunay triangulation and centerline extraction from cone boundaries.</em></span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Next Steps</p>
+<hr class="docutils" />
+<p>This freshly cooked path doesn’t drive the car by itself (yet). It’s handed off to the next star of the show: the <em>Controls Pipeline</em>. But that’s a story for another page.</p>
 </section>
 </section>
 
@@ -109,7 +154,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../slam/index.html" class="btn btn-neutral float-left" title="Simultaneous Localization and Mapping (SLAM)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../perception/perc_lidar.html" class="btn btn-neutral float-left" title="LiDAR-Based Perception Pipeline: The Laser-Focused Cone Seeker" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../controls/index.html" class="btn btn-neutral float-right" title="Controls" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

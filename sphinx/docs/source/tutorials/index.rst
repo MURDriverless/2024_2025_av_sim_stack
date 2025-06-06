@@ -1,9 +1,7 @@
-Tutorials
-==========
+Pipeline Tutorials
+===================
 
 This page is a compiled list of tutorial to get autonomous members acquainted with the architecture.
-
-.. _perception_pipeline_label:
 
 Track and Vehicle Model Tutorials
 ----------------------------------
@@ -18,19 +16,8 @@ Track and Vehicle Model Tutorials
     tut_world_track_cones
     tut_vehicle_modeling
 
-Perception Tutorials
----------------------
-- :doc:`LiDAR Tutorial<tut_perception>`
-- link to camera-based tutorial
-
-.. toctree::
-    :hidden:
-    :maxdepth: 2
-
-    tut_perception
-
-Pathing Tutorials
----------------------
+Path Generation Tutorials
+--------------------------
 - :doc:`Path Generation Tutorial<tut_pathgen>`
 
 .. toctree::
@@ -38,6 +25,19 @@ Pathing Tutorials
     :maxdepth: 2
 
     tut_pathgen
+
+Perception Tutorials
+---------------------
+- :doc:`LiDAR Tutorial<tut_perception>`
+- :doc:`From LiDAR to Path Gen Tutorial<tut_perception2>`
+
+.. toctree::
+    :hidden:
+    :maxdepth: 2
+
+    tut_perception
+    tut_perception2
+
 
 Controls Tutorials
 ---------------------
@@ -48,3 +48,13 @@ Controls Tutorials
     :maxdepth: 2
 
     tut_controls
+
+SLAM Tutorials
+---------------------
+- :doc:`SLAM Tutorial<tut_slam>`
+
+.. toctree::
+    :hidden:
+    :maxdepth: 2
+
+    tut_slam

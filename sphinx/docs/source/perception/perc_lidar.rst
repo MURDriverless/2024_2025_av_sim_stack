@@ -33,5 +33,3 @@ Since LiDAR doesn’t “see” color, classification into blue/yellow/orange be
 - Spatial Inference: If fusion fails, cones may be classified heuristically based on position (e.g., left vs. right side of track).
 
 This is where LiDAR and camera must play nice — a fusion of talents like Sherlock and Watson, but with more calibration headaches.
-
-WIP

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>&lt;no title&gt; &mdash; MUR Autonomous  documentation</title>
+  <title>SLAM &amp; FastSLAM 2.0 Tutorial &mdash; MUR Autonomous  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3e8edd65" />
@@ -19,7 +19,9 @@
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Ouster OS1-128 LiDAR Setup and Tutorial" href="../hardware/lidar.html" />
+    <link rel="prev" title="Path Following with Pure Pursuit" href="tut_controls.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,15 +55,40 @@
 <p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pipeline_tutorial.html">Pipeline Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Pathing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Path Generation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Pipeline Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#track-and-vehicle-model-tutorials">Track and Vehicle Model Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#path-generation-tutorials">Path Generation Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#perception-tutorials">Perception Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#controls-tutorials">Controls Tutorials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#slam-tutorials">SLAM Tutorials</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">SLAM &amp; FastSLAM 2.0 Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-slam">What Is SLAM?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fastslam-2-0-slam-with-particles">FastSLAM 2.0: SLAM with Particles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#particle-class">Particle Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#slam-update-steps">SLAM Update Steps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-slam-is-used-in-gpu">How SLAM Is Used in <cite>GPU</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#landmark-observation-association">Landmark Observation &amp; Association</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#resampling">Resampling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visualizing-slam">Visualizing SLAM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tips-for-tuning">Tips for Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hardware</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware/lidar.html">Ouster OS1-128 LiDAR Setup and Tutorial</a></li>
 </ul>
 
         </div>
@@ -78,7 +105,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+          <li class="breadcrumb-item"><a href="index.html">Pipeline Tutorials</a></li>
+      <li class="breadcrumb-item active">SLAM &amp; FastSLAM 2.0 Tutorial</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -87,11 +115,230 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
+  <section id="slam-fastslam-2-0-tutorial">
+<h1>SLAM &amp; FastSLAM 2.0 Tutorial<a class="headerlink" href="#slam-fastslam-2-0-tutorial" title="Link to this heading"></a></h1>
+<p>Welcome to the world of <strong>SLAM</strong> — Simultaneous Localization and Mapping — and its fast-paced cousin <strong>FastSLAM 2.0</strong>.</p>
+<p>This tutorial walks you through:</p>
+<ul class="simple">
+<li><p>What SLAM is and why autonomous vehicles need it</p></li>
+<li><p>How <strong>FastSLAM 2.0</strong> works with particles and Kalman filters</p></li>
+<li><p>How we implement SLAM in our system using <cite>fastslam2.py</cite> and <cite>gpu.py</cite></p></li>
+<li><p>How to visualize, debug, and interact with particles and landmarks</p></li>
+</ul>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#what-is-slam" id="id1">What Is SLAM?</a></p></li>
+<li><p><a class="reference internal" href="#fastslam-2-0-slam-with-particles" id="id2">FastSLAM 2.0: SLAM with Particles</a></p></li>
+<li><p><a class="reference internal" href="#particle-class" id="id3">Particle Class</a></p></li>
+<li><p><a class="reference internal" href="#slam-update-steps" id="id4">SLAM Update Steps</a></p></li>
+<li><p><a class="reference internal" href="#how-slam-is-used-in-gpu" id="id5">How SLAM Is Used in <cite>GPU</cite></a></p></li>
+<li><p><a class="reference internal" href="#landmark-observation-association" id="id6">Landmark Observation &amp; Association</a></p></li>
+<li><p><a class="reference internal" href="#resampling" id="id7">Resampling</a></p></li>
+<li><p><a class="reference internal" href="#visualizing-slam" id="id8">Visualizing SLAM</a></p></li>
+<li><p><a class="reference internal" href="#tips-for-tuning" id="id9">Tips for Tuning</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id10">Summary</a></p></li>
+</ul>
+</nav>
+<section id="what-is-slam">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">What Is SLAM?</a><a class="headerlink" href="#what-is-slam" title="Link to this heading"></a></h2>
+<p><strong>SLAM (Simultaneous Localization and Mapping)</strong> is a core problem in robotics:</p>
+<p>&gt; “Build a map of the world… while figuring out where you are in it.”</p>
+<p>In the context of FSAE Driverless, the world is defined by <strong>cones</strong>. We must:</p>
+<ul class="simple">
+<li><p>Detect cones using sensors (LiDAR, camera)</p></li>
+<li><p>Estimate our car’s pose (x, y, yaw)</p></li>
+<li><p>Build a consistent map of cone positions</p></li>
+<li><p>Update both <strong>in real-time</strong>, with <strong>no prior knowledge</strong></p></li>
+</ul>
+<p>SLAM is hard because of:</p>
+<ul class="simple">
+<li><p>Sensor noise</p></li>
+<li><p>Limited field of view</p></li>
+<li><p>Uncertainty in vehicle motion</p></li>
+</ul>
+</section>
+<section id="fastslam-2-0-slam-with-particles">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">FastSLAM 2.0: SLAM with Particles</a><a class="headerlink" href="#fastslam-2-0-slam-with-particles" title="Link to this heading"></a></h2>
+<p>FastSLAM 2.0 is a modern SLAM algorithm that uses:</p>
+<ul class="simple">
+<li><p><strong>Particles</strong> to represent possible car poses</p></li>
+<li><p>Each particle carries its <strong>own map</strong> of landmarks (cones)</p></li>
+<li><p>Landmark estimates are refined using <strong>Extended Kalman Filters (EKF)</strong></p></li>
+</ul>
+<p>Think of it as 5 little robots inside your car, each guessing where it is — and where the cones are!</p>
+</section>
+<section id="particle-class">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Particle Class</a><a class="headerlink" href="#particle-class" title="Link to this heading"></a></h2>
+<p>Particles are defined in <cite>fastslam2.py</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Particle</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yaw</span><span class="p">,</span> <span class="n">car</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yaw</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lm</span> <span class="o">=</span> <span class="p">[]</span>       <span class="c1"># landmark positions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lmP</span> <span class="o">=</span> <span class="p">[]</span>      <span class="c1"># landmark covariances</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">N_PARTICLE</span>
+</pre></div>
+</div>
+<p>Each particle stores:</p>
+<ul class="simple">
+<li><p>Car’s Pose estimate (<cite>state</cite>)</p></li>
+<li><p>Landmark estimates (<cite>lm</cite>)</p></li>
+<li><p>Uncertainty for each landmark (<cite>lmP</cite>)</p></li>
+<li><p>Importance weight (<cite>w</cite>)</p></li>
+</ul>
+<p class="rubric">Try This:</p>
+<p>Print all particle positions at frame 0:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">particles</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="slam-update-steps">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">SLAM Update Steps</a><a class="headerlink" href="#slam-update-steps" title="Link to this heading"></a></h2>
+<p>At each frame:</p>
+<ol class="arabic">
+<li><dl class="simple">
+<dt><strong>Predict Particle Motion</strong>:</dt><dd><p>We use a noisy motion model:</p>
+</dd>
+</dl>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_u</span> <span class="o">=</span> <span class="n">u</span> <span class="o">+</span> <span class="n">random_noise</span>
+<span class="n">x_pred</span> <span class="o">=</span> <span class="n">motion_model</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">noisy_u</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The prediction includes:</p>
+<ul class="simple">
+<li><p><strong>u</strong>: forward velocity</p></li>
+<li><p><strong>v</strong>: lateral slip</p></li>
+<li><p><strong>w</strong>: yaw rate</p></li>
+</ul>
+<p>Blended with ground truth using <strong>confidence-weighted smoothing</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">pred</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">truth</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Landmark Association</strong>:
+Each observation is either matched to an existing landmark or added as a new one.</p></li>
+<li><p><strong>EKF Update</strong>:
+If matched, we update the landmark with a Kalman filter.</p></li>
+<li><p><strong>Proposal Sampling</strong>:
+We update the pose of the particle based on observation likelihood.</p></li>
+<li><p><strong>Resampling</strong>:
+If particle weights diverge, we resample the best ones.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">n_eff</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">:</span>
+    <span class="n">resample</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="how-slam-is-used-in-gpu">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">How SLAM Is Used in <cite>GPU</cite></a><a class="headerlink" href="#how-slam-is-used-in-gpu" title="Link to this heading"></a></h2>
+<p>The <cite>GPU</cite> class in <cite>gpu.py</cite> handles the system-level orchestration:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="p">[</span><span class="n">fs2</span><span class="o">.</span><span class="n">Particle</span><span class="p">(</span><span class="o">...</span><span class="p">)]</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">control_ekf</span> <span class="o">=</span> <span class="n">fs2</span><span class="o">.</span><span class="n">ControlEKF</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Inside <cite>gpu.update()</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">50</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">lidar_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lidar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="nb">range</span><span class="p">,</span> <span class="n">bearing</span><span class="p">]</span>  <span class="c1"># from cones</span>
+
+    <span class="n">u_avg</span> <span class="o">=</span> <span class="n">average_velocities</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="n">fast_slam2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">,</span> <span class="n">u_avg</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">car</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+
+    <span class="n">x_est</span> <span class="o">=</span> <span class="n">calc_final_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particles</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">state_e</span> <span class="o">=</span> <span class="n">x_est</span>
+</pre></div>
+</div>
+<p class="rubric">Try This:</p>
+<p>Visualize how particles spread as noise increases. What if <cite>noise_std</cite> is doubled?</p>
+</section>
+<section id="landmark-observation-association">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Landmark Observation &amp; Association</a><a class="headerlink" href="#landmark-observation-association" title="Link to this heading"></a></h2>
+<p>Measurements from LiDAR are transformed into polar format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="nb">range</span><span class="p">,</span> <span class="n">bearing</span><span class="p">]</span>  <span class="c1"># relative to car</span>
+</pre></div>
+</div>
+<p>For each particle:</p>
+<ol class="arabic simple">
+<li><p>Try to associate observed cones to known landmarks (via Mahalanobis distance)</p></li>
+<li><p>Update that landmark via Kalman filter, or</p></li>
+<li><p>Add a new landmark if no match found</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">best_lm_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">update_landmark</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">add_new_lm</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Try This:</p>
+<p>Print when a new landmark is added:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added landmark at step </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="resampling">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Resampling</a><a class="headerlink" href="#resampling" title="Link to this heading"></a></h2>
+<p>Particles are resampled using <strong>low variance resampling</strong> when the effective number of particles is low:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n_eff</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">w</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">n_eff</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">:</span>
+    <span class="n">resample</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Only the <strong>best-fit</strong> particles survive</p>
+</section>
+<section id="visualizing-slam">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Visualizing SLAM</a><a class="headerlink" href="#visualizing-slam" title="Link to this heading"></a></h2>
+<p>Particles and landmarks are plotted in:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gpu</span><span class="o">.</span><span class="n">plotting</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>It includes:</p>
+<ul class="simple">
+<li><p>Car trajectory</p></li>
+<li><p>Particle cloud (colored by weight)</p></li>
+<li><p>Estimated landmarks (black Xs)</p></li>
+<li><p>Target and current pose</p></li>
+</ul>
+<p class="rubric">Try This:</p>
+<p>Add this inside plotting to color the best particle:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">best</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">particles</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">best</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">best</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;r*&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Best Particle&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="tips-for-tuning">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Tips for Tuning</a><a class="headerlink" href="#tips-for-tuning" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Increase <cite>N_PARTICLE</cite> for better accuracy</p></li>
+<li><p>Tune <cite>Q</cite> and <cite>R</cite> matrices for realistic sensor noise</p></li>
+<li><p>Use Mahalanobis threshold to control association strictness</p></li>
+</ul>
+<p class="rubric">Try This:</p>
+<p>Double <cite>Q</cite> (observation noise) and see how landmark uncertainty grows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)])</span> <span class="o">**</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</section>
+<section id="summary">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<p>You now understand:</p>
+<ul class="simple">
+<li><p>What SLAM is and why we use it</p></li>
+<li><p>How FastSLAM 2.0 tracks pose and cones in parallel</p></li>
+<li><p>How each particle carries its own map</p></li>
+<li><p>How we run SLAM in real-time with GPU and LiDAR</p></li>
+<li><p>How to visualize and tune your SLAM system</p></li>
+</ul>
+</section>
+</section>
+
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tut_controls.html" class="btn btn-neutral float-left" title="Path Following with Pure Pursuit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../hardware/lidar.html" class="btn btn-neutral float-right" title="Ouster OS1-128 LiDAR Setup and Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

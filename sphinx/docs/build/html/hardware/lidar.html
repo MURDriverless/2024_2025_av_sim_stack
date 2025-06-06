@@ -1,0 +1,696 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ouster OS1-128 LiDAR Setup and Tutorial &mdash; MUR Autonomous  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3e8edd65" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="SLAM &amp; FastSLAM 2.0 Tutorial" href="../tutorials/tut_slam.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MUR Autonomous
+              <img src="../_static/MURA_logo_title.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start_guide.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sphinx_doc_guide.html">Editing MUR Autonomous Documentation using Sphinx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_setup.html">Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../literature_resources.html">Literature Review Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact Us</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Pipelines</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pipeline_overview.html">Pipeline Overview (TL;DR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../perception/index.html">Perception</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pathing/index.html">Path Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../controls/index.html">Controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../slam/index.html">Simultaneous Localization and Mapping (SLAM)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Pipeline Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Hardware</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Ouster OS1-128 LiDAR Setup and Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#environment-setup-real-vehicle-lidar-data-collection">Environment Setup &amp; Real-Vehicle LiDAR Data Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-youll-need">What You’ll Need</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-your-workspace">Setting Up Your Workspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#launching-the-csv-based-pipeline-or-pcap-based-pipeline">Launching the CSV-Based Pipeline/ or PCAP-Based Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inspecting-ros-2-topics">Inspecting ROS 2 Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">What You’ll Need</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#listing-all-topics">Listing All Topics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#viewing-topic-data-echo">Viewing Topic Data (“Echo”)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filtering-echo-output">Filtering Echo Output</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#collecting-straight-curve-lane-data-real-vehicle-cone-lane-tests">Collecting Straight &amp; Curve Lane Data - Real-Vehicle Cone Lane Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-outputs-formats">Data Outputs &amp; Formats</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#csv-vs-pcap-json-pros-cons">CSV vs. PCAP + JSON: Pros &amp; Cons</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#csv">CSV</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pcap-json">PCAP + JSON</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tutorial-lidar-data-acquisition-preprocessing">Tutorial: LiDAR Data Acquisition &amp; Preprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">What You’ll Need</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mounting-sensor-configuration">Mounting &amp; Sensor Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#driving-tests-data-recording">Driving Tests &amp; Data Recording</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#preprocessing-csv-data">Preprocessing CSV Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#preprocessing-pcap-json-data">Preprocessing PCAP + JSON Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tutorial-lidar-perception-pipeline-preprocessing-2-csv-reader">Tutorial: Lidar Perception Pipeline &amp; Preprocessing 2: CSV Reader</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-stages">Pipeline Stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lidar-cpp-node">Lidar.cpp Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-the-crop-box-region-of-interest">Defining the Crop-Box Region of Interest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cone-detection-pipeline-overview">Cone Detection Pipeline Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#reflectivity-and-height-filtering">Reflectivity and Height Filtering</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#voxel-grid-downsampling">Voxel Grid Downsampling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#euclidean-clustering">Euclidean Clustering</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cylindrical-volume-reconstruction">Cylindrical Volume Reconstruction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cluster-geometric-size-filtering">Cluster Geometric Size Filtering</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#publishing-results">Publishing Results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-full-pipeline">Running the Full Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visualization-of-detected-cones">Visualization of Detected Cones</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MUR Autonomous</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Ouster OS1-128 LiDAR Setup and Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ouster-os1-128-lidar-setup-and-tutorial">
+<h1>Ouster OS1-128 LiDAR Setup and Tutorial<a class="headerlink" href="#ouster-os1-128-lidar-setup-and-tutorial" title="Link to this heading"></a></h1>
+<section id="environment-setup-real-vehicle-lidar-data-collection">
+<h2>Environment Setup &amp; Real-Vehicle LiDAR Data Collection<a class="headerlink" href="#environment-setup-real-vehicle-lidar-data-collection" title="Link to this heading"></a></h2>
+<p>Welcome to the Environment Setup &amp; Data Collection tutorial.
+By the end of this tutorial, you’ll understand:</p>
+<ul class="simple">
+<li><p>How to build and launch both CSV- and PCAP-based ROS 2 pipelines</p></li>
+<li><p>How to arrange real-vehicle traffic-cone tests (Straight &amp; Curve lanes)</p></li>
+<li><p>Why and when to choose CSV vs. PCAP + JSON formats</p></li>
+</ul>
+</section>
+<section id="what-youll-need">
+<h2>What You’ll Need<a class="headerlink" href="#what-youll-need" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>WSL (Ubuntu 22.04) in an Oracle VM</p></li>
+<li><p>ROS 2 Humble</p></li>
+<li><p>Ouster-SDK (LiDAR drivers)</p></li>
+<li><p>A test vehicle with LiDAR mount</p></li>
+</ul>
+</section>
+<section id="setting-up-your-workspace">
+<h2>Setting Up Your Workspace<a class="headerlink" href="#setting-up-your-workspace" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure you are in your home directory, clone our repo and enter it</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/YourOrg/2024_2025_av_sim_stack.git
+<span class="nb">cd</span><span class="w"> </span>2024_2025_av_sim_stack
+
+<span class="c1"># Ensure Ouster-SDK lives in src/ or{ your project folder name}/</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ouster-lidar/ouster-sdk.git<span class="w"> </span>src/ouster-sdk
+colcon<span class="w"> </span>build<span class="w"> </span>--symlink-install
+<span class="nb">source</span><span class="w"> </span>install/setup.bash
+</pre></div>
+</div>
+</section>
+<section id="launching-the-csv-based-pipeline-or-pcap-based-pipeline">
+<h2>Launching the CSV-Based Pipeline/ or PCAP-Based Pipeline<a class="headerlink" href="#launching-the-csv-based-pipeline-or-pcap-based-pipeline" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>colcon<span class="w"> </span>build<span class="w"> </span>--packages-select<span class="w"> </span>csv_to_pointcloud_node<span class="w"> </span>--cmake-clean-cache
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>colcon<span class="w"> </span>build<span class="w"> </span>--packages-select<span class="w"> </span>lidar_integration<span class="w"> </span>--cmake-clean-cache
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>install/setup.bash
+ros2<span class="w"> </span>launch<span class="w"> </span>csv_to_pointcloud_node<span class="w"> </span>full_pipeline.launch.py
+ros2<span class="w"> </span>launch<span class="w"> </span>lidar_integration<span class="w"> </span>lidar_pipeline_launch.py
+</pre></div>
+</div>
+<p>After this, you will see:</p>
+<a class="reference internal image-reference" href="../_images/Picture1.png"><img alt="../_images/Picture1.png" src="../_images/Picture1.png" style="width: 100%;" />
+</a>
+<p>And it will automatically launch Rviz</p>
+</section>
+<section id="inspecting-ros-2-topics">
+<h2>Inspecting ROS 2 Topics<a class="headerlink" href="#inspecting-ros-2-topics" title="Link to this heading"></a></h2>
+<p>By the end of this step, you’ll know how to discover active topics and view live message data via the CLI.</p>
+<section id="id1">
+<h3>What You’ll Need<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>A running ROS 2 launch (e.g. full_pipeline.launch.py)</p></li>
+<li><p>Your terminal with <cite>source install/setup.bash</cite> active</p></li>
+</ul>
+</section>
+<section id="listing-all-topics">
+<h3>Listing All Topics<a class="headerlink" href="#listing-all-topics" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>topic<span class="w"> </span>list
+</pre></div>
+</div>
+<p>should output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/pointcloud
+/filtered_pointcloud
+/cone_markers
+/rosout
+...
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/Picture2.png"><img alt="../_images/Picture2.png" src="../_images/Picture2.png" style="width: 50%;" />
+</a>
+<p>This shows every topic currently being published or subscribed.</p>
+</section>
+<section id="viewing-topic-data-echo">
+<h3>Viewing Topic Data (“Echo”)<a class="headerlink" href="#viewing-topic-data-echo" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>topic<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>&lt;topic_name&gt;
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>topic<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>/cone_markers
+</pre></div>
+</div>
+<img alt="../_images/Picture3.png" src="../_images/Picture3.png" />
+</section>
+<section id="filtering-echo-output">
+<h3>Filtering Echo Output<a class="headerlink" href="#filtering-echo-output" title="Link to this heading"></a></h3>
+<p>First 5 messages only:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>topic<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>--once<span class="w"> </span>/pointcloud
+</pre></div>
+</div>
+<p>or to a single field:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>topic<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>/pointcloud<span class="w"> </span>--field<span class="w"> </span><span class="s2">&quot;width&quot;</span>
+</pre></div>
+</div>
+<p class="rubric">Try This:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>bag<span class="w"> </span>record<span class="w"> </span>/cone_positions
+</pre></div>
+</div>
+<p>Record bag of cone positions for later analysis:</p>
+<p>With these commands, you can inspect the flow of data through your pipelines, debug message contents, and verify that each node publishes exactly what you expect.</p>
+</section>
+</section>
+<section id="collecting-straight-curve-lane-data-real-vehicle-cone-lane-tests">
+<h2>Collecting Straight &amp; Curve Lane Data - Real-Vehicle Cone Lane Tests<a class="headerlink" href="#collecting-straight-curve-lane-data-real-vehicle-cone-lane-tests" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Mount Design: Create or adapt a sturdy custom bracket to secure the Ouster OS-1 to your vehicle’s frame.</p></li>
+<li><p>Power Supply: Provide a reliable auxiliary battery pack (e.g. 12 V lead-acid or LiPo).</p></li>
+<li><p>Software Setup: Install and configure Ouster Studio to verify sensor connectivity and adjust scanning parameters before each run.</p></li>
+<li><p>Procedure: Mount LiDAR → drive through each lane → record both CSV and PCAP + JSON</p></li>
+</ul>
+</section>
+<section id="data-outputs-formats">
+<h2>Data Outputs &amp; Formats<a class="headerlink" href="#data-outputs-formats" title="Link to this heading"></a></h2>
+<p>After each run, you will have:</p>
+<ul class="simple">
+<li><p>CSV files: processed, downsampled point clouds</p></li>
+<li><p>PCAP + JSON: raw packet captures with full metadata</p></li>
+</ul>
+<p>These are then fed into C++ detection nodes that cluster, fit, and extract cone centers. The full detection workflow sits under your LiDAR Perception Pipeline tutorial.</p>
+<section id="csv-vs-pcap-json-pros-cons">
+<h3>CSV vs. PCAP + JSON: Pros &amp; Cons<a class="headerlink" href="#csv-vs-pcap-json-pros-cons" title="Link to this heading"></a></h3>
+<section id="csv">
+<h4>CSV<a class="headerlink" href="#csv" title="Link to this heading"></a></h4>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gi">+ ✔ Lightweight &amp; easy parse</span>
+<span class="gi">+ ✔ Fast load times</span>
+<span class="gi">+ ✔ Ideal for quick prototyping</span>
+<span class="gd">- ✘ Limited metadata</span>
+<span class="gd">- ✘ Loses packet-level timing</span>
+</pre></div>
+</div>
+</section>
+<section id="pcap-json">
+<h4>PCAP + JSON<a class="headerlink" href="#pcap-json" title="Link to this heading"></a></h4>
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gi">+ ✔ Raw packets + precise timestamps</span>
+<span class="gi">+ ✔ Full sensor calibration &amp; metadata</span>
+<span class="gi">+ ✔ Enables exact sensor replay and advanced debugging</span>
+<span class="gd">- ✘ Large files → slower load</span>
+<span class="gd">- ✘ Requires complex PCAP + JSON parsing logic</span>
+</pre></div>
+</div>
+<p>You’re now ready to build, launch, and collect LiDAR data in both CSV and PCAP + JSON formats.</p>
+</section>
+</section>
+</section>
+<section id="tutorial-lidar-data-acquisition-preprocessing">
+<h2>Tutorial: LiDAR Data Acquisition &amp; Preprocessing<a class="headerlink" href="#tutorial-lidar-data-acquisition-preprocessing" title="Link to this heading"></a></h2>
+<p>Welcome to the LiDAR Data Acquisition &amp; Preprocessing tutorial.
+By the end of this tutorial, you’ll understand:</p>
+<ul class="simple">
+<li><p>How to physically mount and power the Ouster OS-1 sensor</p></li>
+<li><p>How to collect both CSV and PCAP + JSON datasets on a moving vehicle</p></li>
+<li><p>How to preprocess raw outputs to skip invalid points and synchronize frames</p></li>
+</ul>
+<section id="id2">
+<h3>What You’ll Need<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Test Vehicle &amp; Mounting Hardware</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/Picture4.png"><img alt="../_images/Picture4.png" src="../_images/Picture4.png" style="width: 100%;" />
+</a>
+<ul class="simple">
+<li><p>Power Supply: Auxiliary 24 V battery pack (20 W peak)</p></li>
+<li><p>Software: Ouster Studio for health checks &amp; parameter tuning</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/Picture5.png"><img alt="../_images/Picture5.png" src="../_images/Picture5.png" style="width: 100%;" />
+</a>
+<ul class="simple">
+<li><p>ROS 2 Humble with lidar_integration (Pcap) and csv_to_pointcloud_node (CSV)</p></li>
+</ul>
+</section>
+<section id="mounting-sensor-configuration">
+<h3>Mounting &amp; Sensor Configuration<a class="headerlink" href="#mounting-sensor-configuration" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Secure the Ouster OS-1 on your vehicle roof</p></li>
+<li><p>Verify mechanical stability at speeds up to 40 km/h</p></li>
+<li><p>Connect via gigabit Ethernet and auxiliary power</p></li>
+<li><p>Launch Ouster Studio to confirm UDP connectivity and set:</p>
+<ul>
+<li><p>Channels: 128</p></li>
+<li><p>Horizontal resolution: 1024</p></li>
+<li><p>Frame rate: 10 Hz (or 20 Hz)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="driving-tests-data-recording">
+<h3>Driving Tests &amp; Data Recording<a class="headerlink" href="#driving-tests-data-recording" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Arrange traffic cones:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Spacing: 5 m between cones</p></li>
+<li><p>Lane width: 11 m</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Perform two runs:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Straight lane</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/Picture6.png"><img alt="../_images/Picture6.png" src="../_images/Picture6.png" style="width: 100%;" />
+</a>
+<ul class="simple">
+<li><p>Curve lane</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/Picture7.png"><img alt="../_images/Picture7.png" src="../_images/Picture7.png" style="width: 100%;" />
+</a>
+</div></blockquote>
+</li>
+<li><p>While driving, launch both pipelines to record:</p>
+<ul class="simple">
+<li><p>CSV output (pre-processed point clouds)</p></li>
+<li><p>PCAP + JSON (raw UDP packets + metadata)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="preprocessing-csv-data">
+<h3>Preprocessing CSV Data<a class="headerlink" href="#preprocessing-csv-data" title="Link to this heading"></a></h3>
+<p>LiDAR records a distance of 0 for invalid returns, resulting in phantom points at the sensor’s origin.</p>
+<p>Transform spherical to Cartesian:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>x = ρ · sin φ · cos θ
+y = ρ · sin φ · sin θ
+z = ρ · cos φ
+</pre></div>
+</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p>ρ (range): radial distance</p></li>
+<li><p>θ (azimuth): angle in the xy plane</p></li>
+<li><p>φ (elevation): angle from +z toward xy plane</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/Picture8.png"><img alt="../_images/Picture8.png" src="../_images/Picture8.png" style="width: 50%;" />
+</a>
+<p>Python Snippet:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/straight or curve.csv&#39;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;points_filtered.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Benefits of removing zero-range points:</p>
+<ul class="simple">
+<li><p>Eliminates Origin Spikes</p></li>
+<li><p>Improves Clustering &amp; Detection</p></li>
+<li><p>Speeds Up Downstream Processing</p></li>
+</ul>
+</section>
+<section id="preprocessing-pcap-json-data">
+<h3>Preprocessing PCAP + JSON Data<a class="headerlink" href="#preprocessing-pcap-json-data" title="Link to this heading"></a></h3>
+<p>No explicit “no-return” flag in PCAP packets. To filter:</p>
+<ol class="arabic">
+<li><p><strong>Skip Initial Frames</strong></p>
+<p>Use <cite>skip_time</cite> parameter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">launch</span><span class="w"> </span><span class="kn">import</span> <span class="n">LaunchDescription</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">launch.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeclareLaunchArgument</span>
+
+<span class="n">json_path</span> <span class="o">=</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;json_path&#39;</span><span class="p">)</span>
+<span class="n">pcap_path</span> <span class="o">=</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;pcap_path&#39;</span><span class="p">)</span>
+<span class="n">skip_time</span> <span class="o">=</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="s1">&#39;skip_time&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In <cite>lidar_pipeline_launch.py</cite> and <cite>total_reader.cpp</cite>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">double</span><span class="w"> </span><span class="n">skip_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">declare_parameter</span><span class="p">(</span><span class="s">&quot;skip_time&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">current_time</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">skip_time</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Filter by UDP Port</strong></p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pkt_info</span><span class="p">.</span><span class="n">dst_port</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">lidar_port</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">LidarPacket</span><span class="w"> </span><span class="nf">pkt</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">pkt_info</span><span class="p">.</span><span class="n">packet_size</span><span class="p">));</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">memcpy</span><span class="p">(</span><span class="n">pkt</span><span class="p">.</span><span class="n">buf</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">pkt_info</span><span class="p">.</span><span class="n">packet_size</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Benefits:</p>
+<ul class="simple">
+<li><p>Lower Parsing Overhead</p></li>
+<li><p>Improved Detection Reliability</p></li>
+</ul>
+</section>
+</section>
+<section id="tutorial-lidar-perception-pipeline-preprocessing-2-csv-reader">
+<h2>Tutorial: Lidar Perception Pipeline &amp; Preprocessing 2: CSV Reader<a class="headerlink" href="#tutorial-lidar-perception-pipeline-preprocessing-2-csv-reader" title="Link to this heading"></a></h2>
+<p>Welcome to the detailed File Reference and pipeline overview for our CSV-based perception nodes.
+By the end of this tutorial, you will have:</p>
+<ul class="simple">
+<li><p>A clear visual of the CSV→PointCloud2 processing pipeline</p></li>
+<li><p>Concise summaries of core functions in the CSV reader node</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/Picture11.png"><img alt="../_images/Picture11.png" src="../_images/Picture11.png" style="width: 100%;" />
+</a>
+<section id="pipeline-stages">
+<h3>Pipeline Stages<a class="headerlink" href="#pipeline-stages" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>CsvToPointCloudNode (lidar.cpp)</strong>
+Publishes raw clouds and sphere markers on <cite>/pointcloud</cite> (optional <cite>/raw_point_markers</cite>) after reading X/Y/Z, signal, and reflectivity from CSV.</p></li>
+<li><p><strong>CropBoxFilterNode (crop_box.cpp)</strong>
+Subscribes to <cite>/pointcloud</cite>, applies a 3D CropBox, republishes on <cite>/cropped_pointcloud</cite>, adds markers on <cite>/crop_box_markers</cite>.</p></li>
+<li><p><strong>ConeDetection (cone_detection.cpp)</strong>
+Listens on <cite>/cropped_pointcloud</cite>, downsamples and clusters, then publishes on <cite>/filtered_pointcloud</cite> and <cite>/cone_marker_array</cite>. Logs positions to CSV.</p></li>
+<li><p><strong>PointCloudToMarkers (pointcloud_to_markers.cpp)</strong>
+Converts reflectivity into colored spheres. Subscribes to <cite>/filtered_pointcloud</cite> or <cite>/pointcloud</cite>, outputs <cite>/visualization_marker_array</cite>.</p></li>
+</ol>
+</section>
+<section id="lidar-cpp-node">
+<h3>Lidar.cpp Node<a class="headerlink" href="#lidar-cpp-node" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="../_images/Picture12.png"><img alt="../_images/Picture12.png" src="../_images/Picture12.png" style="width: 100%;" />
+</a>
+<p>Wall Timer at 10 Hz:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">timer_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">create_wall_timer</span><span class="p">(</span>
+<span class="w">    </span><span class="mi">100</span><span class="n">ms</span><span class="p">,</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">CsvToPointCloudNode</span><span class="o">::</span><span class="n">publish_frame</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>This ensures a 10 Hz loop, matching Ouster OS-1 spin rate.</p>
+<p>frame_id for 360° Visualization:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">sensor_msgs</span><span class="o">::</span><span class="n">msg</span><span class="o">::</span><span class="n">PointCloud2</span><span class="w"> </span><span class="n">msg</span><span class="p">;</span>
+<span class="n">msg</span><span class="p">.</span><span class="n">header</span><span class="p">.</span><span class="n">frame_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lidar_frame&quot;</span><span class="p">;</span>
+<span class="n">msg</span><span class="p">.</span><span class="n">header</span><span class="p">.</span><span class="n">stamp</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">get_clock</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">now</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Ensures all points are assigned to the correct coordinate frame in RViz2.</p>
+<p>Batch Size = 1024 × 128:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">size_t</span><span class="w"> </span><span class="n">batch_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">128</span><span class="p">;</span>
+<span class="kt">size_t</span><span class="w"> </span><span class="n">end_index</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">min</span><span class="p">(</span><span class="n">current_index_</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">batch_size</span><span class="p">,</span><span class="w"> </span><span class="n">points_</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+<span class="k">auto</span><span class="w">   </span><span class="n">frame</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">PointXYZIR</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">                       </span><span class="n">points_</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">current_index_</span><span class="p">,</span>
+<span class="w">                       </span><span class="n">points_</span><span class="p">.</span><span class="n">begin</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">end_index</span>
+<span class="w">                    </span><span class="p">);</span>
+<span class="n">current_index_</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">end_index</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This reflects Ouster OS-1 resolution: 1024 azimuth steps × 128 channels = 131,072 points.</p>
+</section>
+<section id="defining-the-crop-box-region-of-interest">
+<span id="crop-box-roi"></span><h3>Defining the Crop-Box Region of Interest<a class="headerlink" href="#defining-the-crop-box-region-of-interest" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="../_images/Picture13.png"><img alt="../_images/Picture13.png" src="../_images/Picture13.png" style="width: 100%;" />
+</a>
+<a class="reference internal image-reference" href="../_images/Picture14.png"><img alt="../_images/Picture14.png" src="../_images/Picture14.png" style="width: 100%;" />
+</a>
+<p>In our <code class="docutils literal notranslate"><span class="pre">pointcloud_callback()</span></code>, we use a 3D axis-aligned box to trim away everything outside the area where cones will appear. Mathematically, we want to keep only those points satisfying:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>x_min ≤ x ≤ x_max
+y_min ≤ y ≤ y_max
+z_min ≤ z ≤ z_max
+</pre></div>
+</div>
+<p>For our FSAE track setup, we chose:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">Eigen</span><span class="o">::</span><span class="n">Vector4f</span><span class="w"> </span><span class="nf">min_point</span><span class="p">(</span><span class="mf">4.0f</span><span class="p">,</span><span class="w">  </span><span class="mf">-6.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-1.6f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">);</span>
+<span class="n">Eigen</span><span class="o">::</span><span class="n">Vector4f</span><span class="w"> </span><span class="nf">max_point</span><span class="p">(</span><span class="mf">12.0f</span><span class="p">,</span><span class="w">  </span><span class="mf">6.0f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This box covers an 8 m (from 4 m to 12 m ahead of the vehicle), 12 m wide, 1.6 m tall swath in front of the vehicle.</p>
+<p>In visualization, Rviz2 renders our defined crop-box as a translucent prism surrounding the region of interest in front of the vehicle as well as ground removal from top down 1.6m. This “virtual fencing” makes it easy to see which points are being retained and which are discarded before cone detection begins.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Create the CropBox filter</span>
+<span class="n">pcl</span><span class="o">::</span><span class="n">CropBox</span><span class="o">&lt;</span><span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZI</span><span class="o">&gt;</span><span class="w"> </span><span class="n">crop</span><span class="p">;</span>
+<span class="n">crop</span><span class="p">.</span><span class="n">setInputCloud</span><span class="p">(</span><span class="n">cloud</span><span class="p">);</span>
+<span class="n">crop</span><span class="p">.</span><span class="n">setMin</span><span class="p">(</span><span class="n">min_point</span><span class="p">);</span>
+<span class="n">crop</span><span class="p">.</span><span class="n">setMax</span><span class="p">(</span><span class="n">max_point</span><span class="p">);</span>
+
+<span class="c1">// Allocate output and run the filter</span>
+<span class="n">pcl</span><span class="o">::</span><span class="n">PointCloud</span><span class="o">&lt;</span><span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZI</span><span class="o">&gt;::</span><span class="n">Ptr</span><span class="w"> </span><span class="n">cropped</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">pcl</span><span class="o">::</span><span class="n">PointCloud</span><span class="o">&lt;</span><span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZI</span><span class="o">&gt;</span><span class="p">);</span>
+<span class="n">crop</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="o">*</span><span class="n">cropped</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Points satisfying all six constraints remain in the resulting cropped cloud. By casting the box this way, we efficiently remove unwanted background and ground returns, leaving only the in-front section where traffic cones lie.</p>
+</section>
+<section id="cone-detection-pipeline-overview">
+<span id="cone-detection-pipeline"></span><h3>Cone Detection Pipeline Overview<a class="headerlink" href="#cone-detection-pipeline-overview" title="Link to this heading"></a></h3>
+<a class="reference internal image-reference" href="../_images/Picture15.png"><img alt="../_images/Picture15.png" src="../_images/Picture15.png" style="width: 100%;" />
+</a>
+<a class="reference internal image-reference" href="../_images/Picture16.png"><img alt="../_images/Picture16.png" src="../_images/Picture16.png" style="width: 100%;" />
+</a>
+<a class="reference internal image-reference" href="../_images/Picture17.png"><img alt="../_images/Picture17.png" src="../_images/Picture17.png" style="width: 100%;" />
+</a>
+<p>The <code class="docutils literal notranslate"><span class="pre">cone_detection.cpp</span></code> is a key component of our perception integration system.</p>
+<p>Our cone detection pipeline takes in a cropped point cloud and processes it through several stages to reliably identify traffic cones:</p>
+<a class="reference internal image-reference" href="../_images/Picture18.png"><img alt="../_images/Picture18.png" src="../_images/Picture18.png" style="width: 25%;" />
+</a>
+<section id="reflectivity-and-height-filtering">
+<h4>Reflectivity and Height Filtering<a class="headerlink" href="#reflectivity-and-height-filtering" title="Link to this heading"></a></h4>
+<p>Although the input point cloud is already cropped by the crop_box node, further refinement is performed through clustering based on height <code class="docutils literal notranslate"><span class="pre">z</span></code> and intensity (reflectivity).</p>
+<p>The reflectivity value reflects the intensity of the laser return, which helps differentiate cones from other objects. For instance, low-reflectivity objects like the ground or trees can cause noise during driving.</p>
+<p>Since cones have highly reflective tape, their reflectivity typically exceeds a threshold of 25.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">iter_x</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">iter_x</span><span class="p">.</span><span class="n">end</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">iter_reflectivity</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">25.0f</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">*</span><span class="n">iter_z</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">-1.59f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">filtered_points</span><span class="p">.</span><span class="n">push_back</span><span class="p">({</span><span class="o">*</span><span class="n">iter_x</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">iter_y</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">iter_z</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">iter_reflectivity</span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="o">++</span><span class="n">iter_x</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iter_y</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iter_z</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">iter_reflectivity</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Filtering condition: <code class="docutils literal notranslate"><span class="pre">Reflectivity</span> <span class="pre">&gt;</span> <span class="pre">25.0</span></code>, <code class="docutils literal notranslate"><span class="pre">z</span> <span class="pre">&gt;</span> <span class="pre">−1.59m</span></code>.</p>
+<a class="reference internal image-reference" href="../_images/Picture19.png"><img alt="../_images/Picture19.png" src="../_images/Picture19.png" style="width: 100%;" />
+</a>
+</section>
+<section id="voxel-grid-downsampling">
+<h4>Voxel Grid Downsampling<a class="headerlink" href="#voxel-grid-downsampling" title="Link to this heading"></a></h4>
+<p>To reduce computational load and remove redundant points, Voxel Grid Downsampling is applied.</p>
+<p>This partitions the point cloud into a 3D grid of voxels (small cubes), replacing all points inside each voxel with a representative point (typically the centroid).</p>
+<p>Voxel size used: <strong>0.03 meters</strong> (x, y, z). This balances preserving detail and improving speed.</p>
+<p>Voxel filtering is performed <em>after</em> initial reflectivity and height filtering, and <em>before</em> clustering.</p>
+</section>
+<section id="euclidean-clustering">
+<h4>Euclidean Clustering<a class="headerlink" href="#euclidean-clustering" title="Link to this heading"></a></h4>
+<p>A Kd-Tree-based Euclidean clustering groups points based on their Euclidean distance.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">pcl</span><span class="o">::</span><span class="n">EuclideanClusterExtraction</span><span class="o">&lt;</span><span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZ</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ec</span><span class="p">;</span>
+<span class="n">ec</span><span class="p">.</span><span class="n">setClusterTolerance</span><span class="p">(</span><span class="mf">0.1</span><span class="p">);</span><span class="w">   </span><span class="c1">// Max distance between points (meters)</span>
+<span class="n">ec</span><span class="p">.</span><span class="n">setMinClusterSize</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span><span class="w">       </span><span class="c1">// Ignore clusters smaller than 5</span>
+<span class="n">ec</span><span class="p">.</span><span class="n">setMaxClusterSize</span><span class="p">(</span><span class="mi">300</span><span class="p">);</span><span class="w">     </span><span class="c1">// Ignore clusters larger than 300</span>
+<span class="n">ec</span><span class="p">.</span><span class="n">setSearchMethod</span><span class="p">(</span><span class="n">tree</span><span class="p">);</span>
+<span class="n">ec</span><span class="p">.</span><span class="n">setInputCloud</span><span class="p">(</span><span class="n">cloud_filtered</span><span class="p">);</span>
+<span class="n">ec</span><span class="p">.</span><span class="n">extract</span><span class="p">(</span><span class="n">cluster_indices</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>d_tol</strong> = 0.1 m</p></li>
+<li><p><strong>Min cluster size</strong> = 5 points</p></li>
+<li><p><strong>Max cluster size</strong> = 300 points</p></li>
+</ul>
+<p>Small clusters are likely noise. Large clusters are likely non-cone objects.</p>
+</section>
+<section id="cylindrical-volume-reconstruction">
+<h4>Cylindrical Volume Reconstruction<a class="headerlink" href="#cylindrical-volume-reconstruction" title="Link to this heading"></a></h4>
+<p>Some cone points may be mistakenly removed as ground. This step recovers them using a cylindrical volume centered on the XY-projected cluster centroid.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix3f</span><span class="w"> </span><span class="n">cylinderMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix3f</span><span class="o">::</span><span class="n">Zero</span><span class="p">();</span>
+<span class="n">cylinderMatrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="n">cylinderMatrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+
+<span class="n">Eigen</span><span class="o">::</span><span class="n">Vector3f</span><span class="w"> </span><span class="n">cylinderV</span><span class="p">;</span>
+<span class="n">cylinderV</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="o">-</span><span class="n">centre</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">centre</span><span class="p">.</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span>
+
+<span class="kt">float</span><span class="w"> </span><span class="n">radius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">;</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">cylinderScalar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">centre</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">centre</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">centre</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">centre</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">radius</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">radius</span><span class="p">);</span>
+
+<span class="n">pcl</span><span class="o">::</span><span class="n">TfQuadraticXYZComparison</span><span class="o">&lt;</span><span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZ</span><span class="o">&gt;::</span><span class="n">Ptr</span><span class="w"> </span><span class="n">cyl_comp</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">pcl</span><span class="o">::</span><span class="n">TfQuadraticXYZComparison</span><span class="o">&lt;</span><span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZ</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">        </span><span class="n">pcl</span><span class="o">::</span><span class="n">ComparisonOps</span><span class="o">::</span><span class="n">LE</span><span class="p">,</span><span class="w"> </span><span class="n">cylinderMatrix</span><span class="p">,</span><span class="w"> </span><span class="n">cylinderV</span><span class="p">,</span><span class="w"> </span><span class="n">cylinderScalar</span><span class="p">));</span>
+
+<span class="n">pcl</span><span class="o">::</span><span class="n">ConditionAnd</span><span class="o">&lt;</span><span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZ</span><span class="o">&gt;::</span><span class="n">Ptr</span><span class="w"> </span><span class="n">cyl_cond</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">pcl</span><span class="o">::</span><span class="n">ConditionAnd</span><span class="o">&lt;</span><span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZ</span><span class="o">&gt;</span><span class="p">());</span>
+<span class="n">cyl_cond</span><span class="o">-&gt;</span><span class="n">addComparison</span><span class="p">(</span><span class="n">cyl_comp</span><span class="p">);</span>
+
+<span class="n">pcl</span><span class="o">::</span><span class="n">PointCloud</span><span class="o">&lt;</span><span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZ</span><span class="o">&gt;</span><span class="w"> </span><span class="n">recovered</span><span class="p">;</span>
+<span class="n">pcl</span><span class="o">::</span><span class="n">ConditionalRemoval</span><span class="o">&lt;</span><span class="n">pcl</span><span class="o">::</span><span class="n">PointXYZ</span><span class="o">&gt;</span><span class="w"> </span><span class="n">condrem</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+<span class="n">condrem</span><span class="p">.</span><span class="n">setCondition</span><span class="p">(</span><span class="n">cyl_cond</span><span class="p">);</span>
+<span class="n">condrem</span><span class="p">.</span><span class="n">setInputCloud</span><span class="p">(</span><span class="n">cloud_cluster</span><span class="p">);</span>
+<span class="n">condrem</span><span class="p">.</span><span class="n">setKeepOrganized</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+<span class="n">condrem</span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="n">recovered</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This filter retains points inside the cylindrical volume.</p>
+</section>
+<section id="cluster-geometric-size-filtering">
+<h4>Cluster Geometric Size Filtering<a class="headerlink" href="#cluster-geometric-size-filtering" title="Link to this heading"></a></h4>
+<p>Real-world cone dimensions:</p>
+<ul class="simple">
+<li><p><strong>Height</strong>: 0.323 m</p></li>
+<li><p><strong>Base diameter</strong>: 0.156 m</p></li>
+<li><p><strong>Base width (square)</strong>: 0.26 m</p></li>
+</ul>
+<p>Filtering constraints:</p>
+<ul class="simple">
+<li><p>Height: 0.1 m – 0.45 m</p></li>
+<li><p>Width: 0.1 m – 0.25 m</p></li>
+<li><p>Depth: 0.1 m – 0.35 m</p></li>
+</ul>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">height</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.45</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.25</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">depth</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">depth</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.35</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Clusters not meeting these constraints are excluded.</p>
+<a class="reference internal image-reference" href="../_images/Picture20.png"><img alt="../_images/Picture20.png" src="../_images/Picture20.png" style="width: 50%;" />
+</a>
+</section>
+<section id="publishing-results">
+<h4>Publishing Results<a class="headerlink" href="#publishing-results" title="Link to this heading"></a></h4>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">marker_pub_</span><span class="o">-&gt;</span><span class="n">publish</span><span class="p">(</span><span class="n">marker_array</span><span class="p">);</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">csv_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ament_index_cpp</span><span class="o">::</span><span class="n">get_package_share_directory</span><span class="p">(</span><span class="s">&quot;csv_to_pointcloud_node&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;/data/cone_paths.csv&quot;</span><span class="p">;</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">ofstream</span><span class="w"> </span><span class="nf">outfile</span><span class="p">(</span><span class="n">csv_path</span><span class="p">);</span>
+<span class="n">outfile</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;x,y,label</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">cluster_xy_centers</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s">&quot;right&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">&quot;left&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">outfile</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">outfile</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Filtered clouds and cluster markers are published. Centroid positions are saved to CSV for future use.</p>
+</section>
+<section id="running-the-full-pipeline">
+<h4>Running the Full Pipeline<a class="headerlink" href="#running-the-full-pipeline" title="Link to this heading"></a></h4>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ros2 launch csv_to_pointcloud_node full_pipeline.launch.py
+</pre></div>
+</div>
+<p>This command starts all nodes including CSV reading, cropping, cone detection, and visualization.</p>
+</section>
+<section id="visualization-of-detected-cones">
+<h4>Visualization of Detected Cones<a class="headerlink" href="#visualization-of-detected-cones" title="Link to this heading"></a></h4>
+<p>Detected cones are shown as <strong>spherical markers</strong> in RViz2, clearly highlighting their positions.</p>
+<p>Example Output Log:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[INFO] Filtered cloud size: XXX
+[INFO] Detected cone clusters: YYY
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../tutorials/tut_slam.html" class="btn btn-neutral float-left" title="SLAM &amp; FastSLAM 2.0 Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Abner, Aidan, Jaewon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

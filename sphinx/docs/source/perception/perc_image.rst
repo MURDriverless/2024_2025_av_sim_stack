@@ -10,6 +10,7 @@ The process begins with RGB cameras (usually global shutter to avoid motion arti
 .. rubric:: Preprocessing
 
 Raw images undergo a series of essential grooming steps:
+
 - Undistortion: Correcting for fisheye or barrel distortion using known camera intrinsics.
 - Normalization: Adjusting illumination and contrast for visual consistency under ever-treacherous lighting conditions.
 - Region of Interest (ROI): Cropping out sky and other irrelevancies — cones don’t fly, so neither should your pixels.
@@ -17,6 +18,7 @@ Raw images undergo a series of essential grooming steps:
 .. rubric:: Detection & Classification: Where Vision Meets Intelligence
 
 At this stage, the pipeline identifies cones and tells them apart — not just as blobs, but as team players (blue = left, yellow = right, orange = start/finish). Two primary approaches coexist (sometimes contentiously):
+
 - Traditional CV Methods: Color segmentation in HSV space combined with contour detection and morphological operations. Effective, if slightly old-school — think of it as the vinyl of perception.
 - Deep Learning Methods: Convolutional Neural Networks (e.g., YOLO, SSD, or Faster R-CNN) trained on labeled FSAE datasets deliver robust bounding boxes and class probabilities. These models thrive on GPU-powered hardware and caffeine-fueled training marathons.
 
@@ -25,6 +27,7 @@ Either way, the output is a set of 2D bounding boxes, complete with cone classif
 .. rubric:: From Flatland to Trackland
 
 Now comes the geometric magic — lifting detections from the 2D image plane into the 3D world:
+
 - Stereo Vision: Disparity maps from synchronized stereo cameras yield triangulated depth estimates.
 - Monocular Depth Estimation: For the brave or the hardware-constrained, monocular depth prediction using deep nets or size-prior heuristics can provide usable (if shakier) results.
 - Sensor Fusion with LiDAR: In many FSAE setups, the camera is not alone. LiDAR can corroborate or refine detections — an inter-sensor handshake that’s particularly helpful in uncertain terrain.
@@ -33,4 +36,3 @@ Now comes the geometric magic — lifting detections from the 2D image plane int
 
 Cone detections across frames are fused and filtered using algorithms such as Kalman filters or Hungarian matching. This ensures consistency, avoids duplication, and builds a short-term memory of the environment — essentially, a cone map annotated with color and position. This is handed off to the SLAM pipeline.
 
-WIP

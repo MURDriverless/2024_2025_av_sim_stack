@@ -1,11 +1,11 @@
 Quick Start Guide
 =================
 
-.. note::
-    WORK IN PROGRESS
-
-.. image:: _static/overview1.gif
+.. figure:: _static/overview1.gif
+    :alt: Source: Chalmers Formula Student fastest Driverless lap - Formula Student East 2022
     :width: 100%
+
+    Source: Chalmers Formula Student fastest Driverless lap ｜ Formula Student East 2022 [Youtube]
 
 Overview
 --------
@@ -22,17 +22,17 @@ When it comes to the software, the autonomous architecture consists of many diff
 
 - :doc:`Perception <perception/index>`
 - :doc:`SLAM <slam/index>`
-- :doc:`Pathing <pathing/index>`
+- :doc:`Path Generation <pathing/index>`
 - :doc:`Controls <controls/index>`
 
 A pipeline is basically a series of steps (or stages) where each step processes data and passes it along to the next step. You can think of it as an assembly line in a factory where raw material goes in (input), each station adds something or modifies it (data processing), and returns a finished product (output of the pipeline). These inputs and outputs may be interdependent with other pipelines as we will see in their integration with one another. Click on the the links above to see a more in-depth explanation of the respective pipeline but for a TLDR:
 
 - Perception allows the vehicle to see.
 - SLAM allows the vehicle to create a mini-map of its environment and find its position/orientation in that mini-map.
-- Pathing creates the directions the vehicle needs to know to get from point A to point B.
+- Path Generation creates the directions the vehicle needs to know to get from point A to point B.
 - Controls tells the vehicle how to follow those directions; what "limbs" it should move.
 
-System requirements
+System Requirements
 -------------------
 
 When it comes to computing, MUR has provided an NVIDIA Jetson for any autonomous development. However, having your own device for development is preferred. Although not required, having a discrete GPU (dGPU), preferably NVIDIA, allows for efficient training of any machine learning algorithms, rendering of simulations, and any other GPU offloading activity.
