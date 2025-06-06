@@ -1,0 +1,36 @@
+ekf_filter_node:
+  ros__parameters:
+    frequency: 100.0
+    sensor_timeout: 0.1
+    two_d_mode: true
+
+    # Frames
+    map_frame: map
+    odom_frame: odom  
+    base_link_frame: os1                # or "base_link" if you're using a vehicle
+    world_frame: map            
+
+    # IMU only
+    #publish_tf: true
+    #publish_acceleration: true
+
+    imu0: /os1/imu
+    imu0_config: [false, false, false,  # Position x/y/z
+                  true, true, true,     # Orientation roll/pitch/yaw
+                  false, false, false,  # Linear velocity
+                  true, true, true,     # Angular velocity
+                  true, true, true]  # Linear acceleration
+    imu0_differential: false
+    imu0_queue_size: 10
+    imu0_remove_gravitational_acceleration: true
+
+    use_control: false
+
+
+    # odom0: /odom                      # 바퀴 odom 토픽
+    # odom0_config: [ true, true, false,  # position x,y,z (z는 2D라 false)
+    #                 false, false, true,  # orientation r,p,y 중 yaw만 사용
+    #                 true, true, false,   # linear velocity x,y 
+    #                 false,false,true ]   # angular velocity yaw
+    # odom0_differential: false
+    # odom0_queue_size: 5

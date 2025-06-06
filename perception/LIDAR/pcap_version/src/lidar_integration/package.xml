@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>lidar_integration</name>
+  <version>0.0.1</version>
+  <description>LiDAR PCAP to PointCloud2 reader &amp; RViz visualizer</description>
+  <maintainer email="jaewonl@example.com">Jaewon</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- runtime + build dependencies -->
+  <build_depend>rclcpp</build_depend>
+  <exec_depend>rclcpp</exec_depend>
+
+  <build_depend>pcl_msgs</build_depend>
+  <exec_depend>pcl_msgs</exec_depend>
+
+  <depend>libpcap</depend>
+  <depend>libtins</depend>
+
+  <build_depend>sensor_msgs</build_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+
+  <build_depend>std_msgs</build_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+  <build_depend>pcl_conversions</build_depend>
+  <exec_depend>pcl_conversions</exec_depend>
+
+  <build_depend>visualization_msgs</build_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+
+  <build_depend>geometry_msgs</build_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+
+  <build_depend>ament_index_cpp</build_depend>
+  <exec_depend>ament_index_cpp</exec_depend>
+
+  <!-- for launch files -->
+  <build_depend>launch</build_depend>
+  <exec_depend>launch</exec_depend>
+  <build_depend>launch_ros</build_depend>
+  <exec_depend>launch_ros</exec_depend>
+
+  <build_depend>tf2</build_depend>
+  <exec_depend>tf2</exec_depend>
+
+  <build_depend>tf2_ros</build_depend>
+  <exec_depend>tf2_ros</exec_depend>
+
+  <build_depend>tf2_sensor_msgs</build_depend>
+  <exec_depend>tf2_sensor_msgs</exec_depend>
+
+  <build_depend>nlohmann_json</build_depend>
+  <exec_depend>nlohmann_json</exec_depend>
+
+  <exec_depend>robot_localization</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
