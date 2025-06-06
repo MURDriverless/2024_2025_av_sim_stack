@@ -1,0 +1,53 @@
+cmake_minimum_required(VERSION 3.8)
+project(pc_generator)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(ament_index_cpp REQUIRED)
+
+include_directories(
+  include
+  /root/ros2_ws/src/ouster_example/ouster_client/include
+  /root/ros2_ws/src/ouster_example/ouster_pcap/include
+  /root/ros2_ws/src/ouster_example/ouster_client/include/optional-lite/include
+  /usr/include/eigen3
+)
+
+link_directories(
+  /root/ros2_ws/src/ouster_example/build/ouster_client
+  /root/ros2_ws/src/ouster_example/build/ouster_pcap
+)
+
+add_executable(lidar_node
+  src/lidar.cpp
+)
+
+ament_target_dependencies(
+  lidar_node
+  rclcpp
+  sensor_msgs
+  std_msgs
+  ament_index_cpp
+)
+
+target_link_libraries(lidar_node
+  ouster_client
+  ouster_pcap
+)
+
+install(TARGETS
+  lidar_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(DIRECTORY data/
+  DESTINATION share/${PROJECT_NAME}/data
+)
+
+ament_package()
